@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import 'MainHome.dart';
+
 void main(){
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.remove();
-  //s
   runApp(MyLogin());
 }
 
@@ -82,9 +83,12 @@ class LoginPage extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context)=> HomeScreen()),
+                    );
                     // 로그인 버튼 눌렀을 때 실행될 동작
                   },
-                  child: Text('로그인'),
+                  child: Text('Log in'),
                 ),
                 SizedBox(height: 20),
               ],

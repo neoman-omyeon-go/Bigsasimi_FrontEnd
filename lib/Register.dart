@@ -24,7 +24,8 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register'),),
+      appBar: AppBar(backgroundColor: Colors.transparent, elevation: 0.0,),
+      extendBodyBehindAppBar: true,
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -57,6 +58,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        SizedBox(width: 100, height: 100,),
         Row(
           children: [
             Expanded(
@@ -64,15 +66,19 @@ class _SignUpFormState extends State<SignUpForm> {
                 controller: _firstNameController,
                 decoration: InputDecoration(
                   labelText: 'First Name',
+                  fillColor: Colors.white,
+                  filled: true,
                   border: OutlineInputBorder(),),
               ),
             ),
-            SizedBox(width: 16.0, height: 30,),
+            SizedBox(width: 16.0, height: 50,),
             Expanded(
               child: TextField(
                 controller: _lastNameController,
                 decoration: InputDecoration(
                   labelText: 'Last Name',
+                  fillColor: Colors.white,
+                  filled: true,
                   border: OutlineInputBorder(),),
               ),
             ),
@@ -83,6 +89,8 @@ class _SignUpFormState extends State<SignUpForm> {
           controller: _emailController,
           decoration: InputDecoration(
             labelText: 'Email',
+            fillColor: Colors.white,
+            filled: true,
             border: OutlineInputBorder(),
           ),
         ),
@@ -91,6 +99,8 @@ class _SignUpFormState extends State<SignUpForm> {
           controller: _passwordController,
           decoration: InputDecoration(
             labelText: 'Password',
+            fillColor: Colors.white,
+            filled: true,
             border: OutlineInputBorder(),),
           obscureText: true,
         ),
