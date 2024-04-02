@@ -1,3 +1,4 @@
+import 'package:capstone/Register.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,10 +26,12 @@ class MyLogin extends StatelessWidget {
 }
 
 class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login Page'),),
+      // appBar: AppBar(title: Text('Login Page'),),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -68,6 +71,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () {
                         // "Forgot Password?" 텍스트를 클릭할 때 수행될 동작
                         // 아이디, 비밀번호 찾기 페이지로 이동
+
                       },
                       child: Text(
                         'Forgot Password?',
@@ -100,6 +104,9 @@ class LoginPage extends StatelessWidget {
                 onPressed: () {
                   // "Sign up" 텍스트를 클릭할 때 수행될 동작
                   // 회원가입 페이지로 이동
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context)=> SignUpPage()),
+                  );
                 },
                 child: Text(
                   'Sign up',
