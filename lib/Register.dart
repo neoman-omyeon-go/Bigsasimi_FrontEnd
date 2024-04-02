@@ -29,7 +29,7 @@ class SignUpPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/Register_origin.png"),
+            image: AssetImage("assets/SignUp_origin.png"),
             fit: BoxFit.cover,
           )
         ),
@@ -58,7 +58,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(width: 100, height: 100,),
+        SizedBox(width: 100, height: 500,),
         Row(
           children: [
             Expanded(
