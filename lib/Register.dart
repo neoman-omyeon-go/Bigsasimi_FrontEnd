@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main(){
 
@@ -48,53 +50,32 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        SizedBox(width: 100, height: 500,),
+        SizedBox(width:100, height: 300,),
         Row(
           children: [
             Expanded(
               child: TextField(
-                controller: _firstNameController,
+                controller: _usernameController,
                 decoration: InputDecoration(
-                  labelText: 'First Name',
+                  labelText: 'Username',
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(),),
               ),
             ),
             SizedBox(width: 16.0, height: 50,),
-            Expanded(
-              child: TextField(
-                controller: _lastNameController,
-                decoration: InputDecoration(
-                  labelText: 'Last Name',
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),),
-              ),
-            ),
           ],
         ),
-        SizedBox(height: 50.0,),
-        TextField(
-          controller: _emailController,
-          decoration: InputDecoration(
-            labelText: 'Email',
-            fillColor: Colors.white,
-            filled: true,
-            border: OutlineInputBorder(),
-          ),
-        ),
-        SizedBox(height: 50.0),
+        SizedBox(height: 20.0,),
         TextField(
           controller: _passwordController,
           decoration: InputDecoration(
@@ -105,20 +86,32 @@ class _SignUpFormState extends State<SignUpForm> {
           obscureText: true,
         ),
         SizedBox(height: 50.0),
+        TextField(
+          controller: _emailController,
+          decoration: InputDecoration(
+            labelText: 'E-mail',
+            fillColor: Colors.white,
+            filled: true,
+            border: OutlineInputBorder(),
+          ),
+        ),
+        SizedBox(height: 50.0),
         ElevatedButton(
           onPressed: () {
             // Handle sign up logic here -> 입력받은 값들임
-            String firstName = _firstNameController.text;
-            String lastName = _lastNameController.text;
-            String email = _emailController.text;
+            String username = _usernameController.text;
             String password = _passwordController.text;
+            String email = _emailController.text;
+
+            //Register API CALL
+            // 요청할 데이터를 Map으로 구성합니다.
+            signUp(username, password, email);
 
             // You can perform validation or sign up operation here
             //이걸 print 해본거임
-            print('First Name: $firstName');
-            print('Last Name: $lastName');
-            print('Email: $email');
+            print('UserName: $username');
             print('Password: $password');
+            print('Email: $email');
 
             //여기서 이 값들을 바탕으로 로그인 정보를 만들어서 회원가입 시키면 됨
           },
@@ -133,10 +126,43 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  void signUp(String username, String password, String email) async {
+    var url = Uri.parse('http://127.0.0.1:8000/api/signup/');
+
+
+    // 요청할 데이터를 Map으로 구성합니다.
+    var data = {
+      'username': username,
+      'password': password,
+      'email': email,
+    };
+
+
+    // JSON 형식으로 변환합니다.
+    var jsonData = jsonEncode(data);
+
+    // print("try operating");
+    try {
+      var response = await http.post(url, headers: {'Content-Type': 'application/json; charset=UTF-8',}, body: jsonData,);
+      // var response = await http.get(url,);
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("Signed up successfully!");
+        print("${response.body}");
+      } else {
+        // 요청이 실패한 경우
+        print("Failed to sign up. Error: ${response.statusCode}");
+        print("Response body: ${response.body}");
+      }
+    } catch (error) {
+      // 예외 처리
+      print("Error occurred: $error");
+    }
   }
 }
