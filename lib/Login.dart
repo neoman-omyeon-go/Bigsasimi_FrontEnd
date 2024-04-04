@@ -93,7 +93,7 @@ class LoginPage extends StatelessWidget {
                   onPressed: () {
                     String username = _usernameController.text;
                     String password = _passwordController.text;
-                    Login(username, password);
+                    login(username, password);
                     // Navigator.push(context,
                     //   MaterialPageRoute(builder: (context)=> HomeScreen()),
                     // );
