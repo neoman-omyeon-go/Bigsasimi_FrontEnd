@@ -7,8 +7,8 @@ void main(){
 
 }
 
-class MySighUp extends StatelessWidget {
-  const MySighUp({super.key});
+class MySignUp extends StatelessWidget {
+  const MySignUp({super.key});
 
   @override
   Widget build(BuildContext context) {

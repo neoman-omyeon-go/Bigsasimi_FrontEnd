@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-
+//Login API Request
 void login(String username, String password) async {
   var url = 'http://127.0.0.1:8080/api/login/';
 
@@ -17,15 +17,7 @@ void login(String username, String password) async {
 
   try {
     var dio = Dio();
-    var response = await dio.post(
-      url,
-      data: data,
-      options: Options(
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      ),
-    );
+    Response response = await dio.post(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
 
     if (response.statusCode == 200) {
       // 성공적으로 요청이 완료된 경우
@@ -43,6 +35,8 @@ void login(String username, String password) async {
 }
 
 
+
+//SignUp API Request
 void signUp(String username, String password, String email) async {
   var url = 'http://127.0.0.1:8000/api/signup/';
 
@@ -55,15 +49,7 @@ void signUp(String username, String password, String email) async {
 
   try {
     var dio = Dio();
-    var response = await dio.post(
-      url,
-      data: data,
-      options: Options(
-        headers: {
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-      ),
-    );
+    Response response = await dio.post(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
 
     if (response.statusCode == 200) {
       // 성공적으로 요청이 완료된 경우
