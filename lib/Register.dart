@@ -106,7 +106,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
             //Register API CALL
             // 요청할 데이터를 Map으로 구성합니다.
-            signUp(username, password, email);
+            allApi().signUp(username, password, email);
 
             // You can perform validation or sign up operation here
             //이걸 print 해본거임

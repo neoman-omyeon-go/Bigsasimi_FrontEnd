@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'APIfile.dart';
 import 'MainHome.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'loginmodel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main(){
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -42,57 +42,6 @@ class LoginPage extends StatefulWidget {
   @override
     var _usernameController = TextEditingController();
     var _passwordController = TextEditingController();
-
-    static final storage = FlutterSecureStorage();// FlutterSecureStorage를 storage로 저장
-      dynamic userInfo = ''; // storage에 있는 유저 정보를 저장
-
-    @override
-    void initState(){
-      super.initState();
-
-      // 비동기로 flutter secure storage 정보를 불러오는 작업
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _asyncMethod();
-      });
-    }
-
-  _asyncMethod() async {
-    // read 함수로 key값에 맞는 정보를 불러오고 데이터타입은 String 타입
-    // 데이터가 없을때는 null을 반환
-    userInfo = await storage.read(key:'login');
-
-    // user의 정보가 있다면 로그인 후 들어가는 첫 페이지로 넘어가게 합니다.
-    if (userInfo != null) {
-      Navigator.pushNamed(context, '/main');
-    } else {
-      print('로그인이 필요합니다');
-    }
-  }
-
-  // 로그인 버튼 누르면 실행
-  loginAction(username, password) async {
-    try {
-      var dio = Dio();
-      var param = {'username': '$username', 'password': '$password'};
-
-      Response response = await dio.post('로그인 API URL', data: param);
-
-      if (response.statusCode == 200) {
-        // 직렬화를 이용하여 데이터를 입출력하기 위해 model.dart에 Login 정의 참고
-        var val = jsonEncode(Login('$username', '$password'));
-
-        //이 스토리지에 write를 하는데 key는 login 이라는 키에 value는 Login된 정보의 username과 password가 담겨있는 인코딩된 json임
-        await storage.write(key: 'login', value: val,);
-        print('접속 성공!');
-        return true;
-      } else {
-        print('error');
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
 
     @override
     Widget build(BuildContext context){
@@ -149,13 +98,28 @@ class LoginPage extends StatefulWidget {
                     ],
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async{
                       String username = _usernameController.text;
                       String password = _passwordController.text;
-                      login(username, password);
-                      // Navigator.push(context,
-                      //   MaterialPageRoute(builder: (context)=> HomeScreen()),
-                      // );
+
+                      allApi().login(username, password);
+                      //아래에 await delayed를 안주면, 로그인 정보를 불러오기까지 걸리는
+                      //시간을 안줘버리게 되는거다.
+                      // 즉, 저 딜레이가 있어야 token을 받아오고 저장하고, 확인하는 시간을
+                      // 벌어주게 되는것이다.
+                      await Future.delayed(Duration(seconds: 2));
+                      checkIDandPassword();
+                      Future<bool> checklogin = allApi().loginCheck();
+                      bool realdata = await checklogin;
+                      if(realdata){
+                        Navigator.push(context,
+                          MaterialPageRoute(builder: (context)=> HomeScreen()),
+                        );
+                      }else{
+                        //비밀번호가 틀렸을 때
+                        requireLogin();
+                      }
+
                       // 로그인 버튼 눌렀을 때 실행될 동작
                     },
                     child: Text('Log in'),
@@ -194,35 +158,29 @@ class LoginPage extends StatefulWidget {
 
   }
 
+  void requireLogin(){
+    Fluttertoast.showToast(
+        msg: "Check your ID or Password",
+        toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black45,
+      textColor: Colors.white,
+      fontSize: 20.0
+    );
+  }
 
-//   void Login(String username, String password) async {
-//     var url = Uri.parse('http://127.0.0.1:8080/api/login/');
-//
-//     // 요청할 데이터를 Map으로 구성합니다.
-//     var data = {
-//       'username': username,
-//       'password': password,
-//     };
-//     print(data);
-//     // JSON 형식으로 변환합니다.
-//     var jsonData = jsonEncode(data);
-//
-//     print("try operating");
-//     try {
-//       var response = await http.post(url, headers: {'Content-Type': 'application/json; charset=UTF-8',}, body: jsonData,);
-//       // var response = await http.get(url,);
-//       if (response.statusCode == 200) {
-//         // 성공적으로 요청이 완료된 경우
-//         print("Login successfully!");
-//         print("${response.body}");
-//       } else {
-//         // 요청이 실패한 경우
-//         print("Failed to sign up. Error: ${response.statusCode}");
-//         print("Response body: ${response.body}");
-//       }
-//     } catch (error) {
-//       // 예외 처리
-//       print("Error occurred: $error");
-//     }
-//   }
-// }
+
+void checkIDandPassword(){
+  Fluttertoast.showToast(
+      msg: "Checking your ID or Password",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.black45,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
+}
+
+
