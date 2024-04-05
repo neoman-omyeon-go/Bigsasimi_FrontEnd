@@ -32,39 +32,47 @@ class allApi{
         print("Login successfully!");
 
         Map<String, dynamic> responseMap = response.data;
-        var accessToken = responseMap["access"];
-        var refreshToken = responseMap["refresh"];
+        var accessToken = responseMap["data"]["access"];
+        var refreshToken = responseMap["data"]["refresh"];
+        var error = responseMap["error"];
 
         await storage.write(key: 'accessToken', value: accessToken);
         await storage.write(key: 'refeshToken', value: refreshToken);
+        await storage.write(key: 'error', value: error);
         print("Access: ${accessToken}");
         print("Refress: ${refreshToken}");
+        print("Error: ${error}");
 
+      } else if(response.statusCode == 400){
+        // Bad Request(400) -> 틀린 정보
+        await storage.write(key: 'error', value: "error");
+        print("Failed to login. Error: ${response.statusCode}");
+        print("Response body: ${response.data}");
 
-      } else {
-        // 요청이 실패한 경우
+      }else{
+        //400 이외의 다른 모든 오류들
+        await storage.write(key: 'error', value: "error");
         print("Failed to login. Error: ${response.statusCode}");
         print("Response body: ${response.data}");
       }
     } catch (error) {
       // 예외 처리
       print("Error occurred: $error");
+      await storage.write(key: 'error', value: "error");
     }
   }
 
   Future<bool> loginCheck() async{
     bool check = false;
-    String? value = await storage.read(key: 'accessToken');
-    if(value != null){
+    String? value = await storage.read(key: 'error');
+    print("error:${value}");
+    if(value == null){
       check = true;
+      print(check);
     }
-
+    print(check);
     return check;
   }
-
-
-
-
 
 
 //SignUp API Request

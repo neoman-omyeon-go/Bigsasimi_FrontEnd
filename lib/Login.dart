@@ -107,8 +107,8 @@ class LoginPage extends StatefulWidget {
                       //시간을 안줘버리게 되는거다.
                       // 즉, 저 딜레이가 있어야 token을 받아오고 저장하고, 확인하는 시간을
                       // 벌어주게 되는것이다.
-                      await Future.delayed(Duration(seconds: 2));
                       checkIDandPassword();
+                      await Future.delayed(Duration(seconds: 2));
                       Future<bool> checklogin = allApi().loginCheck();
                       bool realdata = await checklogin;
                       if(realdata){
@@ -145,6 +145,7 @@ class LoginPage extends StatefulWidget {
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignUpPage()),
                 );
+                loginSuccessed();
               },
               child: Text(
                 'Sign up',
@@ -158,9 +159,21 @@ class LoginPage extends StatefulWidget {
 
   }
 
+void checkIDandPassword(){
+  Fluttertoast.showToast(
+      msg: "Checking your ID or Password.....",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP_LEFT,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
+}
+
   void requireLogin(){
     Fluttertoast.showToast(
-        msg: "Check your ID or Password",
+        msg: "Check your ID or Password And try Again",
         toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
@@ -171,16 +184,8 @@ class LoginPage extends StatefulWidget {
   }
 
 
-void checkIDandPassword(){
-  Fluttertoast.showToast(
-      msg: "Checking your ID or Password",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.black45,
-      textColor: Colors.white,
-      fontSize: 20.0
-  );
-}
+
+
+
 
 

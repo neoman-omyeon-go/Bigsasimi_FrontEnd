@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'ProfileHome.dart';
 
-void main() {
-
-}
 
 class MainHome extends StatelessWidget {
   @override
@@ -24,8 +22,17 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isDrawerOpen = false;
   bool _isListVisible = true;
 
+  //처음 화면 초기화시에, 로그인 성공~ 하면서 뜨게 해줄거임
+  @override
+  void initState(){
+    super.initState();
+    loginSuccessed();
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    // loginSuccessed();
     return Scaffold(
       appBar: AppBar(
         title: Text('Home'),
@@ -104,4 +111,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+void loginSuccessed(){
+  Fluttertoast.showToast(
+      msg: "Login Successed~!",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
 }
