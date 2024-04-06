@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'ProfileHome.dart';
 
 
@@ -35,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // loginSuccessed();
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
         title: Text('Home'),
         leading: IconButton(
           icon: Icon(Icons.menu),
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
+              color: Colors.blueGrey[100],
               child: Center(
                 child: Text('Main Content'),
               ),
@@ -88,22 +88,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.blueGrey,
+        selectedItemColor: Colors.orangeAccent[200],
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.today),
-            label: '오늘의 정보',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: '주변 식당',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '프로필',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.today), label: 'Today\'s news',),
+          BottomNavigationBarItem(icon: Icon(Icons.restaurant), label: 'Restaurants nearby',),
+          BottomNavigationBarItem(icon: Icon(Icons.upload), label: 'Upload',),
+          BottomNavigationBarItem(icon: Icon(Icons.auto_graph), label: 'Today \'s intake information',),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile',),
         ],
         onTap: (index) {
-          if(index == 2){
+          if(index == 4){
             Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen())
             );
           }
@@ -120,7 +116,7 @@ void loginSuccessed(){
       gravity: ToastGravity.CENTER,
       timeInSecForIosWeb: 1,
       backgroundColor: Colors.blueGrey,
-      textColor: Colors.white,
+      textColor: Colors.black,
       fontSize: 20.0
   );
 }

@@ -1,6 +1,5 @@
 import 'dart:js_interop';
 import 'dart:math';
-
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'dart:convert';
 import 'package:capstone/Register.dart';

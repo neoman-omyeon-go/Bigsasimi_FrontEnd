@@ -145,7 +145,6 @@ class LoginPage extends StatefulWidget {
                 Navigator.push(context,
                   MaterialPageRoute(builder: (context) => SignUpPage()),
                 );
-                loginSuccessed();
               },
               child: Text(
                 'Sign up',

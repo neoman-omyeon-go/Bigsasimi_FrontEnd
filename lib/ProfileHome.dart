@@ -8,7 +8,7 @@ class ProfileScreen extends StatelessWidget {
         title: Text('프로필'),
       ),
       body: Center(
-        child: Text('프로필 화면'),
+        child: Text('프로필 화면이지롱'),
       ),
     );
   }
