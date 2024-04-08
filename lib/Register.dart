@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'APIfile.dart';
@@ -98,7 +99,7 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         SizedBox(height: 50.0),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             // Handle sign up logic here -> 입력받은 값들임
             String username = _usernameController.text;
             String password = _passwordController.text;
@@ -107,7 +108,17 @@ class _SignUpFormState extends State<SignUpForm> {
             //Register API CALL
             // 요청할 데이터를 Map으로 구성합니다.
             allApi().signUp(username, password, email);
+            checkingRegisterToast();
+            await Future.delayed(Duration(seconds: 2));
+            Future<bool> checkregister = allApi().registerCheck();
+            bool realdata = await checkregister;
 
+            if(realdata){
+              successRegisterToast();
+              Navigator.of(context).pop();
+            }else{
+              reTryRegisterToast();
+            }
             // You can perform validation or sign up operation here
             //이걸 print 해본거임
             print('UserName: $username');
@@ -125,13 +136,53 @@ class _SignUpFormState extends State<SignUpForm> {
       ],
     );
   }
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
 }
+
+void checkingRegisterToast(){
+  Fluttertoast.showToast(
+      msg: "Checking your ID is duplicating.....",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP_LEFT,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.redAccent,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
+}
+
+
+void reTryRegisterToast(){
+  Fluttertoast.showToast(
+      msg: "Your Id is duplicated. Enter another ID",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.black45,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
+}
+
+void successRegisterToast(){
+  Fluttertoast.showToast(
+      msg: "Sign Up Successed!",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 2,
+      backgroundColor: Colors.black45,
+      textColor: Colors.white,
+      fontSize: 20.0
+  );
+}
+
+
+
+
+//   @override
+//   void dispose() {
+//     _usernameController.dispose();
+//     _emailController.dispose();
+//     _passwordController.dispose();
+//     super.dispose();
+//   }
+// }
