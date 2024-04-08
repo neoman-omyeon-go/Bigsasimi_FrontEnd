@@ -35,17 +35,19 @@ class allApi{
         var refreshToken = responseMap["data"]["refresh"];
         var error = responseMap["error"];
 
+        print("Access: ${accessToken}");
+        print("Refress: ${refreshToken}");
+        print("Error value in Status 200 : ${error}");
+
         await storage.write(key: 'accessToken', value: accessToken);
         await storage.write(key: 'refeshToken', value: refreshToken);
         await storage.write(key: 'error', value: error);
-        print("Access: ${accessToken}");
-        print("Refress: ${refreshToken}");
-        print("Error: ${error}");
+
 
       } else if(response.statusCode == 400){
         // Bad Request(400) -> 틀린 정보
         await storage.write(key: 'error', value: "error");
-        print("Failed to login. Error: ${response.statusCode}");
+        print("Failed to login. Error in Status 400: ${response.statusCode}");
         print("Response body: ${response.data}");
 
       }else{
@@ -64,7 +66,8 @@ class allApi{
   Future<bool> loginCheck() async{
     bool check = false;
     String? value = await storage.read(key: 'error');
-    print("error:${value}");
+    await Future.delayed(Duration(seconds: 3));
+    print("Login check error:${value}");
     if(value == null){
       check = true;
       print(check);

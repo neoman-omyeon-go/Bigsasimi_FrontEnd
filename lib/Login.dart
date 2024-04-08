@@ -108,7 +108,7 @@ class LoginPage extends StatefulWidget {
                       // 즉, 저 딜레이가 있어야 token을 받아오고 저장하고, 확인하는 시간을
                       // 벌어주게 되는것이다.
                       checkIDandPassword();
-                      await Future.delayed(Duration(seconds: 2));
+                      await Future.delayed(Duration(seconds: 3));
                       Future<bool> checklogin = allApi().loginCheck();
                       bool realdata = await checklogin;
                       if(realdata){
