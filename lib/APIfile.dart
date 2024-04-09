@@ -25,11 +25,13 @@ class allApi{
       'password': password,
     };
 
+    // var dio = Dio();
+    // Response response = await dio.post(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
+
     try {
       var dio = Dio();
       Response response = await dio.post(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
-
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 400) {
         // 성공적으로 요청이 완료된 경우
         print("Login successfully!");
 
