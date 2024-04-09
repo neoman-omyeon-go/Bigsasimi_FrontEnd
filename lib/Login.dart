@@ -102,15 +102,15 @@ class LoginPage extends StatefulWidget {
                       String username = _usernameController.text;
                       String password = _passwordController.text;
 
-                      allApi().login(username, password);
+                      Future<bool> checklogin = allApi().login(username, password);
+                      checkIDandPasswordToast();
+                      bool realdata = await checklogin;
                       //아래에 await delayed를 안주면, 로그인 정보를 불러오기까지 걸리는
                       //시간을 안줘버리게 되는거다.
                       // 즉, 저 딜레이가 있어야 token을 받아오고 저장하고, 확인하는 시간을
                       // 벌어주게 되는것이다.
-                      checkIDandPasswordToast();
-                      await Future.delayed(Duration(seconds: 3));
-                      Future<bool> checklogin = allApi().loginCheck();
-                      bool realdata = await checklogin;
+                      await Future.delayed(Duration(seconds: 1));
+                      // Future<bool> checklogin = allApi().loginCheck();
                       if(realdata){
                         Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()),
                         );
@@ -159,10 +159,10 @@ class LoginPage extends StatefulWidget {
 
 void checkIDandPasswordToast(){
   Fluttertoast.showToast(
-      msg: "Checking your ID or Password.....",
+      msg: "Checking your ID And Password.....",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP_LEFT,
-      timeInSecForIosWeb: 2,
+      timeInSecForIosWeb: 4,
       backgroundColor: Colors.redAccent,
       textColor: Colors.white,
       fontSize: 20.0

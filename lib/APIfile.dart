@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:js';
 import 'dart:js_interop';
 import 'dart:math';
@@ -14,8 +15,9 @@ class allApi{
   static final storage = FlutterSecureStorage();
 
   //Login API Request
-  void login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     var url = 'http://127.0.0.1:8080/api/login/';
+    var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -29,7 +31,6 @@ class allApi{
 
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
-
         print("Login successfully!");
 
         Map<String, dynamic> responseMap = response.data;
@@ -45,30 +46,20 @@ class allApi{
         await storage.write(key: 'refeshToken', value: refreshToken);
         await storage.write(key: 'error', value: error);
 
-
-      } else if(response.statusCode == 400){
-        // Bad Request(400) -> 틀린 정보
-        await storage.write(key: 'error', value: "error");
-        print("Failed to login. Error in Status 400: ${response.statusCode}");
-        print("Response body: ${response.data}");
-
-      }else{
-        //400 이외의 다른 모든 오류들
-        await storage.write(key: 'error', value: "error");
-        print("Failed to login. Error: ${response.statusCode}");
-        print("Response body: ${response.data}");
+        checkdata = loginCheck();
       }
     } catch (error) {
       // 예외 처리
       print("Error occurred: $error");
-      await storage.write(key: 'error', value: "error");
+      storage.write(key: 'error', value: "error");
+      checkdata = false;
     }
+    return checkdata;
   }
 
   Future<bool> loginCheck() async{
     bool check = false;
     String? value = await storage.read(key: 'error');
-    await Future.delayed(Duration(seconds: 2));
     print("Login check error:${value}");
     if(value == null){
       check = true;
@@ -80,9 +71,9 @@ class allApi{
 
 
 //SignUp API Request
-  void signUp(String username, String password, String email) async {
+  Future<bool> signUp(String username, String password, String email) async {
     var url = 'http://127.0.0.1:8000/api/signup/';
-
+    var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
       'username': username,
@@ -99,15 +90,19 @@ class allApi{
         print("Signed up successfully!");
         print("${response.data}");
         print("statusCode: ${response.statusCode}");
-        storage.write(key: 'msg', value: null);
+        await storage.write(key: 'msg', value: null);
+
+        registerCheckvalue = registerCheck();
       }
     } catch (error) {
       // 예외 처리
       // 어짜피 200을 제외한 모든 Status Code는 catch에서 잡힌다니까
       // 그럼 여기서 토스트 메세지를 띄워주면 되겠네 ㅇㅇ 아이디가 중복된다. 라고
       print("Error occurred: $error");
-      storage.write(key: 'msg', value: "Duplicated");
+      await storage.write(key: 'msg', value: "Duplicated");
+      registerCheckvalue = false;
     }
+    return registerCheckvalue;
   }
 
   //storage는 AllApi의 클래스에 전역 공간에 선언된 FlutterSecureStorage 임.
@@ -115,13 +110,14 @@ class allApi{
   Future<bool> registerCheck() async{
     bool check = false;
     String? value = await storage.read(key: 'msg');
-    await Future.delayed(Duration(seconds: 2));
-    print("Login check error:${value}");
+    print("Register check error:${value}");
+
     if(value == null){
-      check = true;
-      print(check);
+        check = true;
+        print(check);
     }
     print(check);
+
     return check;
   }
 }
