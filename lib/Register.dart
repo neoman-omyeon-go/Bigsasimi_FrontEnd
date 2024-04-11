@@ -109,6 +109,7 @@ class _SignUpFormState extends State<SignUpForm> {
             // 요청할 데이터를 Map으로 구성합니다.
             Future<bool> checkRegister = allApi().signUp(username, password, email);
             checkingRegisterToast();
+            await Future.delayed(Duration(seconds: 2));
             // Duration time = Duration(seconds: 2);
             // await Future.delayed(Duration(seconds: 2));
             bool realdata = await checkRegister;
@@ -144,7 +145,7 @@ void checkingRegisterToast(){
       msg: "Checking your ID is duplicating.....",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP_LEFT,
-      timeInSecForIosWeb: 3,
+      timeInSecForIosWeb: 2,
       backgroundColor: Colors.redAccent,
       textColor: Colors.white,
       fontSize: 20.0
