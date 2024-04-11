@@ -7,7 +7,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'APIfile.dart';
-import 'MainHome.dart';
+import 'upload.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -112,8 +112,7 @@ class LoginPage extends StatefulWidget {
                       await Future.delayed(Duration(seconds: 1));
                       // Future<bool> checklogin = allApi().loginCheck();
                       if(realdata){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> HomeScreen()),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> uploadScreen()));
                       }else{
                         //비밀번호가 틀렸을 때
                         requireLoginToast();
