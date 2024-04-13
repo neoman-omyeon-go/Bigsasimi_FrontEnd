@@ -111,8 +111,13 @@ class LoginPage extends StatefulWidget {
                       // 벌어주게 되는것이다.
                       await Future.delayed(Duration(seconds: 1));
                       // Future<bool> checklogin = allApi().loginCheck();
+                      if (!mounted) return;  // 여기서 위젯이 아직 존재하는지 확인
                       if(realdata){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> uploadScreen()));
+                        loginSuccessed();
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => uploadScreen()),
+                              (Route<dynamic> route) => false,
+                        );
                       }else{
                         //비밀번호가 틀렸을 때
                         requireLoginToast();
@@ -161,7 +166,7 @@ void checkIDandPasswordToast(){
       msg: "Checking your ID And Password.....",
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP_LEFT,
-      timeInSecForIosWeb: 4,
+      timeInSecForIosWeb: 2,
       backgroundColor: Colors.redAccent,
       textColor: Colors.white,
       fontSize: 20.0
@@ -179,6 +184,18 @@ void checkIDandPasswordToast(){
       fontSize: 20.0
     );
   }
+
+void loginSuccessed(){
+  Fluttertoast.showToast(
+      msg: "Login Successed~!",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.blueGrey,
+      textColor: Colors.black,
+      fontSize: 20.0
+  );
+}
 
 
 
