@@ -1,130 +1,101 @@
 import 'package:flutter/material.dart';
 
+// Profile 페이지가 별도의 화면으로서 다른 페이지에서 네비게이션으로 이동할 때
 class Profile extends StatefulWidget {
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _ProfilePageState extends State<Profile> {
-  bool isEditMode = false;
-
-  // Create a text editing controller for each field
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _chronicIllnessController = TextEditingController();
-  final TextEditingController _allergiesController = TextEditingController();
-  final TextEditingController _dailyIntakeController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Dispose the controllers when the widget is removed from the widget tree
-    _nameController.dispose();
-    _sexController.dispose();
-    _ageController.dispose();
-    _heightController.dispose();
-    _weightController.dispose();
-    _chronicIllnessController.dispose();
-    _allergiesController.dispose();
-    _dailyIntakeController.dispose();
-    super.dispose();
-  }
-
-  void toggleEditMode() {
-    setState(() {
-      isEditMode = !isEditMode;
-    });
-  }
-
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: <Widget>[
-          if (isEditMode)
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: () {
-                // Save data logic
-                toggleEditMode();
-              },
-            ),
-          if (!isEditMode)
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () => toggleEditMode(),
-            ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: <Widget>[
-            _buildEditableProfileItem(_nameController, 'User Name', 'User Name', Icons.person),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: ListView(
+        children: <Widget>[
+          SizedBox(height: 30),
+          CircleAvatar(
+            radius: 50,
+            child: Icon(Icons.person, size: 80),
+          ),
+          SizedBox(height: 10),
+          Center(child: Text('User Name', style: TextStyle(fontSize: 24))),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
               children: <Widget>[
-                _buildEditableProfileItem(_sexController, 'Sex', 'Male', null, flex: 2),
-                _buildEditableProfileItem(_ageController, 'Age', '25', null, flex: 2),
-                _buildEditableProfileItem(_heightController, 'Height', '180cm', null, flex: 2),
-                _buildEditableProfileItem(_weightController, 'Weight', '75kg', null, flex: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const <Widget>[
+                    Expanded(
+                      child: UserInfoRow(title: 'Sex', value: 'Male'),
+                    ),
+                    Expanded(
+                      child: UserInfoRow(title: 'Age', value: '25'),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: const <Widget>[
+                    Expanded(
+                      child: UserInfoRow(title: 'Height', value: '180cm'),
+                    ),
+                    Expanded(
+                      child: UserInfoRow(title: 'Weight', value: '75kg'),
+                    ),
+                  ],
+                ),
+                ProfileSectionButton(title: 'Chronic Illnesses', color: Colors.lightBlueAccent),
+                ProfileSectionButton(title: 'Allergies', color: Colors.pinkAccent),
+                ProfileSectionButton(title: 'Desired daily intake', color: Colors.orangeAccent),
               ],
             ),
-            _buildEditableProfileItem(_chronicIllnessController, 'Chronic Illnesses', '', Icons.healing, isTextArea: true),
-            _buildEditableProfileItem(_allergiesController, 'Allergies', '', Icons.warning, isTextArea: true),
-            _buildEditableProfileItem(_dailyIntakeController, 'Desired daily intake', '', Icons.fastfood, isTextArea: true),
-            if (isEditMode)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: ElevatedButton(
-                  onPressed: () => toggleEditMode(),
-                  child: Text('Save Changes'),
-                ),
-              ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildEditableProfileItem(
-      TextEditingController controller,
-      String label,
-      String placeholder,
-      IconData? icon, {
-        bool isTextArea = false,
-        int flex = 1,
-      }) {
-    return Flexible(
-      flex: flex,
+class UserInfoRow extends StatelessWidget {
+  final String title;
+  final String value;
+
+  const UserInfoRow({Key? key, required this.title, required this.value}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(title, style: TextStyle(fontSize: 16, color: Colors.grey)),
+          Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileSectionButton extends StatelessWidget {
+  final String title;
+  final Color color;
+
+  const ProfileSectionButton({Key? key, required this.title, required this.color}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: color,
+      margin: EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
-        title: isEditMode
-            ? (isTextArea
-            ? TextField(
-          controller: controller,
-          decoration: InputDecoration(labelText: label),
-          minLines: 1,
-          maxLines: 5,
-        )
-            : TextField(
-          controller: controller,
-          decoration: InputDecoration(labelText: label),
-        ))
-            : Row(
-          children: [
-            if (icon != null) Icon(icon),
-            if (icon != null) SizedBox(width: 8),
-            Text(placeholder, style: TextStyle(fontSize: 18)),
-          ],
-        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
+        title: Text(title, style: TextStyle(fontSize: 18)),
+        onTap: () {
+          // 해당 섹션 클릭시 동작 추가
+        },
       ),
     );
   }
