@@ -7,136 +7,124 @@ class Profile extends StatefulWidget {
 
 class _ProfilePageState extends State<Profile> {
   bool isEditMode = false;
-  String userName = '';
 
-  // Controllers for text fields
-  final TextEditingController _sexController = TextEditingController(text: '');
-  final TextEditingController _ageController = TextEditingController(text: '');
-  final TextEditingController _heightController = TextEditingController(text: '');
-  final TextEditingController _weightController = TextEditingController(text: '');
-  final TextEditingController _chronicController = TextEditingController(text: '');
-  final TextEditingController _allergiesController = TextEditingController(text: '');
-  final TextEditingController _intakeController = TextEditingController(text: '');
+  // Create a text editing controller for each field
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _sexController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _chronicIllnessController = TextEditingController();
+  final TextEditingController _allergiesController = TextEditingController();
+  final TextEditingController _dailyIntakeController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose the controllers when the widget is removed from the widget tree
+    _nameController.dispose();
+    _sexController.dispose();
+    _ageController.dispose();
+    _heightController.dispose();
+    _weightController.dispose();
+    _chronicIllnessController.dispose();
+    _allergiesController.dispose();
+    _dailyIntakeController.dispose();
+    super.dispose();
+  }
+
+  void toggleEditMode() {
+    setState(() {
+      isEditMode = !isEditMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Home'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: <Widget>[
+          if (isEditMode)
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                // Save data logic
+                toggleEditMode();
+              },
+            ),
+          if (!isEditMode)
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () => toggleEditMode(),
+            ),
+        ],
+      ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16),
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    setState(() {
-                      isEditMode = !isEditMode;
-                    });
-                  },
-                ),
-                TextButton.icon(
-                  icon: Icon(Icons.logout),
-                  label: Text('Logout'),
-                  onPressed: () {
-                    print('Logout pressed');
-                  },
-                ),
-              ],
-            ),
-            CircleAvatar(
-              radius: 60.0,
-              backgroundImage: AssetImage('assets/default_profile_pic.png'),
-              child: IconButton(
-                icon: Icon(Icons.camera_alt),
-                onPressed: () {},
-              ),
-            ),
-            SizedBox(height: 40),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.45,
-              child: TextFormField(
-                initialValue: userName,
-                textAlign: TextAlign.center,
-                enabled: isEditMode,
-                decoration: InputDecoration(
-                  labelText: 'User Name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    userName = value;
-                  });
-                },
-              ),
-            ),
-            SizedBox(height: 40),
+            _buildEditableProfileItem(_nameController, 'User Name', 'User Name', Icons.person),
+            SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _buildTextField(_sexController, 'Sex', isEditMode),
-                _buildTextField(_ageController, 'Age', isEditMode),
-                _buildTextField(_heightController, 'Height', isEditMode),
-                _buildTextField(_weightController, 'Weight', isEditMode),
+                _buildEditableProfileItem(_sexController, 'Sex', 'Male', null, flex: 2),
+                _buildEditableProfileItem(_ageController, 'Age', '25', null, flex: 2),
+                _buildEditableProfileItem(_heightController, 'Height', '180cm', null, flex: 2),
+                _buildEditableProfileItem(_weightController, 'Weight', '75kg', null, flex: 2),
               ],
             ),
-            SizedBox(height: 50),
-            _editableField(_chronicController, 'Chronic Illnesses', Colors.blue.shade100, isEditMode),
-            SizedBox(height: 30),
-            _editableField(_allergiesController, 'Allergies', Colors.pink.shade100, isEditMode),
-            SizedBox(height: 30),
-            _editableField(_intakeController, 'Desired Daily Intake', Colors.orange.shade100, isEditMode),
+            _buildEditableProfileItem(_chronicIllnessController, 'Chronic Illnesses', '', Icons.healing, isTextArea: true),
+            _buildEditableProfileItem(_allergiesController, 'Allergies', '', Icons.warning, isTextArea: true),
+            _buildEditableProfileItem(_dailyIntakeController, 'Desired daily intake', '', Icons.fastfood, isTextArea: true),
+            if (isEditMode)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: ElevatedButton(
+                  onPressed: () => toggleEditMode(),
+                  child: Text('Save Changes'),
+                ),
+              ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label, bool isEditable) {
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 8),
-        child: TextFormField(
+  Widget _buildEditableProfileItem(
+      TextEditingController controller,
+      String label,
+      String placeholder,
+      IconData? icon, {
+        bool isTextArea = false,
+        int flex = 1,
+      }) {
+    return Flexible(
+      flex: flex,
+      child: ListTile(
+        title: isEditMode
+            ? (isTextArea
+            ? TextField(
           controller: controller,
-          textAlign: TextAlign.center,
-          enabled: isEditable,
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(),
-            disabledBorder: OutlineInputBorder( // 비활성화 상태에서 보이는 테두리 설정
-              borderSide: BorderSide(color: Colors.grey),
-            ),
-          ),
+          decoration: InputDecoration(labelText: label),
+          minLines: 1,
+          maxLines: 5,
+        )
+            : TextField(
+          controller: controller,
+          decoration: InputDecoration(labelText: label),
+        ))
+            : Row(
+          children: [
+            if (icon != null) Icon(icon),
+            if (icon != null) SizedBox(width: 8),
+            Text(placeholder, style: TextStyle(fontSize: 18)),
+          ],
         ),
-      ),
-    );
-  }
-
-  Widget _editableField(TextEditingController controller, String label, Color backgroundColor, bool isEditable) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 40),
-      padding: EdgeInsets.symmetric(vertical: 40),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: TextFormField(
-        controller: controller,
-        enabled: isEditable,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          disabledBorder: OutlineInputBorder( // 비활성화 상태에서 보이는 테두리 설정
-            borderSide: BorderSide(color: Colors.grey),
-          ),
-        ),
-        maxLines: 3,
-        minLines: 1,
       ),
     );
   }
