@@ -1,6 +1,4 @@
 import 'dart:io';
-import 'dart:js';
-import 'dart:js_interop';
 import 'dart:math';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'dart:convert';
@@ -17,6 +15,7 @@ class allApi{
   //Login API Request
   Future<bool> login(String username, String password) async {
     var url = 'http://127.0.0.1:8080/api/login/';
+    // var url = 'http://223.130.154.42:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -75,6 +74,7 @@ class allApi{
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
     var url = 'http://127.0.0.1:8000/api/signup/';
+    // var url = 'http://223.130.154.42:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {

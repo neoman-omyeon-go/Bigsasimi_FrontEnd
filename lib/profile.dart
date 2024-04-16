@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
 // Profile 페이지가 별도의 화면으로서 다른 페이지에서 네비게이션으로 이동할 때
 class Profile extends StatefulWidget {
   @override
@@ -7,15 +10,23 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  File? _image; // 사용자가 선택한 이미지 파일을 저장
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
         children: <Widget>[
           SizedBox(height: 30),
-          CircleAvatar(
-            radius: 50,
-            child: Icon(Icons.person, size: 80),
+          GestureDetector(
+            // onTap: _editProfilePicture,
+            // child: CircleAvatar(
+            //   radius: 50,
+            //   backgroundImage: _image != null ? FileImage(_image!) : null,
+            //   child: _image == null ? Icon(Icons.person, size: 80) : null,
+            // ),
+            onTap: _editProfilePicture,
+            child: _image != null ? Image.file(_image!) : Icon(Icons.person, size: 80),
           ),
           SizedBox(height: 10),
           EditableUserName(initialName: 'User Name'), // 초기 사용자 이름 설정
@@ -60,8 +71,19 @@ class _ProfileState extends State<Profile> {
   }
 
   void _editProfilePicture() async {
-    // image_picker 패키지를 사용하여 이미지를 선택하고 setState로 업데이트하는 로직을 추가
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      print("Selected image path: ${image.path}");  // 경로 출력
+      setState(() {
+        _image = File(image.path);
+      });
+    } else {
+      print("No image selected");
+    }
   }
+
+
 
   void _editSection(String title) {
     // 각 섹션의 정보를 입력할 수 있는 화면으로 이동하는 로직을 추가
@@ -369,7 +391,7 @@ class _EditableUserNameState extends State<EditableUserName> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            child: Text('Save'),
+            child: Text('Change'),
             onPressed: () {
               setState(() {
                 userName = _controller.text;
