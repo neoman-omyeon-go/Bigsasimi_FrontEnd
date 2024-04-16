@@ -279,33 +279,38 @@ class _UserInfoSectionState extends State<UserInfoSection> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return CupertinoPicker(
-          itemExtent: 32.0,
-          onSelectedItemChanged: (int index) {
-            setState(() {
-              switch (fieldType) {
-                case 'sex':
-                  sex = items[index];
-                  break;
-                case 'age':
-                  age = items[index];
-                  break;
-                case 'height':
-                  height = items[index];
-                  break;
-                case 'weight':
-                  weight = items[index];
-                  break;
-              }
-            });
-          },
-          children: items.map((String value) {
-            return Center(child: Text(value));
-          }).toList(),
+        return Container(
+          width: 500,
+          height: 350, // 피커 뷰의 세로 길이를 200px로 설정
+          child: CupertinoPicker(
+            itemExtent: 28.0,
+            onSelectedItemChanged: (int index) {
+              setState(() {
+                switch (fieldType) {
+                  case 'sex':
+                    sex = items[index];
+                    break;
+                  case 'age':
+                    age = items[index];
+                    break;
+                  case 'height':
+                    height = items[index];
+                    break;
+                  case 'weight':
+                    weight = items[index];
+                    break;
+                }
+              });
+            },
+            children: items.map((String value) {
+              return Center(child: Text(value));
+            }).toList(),
+          ),
         );
       },
     );
   }
+
 
   List<String> _getPickerItems(String fieldType) {
     switch (fieldType) {
