@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/cupertino.dart';
 // Profile 페이지가 별도의 화면으로서 다른 페이지에서 네비게이션으로 이동할 때
 class Profile extends StatefulWidget {
   @override
@@ -29,9 +29,6 @@ class _ProfileState extends State<Profile> {
                   age: '25',
                   height: '180cm',
                   weight: '75kg',
-                  onEdit: () {
-                    // UserInfoSection의 Edit 버튼을 클릭했을 때의 로직
-                  },
                 ),
                 ProfileSectionButton(
                   title: 'Chronic Illnesses',
@@ -120,55 +117,6 @@ class _EditableUserInfoRowState extends State<EditableUserInfoRow> {
   }
 }
 
-
-
-class UserInfoRow extends StatelessWidget {
-  final String sex;
-  final String age;
-  final String height;
-  final String weight;
-
-  const UserInfoRow({
-    Key? key,
-    required this.sex,
-    required this.age,
-    required this.height,
-    required this.weight,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    TextStyle propertyStyle = TextStyle(fontSize: 16, color: Colors.grey);
-    TextStyle valueStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text('Sex', style: propertyStyle),
-              Text('Age', style: propertyStyle),
-              Text('Height', style: propertyStyle),
-              Text('Weight', style: propertyStyle),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              Text(sex, style: valueStyle),
-              Text(age, style: valueStyle),
-              Text(height, style: valueStyle),
-              Text(weight, style: valueStyle),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class ProfileSectionButton extends StatelessWidget {
   final String title;
   final Color color;
@@ -196,46 +144,182 @@ class ProfileSectionButton extends StatelessWidget {
   }
 }
 
-class UserInfoSection extends StatelessWidget {
+class UserInfoRow extends StatelessWidget {
   final String sex;
   final String age;
   final String height;
   final String weight;
-  final VoidCallback onEdit;
+  final VoidCallback onSexTap;
+  final VoidCallback onAgeTap;
+  final VoidCallback onHeightTap;
+  final VoidCallback onWeightTap;
 
-  const UserInfoSection({
+  UserInfoRow({
     Key? key,
     required this.sex,
     required this.age,
     required this.height,
     required this.weight,
-    required this.onEdit,
+    required this.onSexTap,
+    required this.onAgeTap,
+    required this.onHeightTap,
+    required this.onWeightTap,
   }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle propertyStyle = TextStyle(fontSize: 16, color: Colors.grey);
+    TextStyle valueStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              GestureDetector(
+                onTap: onSexTap,
+                child: Column(
+                  children: [
+                    Text('Sex', style: propertyStyle),
+                    Text(sex, style: valueStyle),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: onAgeTap,
+                child: Column(
+                  children: [
+                    Text('Age', style: propertyStyle),
+                    Text(age, style: valueStyle),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: onHeightTap,
+                child: Column(
+                  children: [
+                    Text('Height', style: propertyStyle),
+                    Text(height, style: valueStyle),
+                  ],
+                ),
+              ),
+              GestureDetector(
+                onTap: onWeightTap,
+                child: Column(
+                  children: [
+                    Text('Weight', style: propertyStyle),
+                    Text(weight, style: valueStyle),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+class UserInfoSection extends StatefulWidget {
+  final String sex;
+  final String age;
+  final String height;
+  final String weight;
+
+  UserInfoSection({
+    Key? key,
+    required this.sex,
+    required this.age,
+    required this.height,
+    required this.weight,
+  }) : super(key: key);
+
+  @override
+  _UserInfoSectionState createState() => _UserInfoSectionState();
+}
+
+class _UserInfoSectionState extends State<UserInfoSection> {
+  late String sex;
+  late String age;
+  late String height;
+  late String weight;
+
+  @override
+  void initState() {
+    super.initState();
+    sex = widget.sex;
+    age = widget.age;
+    height = widget.height;
+    weight = widget.weight;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Column(
-        children: [
-          UserInfoRow(
-            sex: sex,
-            age: age,
-            height: height,
-            weight: weight,
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: onEdit,
-              tooltip: 'Edit Profile',
-            ),
-          ),
-        ],
+      child: UserInfoRow(
+        sex: sex,
+        age: age,
+        height: height,
+        weight: weight,
+        onSexTap: () => _showPicker('sex'),
+        onAgeTap: () => _showPicker('age'),
+        onHeightTap: () => _showPicker('height'),
+        onWeightTap: () => _showPicker('weight'),
       ),
     );
+  }
+
+  void _showPicker(String fieldType) {
+    final List<String> items = _getPickerItems(fieldType);
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoPicker(
+          itemExtent: 32.0,
+          onSelectedItemChanged: (int index) {
+            setState(() {
+              switch (fieldType) {
+                case 'sex':
+                  sex = items[index];
+                  break;
+                case 'age':
+                  age = items[index];
+                  break;
+                case 'height':
+                  height = items[index];
+                  break;
+                case 'weight':
+                  weight = items[index];
+                  break;
+              }
+            });
+          },
+          children: items.map((String value) {
+            return Center(child: Text(value));
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  List<String> _getPickerItems(String fieldType) {
+    switch (fieldType) {
+      case 'sex':
+        return ['Male', 'Female', 'Other', 'Nothing'];
+      case 'age':
+        return List.generate(130, (index) => '${index + 1}');
+      case 'height':
+        return List.generate(251, (index) => '${index} cm');
+      case 'weight':
+        return List.generate(250, (index) => '${index + 1} kg');
+      default:
+        return [];
+    }
   }
 }
 
