@@ -126,25 +126,53 @@ class _EditableUserInfoRowState extends State<EditableUserInfoRow> {
 
 
 class UserInfoRow extends StatelessWidget {
-  final String title;
-  final String value;
+  final String sex;
+  final String age;
+  final String height;
+  final String weight;
 
-  const UserInfoRow({Key? key, required this.title, required this.value}) : super(key: key);
+  const UserInfoRow({
+    Key? key,
+    required this.sex,
+    required this.age,
+    required this.height,
+    required this.weight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextStyle propertyStyle = TextStyle(fontSize: 16, color: Colors.grey);
+    TextStyle valueStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.bold);
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(title, style: TextStyle(fontSize: 16, color: Colors.grey)),
-          Text(value, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text('Sex', style: propertyStyle),
+              Text('Age', style: propertyStyle),
+              Text('Height', style: propertyStyle),
+              Text('Weight', style: propertyStyle),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(sex, style: valueStyle),
+              Text(age, style: valueStyle),
+              Text(height, style: valueStyle),
+              Text(weight, style: valueStyle),
+            ],
+          ),
         ],
       ),
     );
   }
 }
+
+
 
 class ProfileSectionButton extends StatelessWidget {
   final String title;
@@ -194,24 +222,20 @@ class UserInfoSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16),
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(12),
-      ),
       child: Column(
         children: [
-          UserInfoRow(title: 'Sex', value: sex),
-          Divider(),
-          UserInfoRow(title: 'Age', value: age),
-          Divider(),
-          UserInfoRow(title: 'Height', value: height),
-          Divider(),
-          UserInfoRow(title: 'Weight', value: weight),
+          UserInfoRow(
+            sex: sex,
+            age: age,
+            height: height,
+            weight: weight,
+          ),
           Align(
-            alignment: Alignment.centerRight,
+            alignment: Alignment.topRight,
             child: IconButton(
               icon: Icon(Icons.edit),
               onPressed: onEdit,
+              tooltip: 'Edit Profile',
             ),
           ),
         ],
@@ -219,3 +243,4 @@ class UserInfoSection extends StatelessWidget {
     );
   }
 }
+
