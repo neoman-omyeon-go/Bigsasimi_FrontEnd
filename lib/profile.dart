@@ -15,13 +15,10 @@ class _ProfileState extends State<Profile> {
           SizedBox(height: 30),
           CircleAvatar(
             radius: 50,
-            child: GestureDetector(
-              onTap: _editProfilePicture,
-              child: Icon(Icons.person, size: 80),
-            ),
+            child: Icon(Icons.person, size: 80),
           ),
           SizedBox(height: 10),
-          Center(child: Text('User Name', style: TextStyle(fontSize: 24))),
+          EditableUserName(initialName: 'User Name'), // 초기 사용자 이름 설정
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -172,8 +169,6 @@ class UserInfoRow extends StatelessWidget {
   }
 }
 
-
-
 class ProfileSectionButton extends StatelessWidget {
   final String title;
   final Color color;
@@ -192,7 +187,7 @@ class ProfileSectionButton extends StatelessWidget {
       color: color,
       margin: EdgeInsets.symmetric(vertical: 10),
       child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+        contentPadding: EdgeInsets.symmetric(vertical: 30.0, horizontal: 16.0),
         title: Text(title, style: TextStyle(fontSize: 18)),
         trailing: Icon(Icons.edit),
         onTap: onTap,
@@ -243,4 +238,85 @@ class UserInfoSection extends StatelessWidget {
     );
   }
 }
+
+class EditableUserName extends StatefulWidget {
+  final String initialName;
+
+  const EditableUserName({Key? key, required this.initialName}) : super(key: key);
+
+  @override
+  _EditableUserNameState createState() => _EditableUserNameState();
+}
+
+class _EditableUserNameState extends State<EditableUserName> {
+  late TextEditingController _controller;
+  late String userName;
+
+  @override
+  void initState() {
+    super.initState();
+    userName = widget.initialName;
+    _controller = TextEditingController(text: userName);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _editName() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit Username'),
+        content: TextField(
+          controller: _controller,
+          decoration: InputDecoration(hintText: "Enter new username"),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: Text('Save'),
+            onPressed: () {
+              setState(() {
+                userName = _controller.text;
+                Navigator.of(context).pop();
+                //userName을 API를 통해서 서버로 보내야 함.
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min, // Row의 크기를 내용물에 맞춤
+        mainAxisAlignment: MainAxisAlignment.center, // 요소들을 Row의 중앙에 배치
+        children: [
+          Text(
+            userName,
+            style: TextStyle(fontSize: 24),
+          ),
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: _editName,
+            tooltip: 'Edit Username',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
 
