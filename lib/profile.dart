@@ -23,10 +23,10 @@ class _ProfileState extends State<Profile> {
           onTap: _editProfilePicture,
           child: CircleAvatar(
             radius: 80, // 원하는 크기로 설정하세요.
-            backgroundColor: Colors.grey[200], // 아바타 배경색 지정
+            backgroundColor: Colors.grey[600], // 아바타 배경색 지정
             child: _image != null
                 ? ClipOval(child: Image.file(_image!, fit: BoxFit.cover, width: 160, height: 160)) // 이미지가 있는 경우
-                : Icon(Icons.person, size: 80), // 이미지가 없는 경우 아이콘 표시
+                : Icon(Icons.person, size: 100, color: Colors.white,), // 이미지가 없는 경우 아이콘 표시
           ),
         ),
           SizedBox(height: 10),
@@ -44,21 +44,21 @@ class _ProfileState extends State<Profile> {
                 ),
                 ProfileSectionButton(
                   title: 'Chronic Illnesses',
-                  color: Colors.lightBlueAccent,
+                  color: Colors.lightBlue.shade100,
                   // onTap: () {
                   //   // Chronic Illnesses 섹션의 Edit 버튼을 클릭했을 때의 로직
                   // },
                 ),
                 ProfileSectionButton(
                   title: 'Allergies',
-                  color: Colors.pinkAccent,
+                  color: Colors.pink.shade100,
                   // onTap: () {
                   //   // Allergies 섹션의 Edit 버튼을 클릭했을 때의 로직
                   // },
                 ),
                 ProfileSectionButton(
                   title: 'Desired daily intake',
-                  color: Colors.orangeAccent,
+                  color: Colors.orange.shade100,
                   // onTap: () {
                   //   // Desired daily intake 섹션의 Edit 버튼을 클릭했을 때의 로직
                   // },
