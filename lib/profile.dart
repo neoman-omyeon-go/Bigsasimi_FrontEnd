@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'profile_userinfo.dart';
+import 'profile_exeldata.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -18,34 +21,6 @@ class _ProfileState extends State<Profile> {
   String fatIntake = '';
   List<String> selectedChronicIllnesses = [];
   List<String> selectedAllergies = [];
-
-  List<String> chronicIllnesses = [
-    '운동 부족',
-    '비만',
-    '고혈압',
-    '성인병',
-    '당뇨병',
-    '고지혈증',
-  ];
-
-  List<String> allergies = [
-    '알류',
-    '우유',
-    '메밀',
-    '땅콩',
-    '대두',
-    '밀',
-    '잣',
-    '호두',
-    '게',
-    '새우',
-    '오징어',
-    '고등어',
-    '조개류',
-    '복숭아',
-    '토마토',
-    '아황산류 와인',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -433,6 +408,47 @@ class ProfileSectionButton extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class UserProfile {
+  File? image;
+  String userName;
+  String sex;
+  int age;
+  String height;
+  String weight;
+  List<String> chronicIllnesses;
+  List<String> allergies;
+  String calorieIntake;
+  String carbIntake;
+  String proteinIntake;
+  String fatIntake;
+
+  UserProfile({
+    required this.userName,
+    required this.sex,
+    required this.age,
+    required this.height,
+    required this.weight,
+    required this.chronicIllnesses,
+    required this.allergies,
+    required this.calorieIntake,
+    required this.carbIntake,
+    required this.proteinIntake,
+    required this.fatIntake,
+  });
+
+  Future<void> uploadToServer(File? profileimg, String username, String sex, int age, String height, String weight, List<String> chronicIllnesses,
+      List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
+
+    var url = 'http://127.0.0.1:8000/api/signup/';
+    // 서버로 유저 프로필 정보를 업로드하는 코드 작성
+    // 예를 들어, HTTP 요청을 사용하여 서버로 정보를 전송할 수 있습니다.
+    // 이 메서드는 비동기로 작성되어야 합니다.
+    // 이미지 파일의 경우 파일 경로를 서버에 업로드하거나 이미지 데이터를 바이트로 변환하여 전송할 수 있습니다.
+
+
   }
 }
 
