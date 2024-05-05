@@ -10,6 +10,12 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   File? _image;
+  TextEditingController _caloriesController = TextEditingController();
+  TextEditingController _nutrientsController = TextEditingController();
+  String calorieIntake = '';
+  String carbIntake = '';
+  String proteinIntake = '';
+  String fatIntake = '';
   List<String> selectedChronicIllnesses = [];
   List<String> selectedAllergies = [];
 
@@ -44,6 +50,27 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: IconButton(
+              iconSize: 28,
+              icon: Row(
+                children: [
+                  Text('저장'), // 텍스트// 저장 아이콘
+                  SizedBox(width: 8), // 아이콘과 텍스트 사이 간격
+                  Icon(Icons.save),
+                ],
+              ),
+              onPressed: () {
+                // 저장 버튼을 눌렀을 때의 동작 구현
+                // 예: _saveProfile();
+              },
+            ),
+          ),
+        ],
+      ),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 30),
@@ -104,14 +131,27 @@ class _ProfileState extends State<Profile> {
                   title: 'Desired daily intake',
                   color: Colors.orange.shade100,
                   onTap: () {
-                    // Desired daily intake 섹션의 Edit 버튼을 클릭했을 때의 로직
+                    _showDesiredDailyIntakeDialog();
                   },
-                  selectedItems: [], // Desired daily intake 섹션은 선택된 항목이 없으므로 빈 리스트 전달
+                  selectedItems: [
+                    'Calories: $calorieIntake kcal',
+                    'Carbohydrates: $carbIntake g',
+                    'Protein: $proteinIntake g',
+                    'Fat: $fatIntake g',
+                  ],
                 ),
               ],
             ),
           ),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // 로그아웃 버튼을 눌렀을 때의 동작 구현
+          // 예: _logout();
+        },
+        child: Icon(Icons.logout),
       ),
     );
   }
@@ -134,7 +174,7 @@ class _ProfileState extends State<Profile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> tempSelectedChronicIllnesses = List.from(selectedChronicIllnesses); // 현재 선택된 항목들을 임시 리스트에 복사합니다.
+        List<String> tempSelectedChronicIllnesses = List.from(selectedChronicIllnesses);
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -168,13 +208,13 @@ class _ProfileState extends State<Profile> {
                 TextButton(
                   child: Text('닫기'),
                   onPressed: () {
-                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text('완료'),
                   onPressed: () {
-                    Navigator.of(context).pop(tempSelectedChronicIllnesses); // 변경된 내용 전달
+                    Navigator.of(context).pop(tempSelectedChronicIllnesses);
                   },
                 ),
               ],
@@ -185,7 +225,7 @@ class _ProfileState extends State<Profile> {
     ).then((result) {
       if (result != null) {
         setState(() {
-          selectedChronicIllnesses = List<String>.from(result); // 변경된 내용을 적용합니다.
+          selectedChronicIllnesses = List<String>.from(result);
         });
       }
     });
@@ -195,7 +235,7 @@ class _ProfileState extends State<Profile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> tempSelectedAllergies = List.from(selectedAllergies); // 현재 선택된 항목들을 임시 리스트에 복사합니다.
+        List<String> tempSelectedAllergies = List.from(selectedAllergies);
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -229,16 +269,15 @@ class _ProfileState extends State<Profile> {
                 TextButton(
                   child: Text('닫기'),
                   onPressed: () {
-                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                    Navigator.of(context).pop();
                   },
                 ),
                 TextButton(
                   child: Text('완료'),
                   onPressed: () {
-                    Navigator.of(context).pop(tempSelectedAllergies); // 변경된 내용 전달
+                    Navigator.of(context).pop(tempSelectedAllergies);
                   },
                 ),
-
               ],
             );
           },
@@ -247,14 +286,89 @@ class _ProfileState extends State<Profile> {
     ).then((result) {
       if (result != null) {
         setState(() {
-          selectedAllergies = List<String>.from(result); // 변경된 내용을 적용합니다.
+          selectedAllergies = List<String>.from(result);
         });
       }
     });
   }
 
+  // Desired daily intake 다이얼로그 표시 메서드
+  void _showDesiredDailyIntakeDialog() {
+    // 각 입력 필드에 대한 컨트롤러 생성
+    TextEditingController calorieController = TextEditingController(text: calorieIntake);
+    TextEditingController carbController = TextEditingController(text: carbIntake);
+    TextEditingController proteinController = TextEditingController(text: proteinIntake);
+    TextEditingController fatController = TextEditingController(text: fatIntake);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Desired daily intake'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildInputField('Calories', 'Calories', calorieController),
+                _buildInputField('Carbohydrates', 'Carbs (g)', carbController),
+                _buildInputField('Protein', 'Protein (g)', proteinController),
+                _buildInputField('Fat', 'Fat (g)', fatController),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('닫기'),
+              onPressed: () {
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+              },
+            ),
+            TextButton(
+              child: Text('완료'),
+              onPressed: () {
+                // 입력된 내용 저장 후 다이얼로그 닫기
+                _saveDesiredDailyIntake(
+                  calorieController.text,
+                  carbController.text,
+                  proteinController.text,
+                  fatController.text,
+                );
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 
+  Widget _buildInputField(String nutrientName, String labelText, TextEditingController controller) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        width: double.infinity,
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: TextField(
+          controller: controller,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: labelText,
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _saveDesiredDailyIntake(String calories, String carbs, String protein, String fat) {
+    setState(() {
+      calorieIntake = calories;
+      carbIntake = carbs;
+      proteinIntake = protein;
+      fatIntake = fat;
+    });
+  }
 }
 
 class ProfileSectionButton extends StatelessWidget {
@@ -296,23 +410,18 @@ class ProfileSectionButton extends StatelessWidget {
             SizedBox(height: 8),
             Container(
               width: double.infinity,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
+              color: color, // ProfileSectionButton의 배경색과 동일하게 설정
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: selectedItems
                       .map(
                         (item) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Chip(
-                        label: Text(
-                          item,
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        backgroundColor: Colors.grey[300],
-                        labelPadding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        item,
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
                   )
