@@ -134,106 +134,123 @@ class _ProfileState extends State<Profile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Chronic Illnesses'),
-          content: SingleChildScrollView(
-            child: StatefulBuilder(
-              builder: (BuildContext context, setState) {
-                return ListBody(
-                  children: chronicIllnesses
-                      .map(
-                        (illness) => CheckboxListTile(
+        List<String> tempSelectedChronicIllnesses = List.from(selectedChronicIllnesses); // 현재 선택된 항목들을 임시 리스트에 복사합니다.
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Chronic Illnesses'),
+              content: Container(
+                width: double.minPositive,
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: ListView.builder(
+                  itemCount: chronicIllnesses.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final illness = chronicIllnesses[index];
+                    return CheckboxListTile(
                       title: Text(illness),
-                      value: selectedChronicIllnesses.contains(illness),
+                      value: tempSelectedChronicIllnesses.contains(illness),
                       onChanged: (value) {
                         setState(() {
                           if (value!) {
-                            if (!selectedChronicIllnesses.contains(illness)) {
-                              selectedChronicIllnesses.add(illness);
+                            if (!tempSelectedChronicIllnesses.contains(illness)) {
+                              tempSelectedChronicIllnesses.add(illness);
                             }
                           } else {
-                            selectedChronicIllnesses.remove(illness);
+                            tempSelectedChronicIllnesses.remove(illness);
                           }
                         });
                       },
-                    ),
-                  )
-                      .toList(),
-                );
-              },
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('닫기'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {}); // 변경사항을 반영하기 위해 setState 호출
-              },
-            ),
-          ],
+                    );
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('닫기'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                  },
+                ),
+                TextButton(
+                  child: Text('완료'),
+                  onPressed: () {
+                    Navigator.of(context).pop(tempSelectedChronicIllnesses); // 변경된 내용 전달
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
-    );
+    ).then((result) {
+      if (result != null) {
+        setState(() {
+          selectedChronicIllnesses = List<String>.from(result); // 변경된 내용을 적용합니다.
+        });
+      }
+    });
   }
 
   void _showAllergiesDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Allergies'),
-          content: SingleChildScrollView(
-            child: StatefulBuilder(
-              builder: (BuildContext context, setState) {
-                return ListBody(
-                  children: allergies
-                      .map(
-                        (allergy) => CheckboxListTile(
+        List<String> tempSelectedAllergies = List.from(selectedAllergies); // 현재 선택된 항목들을 임시 리스트에 복사합니다.
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text('Allergies'),
+              content: Container(
+                width: double.minPositive,
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: ListView.builder(
+                  itemCount: allergies.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    final allergy = allergies[index];
+                    return CheckboxListTile(
                       title: Text(allergy),
-                      value: selectedAllergies.contains(allergy),
+                      value: tempSelectedAllergies.contains(allergy),
                       onChanged: (value) {
                         setState(() {
                           if (value!) {
-                            if (!selectedAllergies.contains(allergy)) {
-                              selectedAllergies.add(allergy);
+                            if (!tempSelectedAllergies.contains(allergy)) {
+                              tempSelectedAllergies.add(allergy);
                             }
                           } else {
-                            selectedAllergies.remove(allergy);
+                            tempSelectedAllergies.remove(allergy);
                           }
                         });
                       },
-                    ),
-                  )
-                      .toList(),
-                );
-              },
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('닫기'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                setState(() {}); // 변경사항을 반영하기 위해 setState 호출
-              },
-            ),
-          ],
+                    );
+                  },
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('닫기'),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                  },
+                ),
+                TextButton(
+                  child: Text('완료'),
+                  onPressed: () {
+                    Navigator.of(context).pop(tempSelectedAllergies); // 변경된 내용 전달
+                  },
+                ),
+
+              ],
+            );
+          },
         );
       },
-    );
+    ).then((result) {
+      if (result != null) {
+        setState(() {
+          selectedAllergies = List<String>.from(result); // 변경된 내용을 적용합니다.
+        });
+      }
+    });
   }
 
 
