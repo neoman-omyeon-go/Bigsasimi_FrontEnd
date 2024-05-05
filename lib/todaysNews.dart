@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'models/news.dart';
 import 'providers/news_providers.dart';
+import 'news_detail_screen.dart';
 
 class TodaysNews extends StatefulWidget {
   const TodaysNews({Key? key}) : super(key: key);
@@ -32,81 +34,118 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green[800],
+        title: Text('Today\'s Healthy News :)'),
+        centerTitle: true,
+      ),
       body: isLoading
           ? Center(
         child: CircularProgressIndicator(),
       )
           : ListView.builder(
-          itemCount: news.length,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              // 첫 번째 아이템은 메인 기사로 표시
-              return _buildMainArticle(news[index]);
-            } else {
-              // 그 외의 아이템은 일반 기사로 표시
-              return _buildRegularArticle(news[index]);
-            }
-          }),
+        itemCount: news.length,
+        itemBuilder: (context, index) {
+          return index == 0 ? _buildMainArticle(news[index]) : _buildRegularArticle(news[index]);
+        },
+      ),
     );
   }
 
   Widget _buildMainArticle(News article) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      alignment: Alignment.center,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            article.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
+    return GestureDetector(
+      onTap: () {
+        _navigateToArticleUrl(article);
+      },
+      child: Container(
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3),
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 10),
-          CachedNetworkImage(
-            imageUrl: article.imageUrl,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-          SizedBox(height: 8),
-          Text(
-            article.content,
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          children: [
+            CachedNetworkImage(
+              imageUrl: article.imageUrl,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+            SizedBox(height: 8),
+            Text(
+              article.title,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildRegularArticle(News article) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            article.title,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
+    return GestureDetector(
+      onTap: () {
+        _navigateToArticleUrl(article);
+      },
+      child: Container(
+        margin: EdgeInsets.all(10),
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(0, 3),
             ),
-          ),
-          SizedBox(height: 8),
-          CachedNetworkImage(
-            imageUrl: article.imageUrl,
-            placeholder: (context, url) => CircularProgressIndicator(),
-            errorWidget: (context, url, error) => Icon(Icons.error),
-          ),
-          SizedBox(height: 8),
-          Text(
-            article.content.length > 70
-                ? '${article.content.substring(0, 70)}...'
-                : article.content,
-          ),
-        ],
+          ],
+        ),
+        child: Column(
+          children: [
+            CachedNetworkImage(
+              imageUrl: article.imageUrl,
+              placeholder: (context, url) => CircularProgressIndicator(),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+            SizedBox(height: 8),
+            Text(
+              article.title,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  void _navigateToNewsDetail(News article) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewsDetailScreen(article: article)),
+    );
+  }
+
+  void _navigateToArticleUrl(News article) async {
+    Uri uri = Uri.parse(article.url);
+    if (!await launchUrl(uri)) {
+      throw 'Could not launch ${article.url}';
+    }
+  }
+
+// void _navigateToNewsDetail(News article) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => NewsDetailScreen(article: article)),
+  //   );
+  // }
+
 }
