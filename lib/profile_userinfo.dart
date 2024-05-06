@@ -4,18 +4,30 @@ import 'package:flutter/cupertino.dart';
 // import 'dart:io';
 
 //가로로 배치되어있는 성별, 나이, 키, 몸무게 위젯 부분
-class UserInfoSection extends StatefulWidget {
-  final String initialSex;
-  final String initialAge;
-  final String initialHeight;
-  final String initialWeight;
+class UserInfo {
+  String userName;
+  String sex;
+  String age;
+  String height;
+  String weight;
 
-  UserInfoSection({
+  UserInfo({
+    required this.userName,
+    required this.sex,
+    required this.age,
+    required this.height,
+    required this.weight,
+  });
+}
+
+class UserInfoSection extends StatefulWidget {
+  final UserInfo userInfo;
+  final Function(UserInfo) onUpdateUserInfo; // 새로운 콜백 함수 추가
+
+  const UserInfoSection({
     Key? key,
-    required this.initialSex,
-    required this.initialAge,
-    required this.initialHeight,
-    required this.initialWeight,
+    required this.userInfo,
+    required this.onUpdateUserInfo, // 변경된 콜백 함수
   }) : super(key: key);
 
   @override
@@ -23,18 +35,12 @@ class UserInfoSection extends StatefulWidget {
 }
 
 class _UserInfoSectionState extends State<UserInfoSection> {
-  late String sex;
-  late String age;
-  late String height;
-  late String weight;
+  late UserInfo userInfo;
 
   @override
   void initState() {
     super.initState();
-    sex = widget.initialSex;
-    age = widget.initialAge;
-    height = widget.initialHeight;
-    weight = widget.initialWeight;
+    userInfo = widget.userInfo;
   }
 
   @override
@@ -55,7 +61,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                 child: Column(
                   children: [
                     Text('Sex', style: propertyStyle),
-                    Text(sex, style: valueStyle),
+                    Text(userInfo.sex, style: valueStyle),
                   ],
                 ),
               ),
@@ -64,7 +70,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                 child: Column(
                   children: [
                     Text('Age', style: propertyStyle),
-                    Text(age, style: valueStyle),
+                    Text(userInfo.age, style: valueStyle),
                   ],
                 ),
               ),
@@ -73,7 +79,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                 child: Column(
                   children: [
                     Text('Height', style: propertyStyle),
-                    Text(height, style: valueStyle),
+                    Text('${userInfo.height} cm', style: valueStyle),
                   ],
                 ),
               ),
@@ -82,7 +88,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                 child: Column(
                   children: [
                     Text('Weight', style: propertyStyle),
-                    Text(weight, style: valueStyle),
+                    Text('${userInfo.weight} kg', style: valueStyle),
                   ],
                 ),
               ),
@@ -113,13 +119,14 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                   CupertinoButton(
                     child: Text('Select'),
                     onPressed: () {
+                      widget.onUpdateUserInfo(userInfo); // 수정된 정보를 전달
                       Navigator.of(context).pop();
                     },
                   ),
                 ],
               ),
             ),
-            Container(
+            SizedBox(
               height: 270,
               child: CupertinoPicker(
                 itemExtent: 28.0,
@@ -127,16 +134,16 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                   setState(() {
                     switch (fieldType) {
                       case 'sex':
-                        sex = items[index];
+                        userInfo.sex = items[index];
                         break;
                       case 'age':
-                        age = items[index];
+                        userInfo.age = items[index];
                         break;
                       case 'height':
-                        height = items[index];
+                        userInfo.height = items[index];
                         break;
                       case 'weight':
-                        weight = items[index];
+                        userInfo.weight = items[index];
                         break;
                     }
                   });
@@ -159,9 +166,9 @@ class _UserInfoSectionState extends State<UserInfoSection> {
       case 'age':
         return List.generate(110, (index) => '${index + 1}');
       case 'height':
-        return List.generate(120, (index) => '${index + 100} cm');
+        return List.generate(120, (index) => '${index + 100}');
       case 'weight':
-        return List.generate(150, (index) => '${index + 30} kg');
+        return List.generate(150, (index) => '${index + 30}');
       default:
         return [];
     }
@@ -170,53 +177,17 @@ class _UserInfoSectionState extends State<UserInfoSection> {
 // 여기 까지 리팩토링 끝남
 
 
-class EditableUserInfoRow extends StatefulWidget {
-  final String title;
-  final String value;
-
-  const EditableUserInfoRow({
-    Key? key,
-    required this.title,
-    required this.value,
-  }) : super(key: key);
-
-  @override
-  _EditableUserInfoRowState createState() => _EditableUserInfoRowState();
-}
-
-class _EditableUserInfoRowState extends State<EditableUserInfoRow> {
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.value);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Expanded(child: Text(widget.title, style: TextStyle(fontSize: 18))),
-        Expanded(
-          child: TextFormField(
-            controller: _controller,
-            decoration: InputDecoration(
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 class EditableUserName extends StatefulWidget {
+  final UserInfo userInfo; // 현재 사용자 정보
   final String initialName;
+  final Function(UserInfo) onUpdateUserInfo; // 사용자 정보 업데이트 콜백 함수
 
-  const EditableUserName({Key? key, required this.initialName}) : super(key: key);
+  const EditableUserName({
+    Key? key,
+    required this.userInfo,
+    required this.initialName,
+    required this.onUpdateUserInfo
+  }) : super(key: key);
 
   @override
   _EditableUserNameState createState() => _EditableUserNameState();
@@ -245,7 +216,19 @@ class _EditableUserNameState extends State<EditableUserName> {
             icon: Icon(Icons.edit),
             onPressed: () => showCustomDialog(context, "Username", _controller, () {
               setState(() {
-                userName = _controller.text;  // 여기서 상태 업데이트
+                userName = _controller.text;
+                //여기서 userName을 API로 쏘기
+                // 사용자 정보 업데이트
+                uploadUserName(userName);
+                UserInfo updatedUserInfo = UserInfo(
+                  userName: userName,
+                  sex: widget.userInfo.sex,
+                  age: widget.userInfo.age,
+                  height: widget.userInfo.height,
+                  weight: widget.userInfo.weight,
+                );
+                // 변경 사항을 상위 위젯에 알림
+                widget.onUpdateUserInfo(updatedUserInfo);
                 Navigator.of(context).pop();
               });
             }),
@@ -255,7 +238,14 @@ class _EditableUserNameState extends State<EditableUserName> {
       ),
     );
   }
+
+  Future<void> uploadUserName(String username)async {
+    print(username);
+  }
 }
+
+
+
 // 만성 질환, 알레르기, 일일 섭취량 관련 선택 버튼
 class ProfileSectionButton extends StatelessWidget {
   final String title;
@@ -313,3 +303,7 @@ void showCustomDialog(BuildContext context, String title, TextEditingController 
     ),
   );
 }
+
+
+
+

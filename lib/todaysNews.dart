@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'models/news.dart';
 import 'providers/news_providers.dart';
-import 'news_detail_screen.dart';
 
 class TodaysNews extends StatefulWidget {
   const TodaysNews({Key? key}) : super(key: key);
@@ -35,19 +34,28 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green[800],
-        title: Text('Today\'s Healthy News :)'),
+        backgroundColor: Color.fromRGBO(238, 245, 235, 1.0),
+        title: Text(
+          'Today\'s Healthy News :)',
+          style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800, fontSize: 20),
+        ),
         centerTitle: true,
       ),
       body: isLoading
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
-          : ListView.builder(
-        itemCount: news.length,
-        itemBuilder: (context, index) {
-          return index == 0 ? _buildMainArticle(news[index]) : _buildRegularArticle(news[index]);
-        },
+          ? Center(child: CircularProgressIndicator())
+          : CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: news.isNotEmpty ? _buildMainArticle(news[0]) : SizedBox(),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (context, index) => _buildRegularArticle(news[index+1]),
+              childCount: news.length -1,
+              //0번째 인덱스를 썼으니까(메인 기사로), 그 인덱스를 제외한 전체 길이여야 함.
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -57,35 +65,38 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
       onTap: () {
         _navigateToArticleUrl(article);
       },
-      child: Container(
-        margin: EdgeInsets.all(10),
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 5,
-              blurRadius: 7,
-              offset: Offset(0, 3),
+      child: Column(
+        children: [
+          CachedNetworkImage(
+            imageUrl: article.imageUrl,
+            height: 300,  // 높이를 300으로 조정
+            width: double.infinity,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  article.title,
+                  style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800, fontSize: 26),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+                Text(
+                  article.content,
+                  maxLines: 4,  // 본문 내용 4줄까지 표시
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w400, fontSize: 17),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          children: [
-            CachedNetworkImage(
-              imageUrl: article.imageUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
-            ),
-            SizedBox(height: 8),
-            Text(
-              article.title,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -109,28 +120,39 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
             ),
           ],
         ),
-        child: Column(
+        child: Row(
           children: [
-            CachedNetworkImage(
-              imageUrl: article.imageUrl,
-              placeholder: (context, url) => CircularProgressIndicator(),
-              errorWidget: (context, url, error) => Icon(Icons.error),
+            Expanded(
+              flex: 1,
+              child: CachedNetworkImage(
+                imageUrl: article.imageUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
             ),
-            SizedBox(height: 8),
-            Text(
-              article.title,
-              style: TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    article.title,
+                    style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w600, fontSize: 19),
+                  ),
+                  Text(
+                    article.content,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500, fontSize: 15),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  void _navigateToNewsDetail(News article) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => NewsDetailScreen(article: article)),
     );
   }
 
@@ -140,12 +162,4 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
       throw 'Could not launch ${article.url}';
     }
   }
-
-// void _navigateToNewsDetail(News article) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) => NewsDetailScreen(article: article)),
-  //   );
-  // }
-
 }

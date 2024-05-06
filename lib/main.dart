@@ -25,7 +25,7 @@ class MyLogin extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Login Page',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Pretendard'),
       home: LoginPage(),
     );
   }

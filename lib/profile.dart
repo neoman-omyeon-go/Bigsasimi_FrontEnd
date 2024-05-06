@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -6,19 +7,40 @@ import 'profile_exeldata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
 }
 
 class _ProfileState extends State<Profile> {
+  UserInfo userInfo = UserInfo(
+    userName: 'User name',
+    sex: 'Male',
+    age: '25',
+    height: '180',
+    weight: '75',
+  ); // userInfo 변수 추가 및 초기화
+
+
+  UserProfile userProfile = UserProfile(
+      sex: 'sex',
+      age: '25',
+      height: '180',
+      weight: '75',
+      chronicIllnesses: [],
+      allergies: [],
+      calorieIntake: '0',
+      carbIntake: '0',
+      proteinIntake: '0',
+      fatIntake: '0',
+  );
+
   File? _image;
-  TextEditingController _caloriesController = TextEditingController();
-  TextEditingController _nutrientsController = TextEditingController();
-  String calorieIntake = '';
-  String carbIntake = '';
-  String proteinIntake = '';
-  String fatIntake = '';
+  String calorieIntake = '0';
+  String carbIntake = '0';
+  String proteinIntake = '0';
+  String fatIntake = '0';
   List<String> selectedChronicIllnesses = [];
   List<String> selectedAllergies = [];
 
@@ -41,6 +63,19 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
+                userProfile.uploadToServer(
+                  _image,
+                  userInfo.sex,
+                  userInfo.age,
+                  userInfo.height,
+                  userInfo.weight,
+                  selectedChronicIllnesses,
+                  selectedAllergies,
+                  calorieIntake,
+                  carbIntake,
+                  proteinIntake,
+                  fatIntake,
+                );
               },
             ),
           ),
@@ -71,18 +106,29 @@ class _ProfileState extends State<Profile> {
             ),
           ),
           SizedBox(height: 10),
-          EditableUserName(initialName: 'User Name'),
+          EditableUserName(
+            userInfo: userInfo, // 이전에 정의된 userInfo 객체를 사용합니다
+            initialName: userInfo.userName, // userInfo 객체의 userName 속성을 사용합니다
+            onUpdateUserInfo: (UserInfo updatedUserInfo) {
+              setState(() {
+                userInfo = updatedUserInfo; // 상태 업데이트
+              });
+            },
+          ),
           SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               children: <Widget>[
                 UserInfoSection(
-                  initialSex: 'Male',
-                  initialAge: '25',
-                  initialHeight: '180cm',
-                  initialWeight: '75kg',
+                  userInfo: userInfo,
+                  onUpdateUserInfo: (UserInfo updatedUserInfo) {
+                    setState(() {
+                      userInfo = updatedUserInfo;
+                    });
+                  },
                 ),
+
                 SizedBox(height: 20),
                 ProfileSectionButton(
                   title: 'Chronic Illnesses',
@@ -409,13 +455,15 @@ class ProfileSectionButton extends StatelessWidget {
       ),
     );
   }
+
 }
+
+
 
 class UserProfile {
   File? image;
-  String userName;
   String sex;
-  int age;
+  String age;
   String height;
   String weight;
   List<String> chronicIllnesses;
@@ -426,7 +474,6 @@ class UserProfile {
   String fatIntake;
 
   UserProfile({
-    required this.userName,
     required this.sex,
     required this.age,
     required this.height,
@@ -439,16 +486,54 @@ class UserProfile {
     required this.fatIntake,
   });
 
-  Future<void> uploadToServer(File? profileimg, String username, String sex, int age, String height, String weight, List<String> chronicIllnesses,
+  Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
     // allergies.join(",");
-    var url = 'http://127.0.0.1:8000/api/signup/';
+    var url = 'http://127.0.0.1:8000/api/profile/';
+
+    print(sex);
+    print(age);
+    print(height);
+    print(weight);
+    print(allergies.join(","));
+    print(chronicIllnesses.join(","));
+    print(calorieIntake);
+    print(carbIntake);
+
+    var data = {
+      'real_name': 'testName',
+      'gender': sex,
+      'age': age,
+      'height': height,
+      'weight': weight,
+      'goals_calories': calorieIntake,
+      'goals_carb': carbIntake,
+      'goals_protein': proteinIntake,
+      'goals_fat': fatIntake,
+      'disease': chronicIllnesses.join(","),
+      'allergy': allergies.join(","),
+      'avatar': profileimg
+    };
+
+    try{
+      var dio = Dio();
+      Response response = await dio.put(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("Upload userdata(no name) seccess!");
+      }
+    } catch (error) {
+      // 예외 처리
+      print("Error occurred: $error");
+    }
+
     // 서버로 유저 프로필 정보를 업로드하는 코드 작성
     // 예를 들어, HTTP 요청을 사용하여 서버로 정보를 전송할 수 있습니다.
     // 이 메서드는 비동기로 작성되어야 합니다.
     // 이미지 파일의 경우 파일 경로를 서버에 업로드하거나 이미지 데이터를 바이트로 변환하여 전송할 수 있습니다.
-
-
   }
 }
+
+
+
 

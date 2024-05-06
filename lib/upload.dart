@@ -85,6 +85,7 @@ class UploadScreen extends StatefulWidget {
 class _UploadScreenState extends State<UploadScreen> {
   File? _image;
 
+  //요기서 사진을 찍도록 카메라를 키게끔 변경해야 함.
   Future<void> _getImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
