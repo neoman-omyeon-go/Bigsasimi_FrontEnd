@@ -441,7 +441,7 @@ class UserProfile {
 
   Future<void> uploadToServer(File? profileimg, String username, String sex, int age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
-
+    // allergies.join(",");
     var url = 'http://127.0.0.1:8000/api/signup/';
     // 서버로 유저 프로필 정보를 업로드하는 코드 작성
     // 예를 들어, HTTP 요청을 사용하여 서버로 정보를 전송할 수 있습니다.

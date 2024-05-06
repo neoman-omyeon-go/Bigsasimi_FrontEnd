@@ -4,10 +4,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'APIfile.dart';
 
-void main(){
-
-}
-
 class MySignUp extends StatelessWidget {
   const MySignUp({super.key});
 
