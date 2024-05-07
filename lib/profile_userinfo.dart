@@ -1,3 +1,4 @@
+import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:image_picker/image_picker.dart';
@@ -297,11 +298,16 @@ void showCustomDialog(BuildContext context, String title, TextEditingController 
         ),
         TextButton(
           child: Text('Save'),
-          onPressed: onSave,
+          onPressed:() => {
+              print(controller.text),
+              allApi().updateToserver2(controller.text),
+              Navigator.of(context).pop(),
+          },
         ),
       ],
     ),
   );
+
 }
 
 

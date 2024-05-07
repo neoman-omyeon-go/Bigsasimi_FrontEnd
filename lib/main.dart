@@ -111,6 +111,8 @@ class LoginPage extends StatefulWidget {
                       // 벌어주게 되는것이다.
                       await Future.delayed(Duration(seconds: 1));
                       // Future<bool> checklogin = allApi().loginCheck();
+                      allApi().getUserState();
+                      // allApi().getUserProfile();
                       if (!mounted) return;  // 여기서 위젯이 아직 존재하는지 확인
                       if(realdata){
                         loginSuccessed();

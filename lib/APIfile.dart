@@ -15,8 +15,8 @@ class allApi{
   // var refreshToken;
   //Login API Request
   Future<bool> login(String username, String password) async {
-    var url = 'http://127.0.0.1:8080/api/login/';
-    // var url = 'http://223.130.154.147:8080/api/login/';
+    // var url = 'http://127.0.0.1:8080/api/login/';
+    var url = 'http://223.130.154.147:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -76,8 +76,8 @@ class allApi{
 
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
-    var url = 'http://127.0.0.1:8000/api/signup/';
-    // var url = 'http://223.130.154.147:8080/api/signup/';
+    // var url = 'http://127.0.0.1:8000/api/signup/';
+    var url = 'http://223.130.154.147:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -129,8 +129,8 @@ class allApi{
   Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
     // allergies.join(",");
-    var url = 'http://127.0.0.1:8000/api/profile/';
-
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+      var url = 'http://223.130.154.147:8080/api/profile/';
     print(sex);
     print(age);
     print(height);
@@ -184,7 +184,7 @@ class allApi{
         // 'allergy': checkAllegies,
         // 'avatar': profileimg,
       };
-      if(isnullallegies==false){
+      if(isnullillnesses==false){
         data["disease"]='${chronicIllnesses.join(",")}';
       }
       if(isnullallegies==false){
@@ -193,9 +193,6 @@ class allApi{
       if(isnullIMG == false){
         data["avatar"] = profileimg;
       }
-
-
-
 
     var dio = Dio();
 
@@ -240,7 +237,142 @@ class allApi{
   }
 
 
+  Future<void> updateToserver2(String realnameController) async{
+    var url = 'http://127.0.0.1:8000/api/profile/';
+    // var url = 'http://223.130.154.147:8080/api/profile/';
+    print(realnameController);
+    var dio = Dio();
 
+    var dddd = {
+      'key': "real_name",
+      'value': realnameController,
+    };
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.post(url, data: {'key': "real_name", 'value': realnameController},
+        options: Options(headers:
+        {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+        ),
+      );
+
+      // var response = await Dio().post(
+      //   url,
+      //   data: dddd,
+      //   options: Options(
+      //       headers:
+      //       {'Authorization': 'Bearer $useaccessToken', 'Content-Type': 'application/json; ''charset=UTF-8',
+      //        HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",
+      //       },
+      //   ),
+      // );
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("Upload name seccess!");
+        // checkUploadToServerToast1();
+        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
+  Future<void> getUserState() async{
+    var url = 'http://127.0.0.1:8000/test/authonly/';
+    bool isSuccessed = false;
+    String? userNamestr;
+
+    Dio dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.get(url, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("get UserState seccess!");
+        // checkUploadToServerToast1();
+        await storage.write(key: 'username', value:response.data['username']);
+        print(response.data['username']);
+        userNamestr = response.data['username'];
+        isSuccessed = true;
+        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+    getUserProfile();
+  }
+
+
+  Future<void> getUserProfile( ) async {
+    var username = await storage.read(key: 'username');
+    // await Future.delayed(Duration(seconds: 3));
+
+    print("username: ${username}");
+    var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
+
+
+    Dio dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.get(url, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),);
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("get UserProfile seccess!");
+        // checkUploadToServerToast1();
+        print(response.data["data"]);
+        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+
+  }
 
 }
 
