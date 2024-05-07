@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'profile_userinfo.dart';
 import 'profile_exeldata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/services.dart';
+import 'APIfile.dart';
 
 
 class Profile extends StatefulWidget {
@@ -63,7 +66,7 @@ class _ProfileState extends State<Profile> {
               onPressed: () {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
-                userProfile.uploadToServer(
+                allApi().uploadToServer(
                   _image,
                   userInfo.sex,
                   userInfo.age,
@@ -171,10 +174,45 @@ class _ProfileState extends State<Profile> {
         onPressed: () {
           // 로그아웃 버튼을 눌렀을 때의 동작 구현
           // 예: _logout();
+          _showLogoutConfirmationDialog();
+
         },
         child: Icon(Icons.logout),
       ),
     );
+  }
+
+  void _showLogoutConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("LogOut"),
+          content: Text("로그아웃 하시겠습니까?(로그아웃 시, 앱이 종료됩니다.)"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // No를 선택한 경우 다이얼로그만 닫기
+              },
+              child: Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Yes를 선택한 경우 다이얼로그 닫고 로그아웃 수행
+              },
+              child: Text("Yes"),
+            ),
+          ],
+        );
+      },
+    ).then((logoutConfirmed) {
+      if (logoutConfirmed ?? false) {
+        SystemNavigator.pop(); // Yes를 선택한 경우 앱이 종료 됨. 안드에서만 작동하고, IOS에서는 작동 안한다고 함.
+        // exit(0); // 이거는 안드, IOS 가릴거 없이 전부 종료된다고 함
+        //재시작도 고려해봐야 할듯 그거는 flutter_restart: ^0.0.8 의존성을 추가하고 사용하는듯 함.
+        print("Louout Logic Operating");
+      }
+    });
   }
 
   void _editProfilePicture() async {
@@ -455,10 +493,7 @@ class ProfileSectionButton extends StatelessWidget {
       ),
     );
   }
-
 }
-
-
 
 class UserProfile {
   File? image;
@@ -486,52 +521,7 @@ class UserProfile {
     required this.fatIntake,
   });
 
-  Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
-      List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
-    // allergies.join(",");
-    var url = 'http://127.0.0.1:8000/api/profile/';
 
-    print(sex);
-    print(age);
-    print(height);
-    print(weight);
-    print(allergies.join(","));
-    print(chronicIllnesses.join(","));
-    print(calorieIntake);
-    print(carbIntake);
-
-    var data = {
-      'real_name': 'testName',
-      'gender': sex,
-      'age': age,
-      'height': height,
-      'weight': weight,
-      'goals_calories': calorieIntake,
-      'goals_carb': carbIntake,
-      'goals_protein': proteinIntake,
-      'goals_fat': fatIntake,
-      'disease': chronicIllnesses.join(","),
-      'allergy': allergies.join(","),
-      'avatar': profileimg
-    };
-
-    try{
-      var dio = Dio();
-      Response response = await dio.put(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
-      if (response.statusCode == 200) {
-        // 성공적으로 요청이 완료된 경우
-        print("Upload userdata(no name) seccess!");
-      }
-    } catch (error) {
-      // 예외 처리
-      print("Error occurred: $error");
-    }
-
-    // 서버로 유저 프로필 정보를 업로드하는 코드 작성
-    // 예를 들어, HTTP 요청을 사용하여 서버로 정보를 전송할 수 있습니다.
-    // 이 메서드는 비동기로 작성되어야 합니다.
-    // 이미지 파일의 경우 파일 경로를 서버에 업로드하거나 이미지 데이터를 바이트로 변환하여 전송할 수 있습니다.
-  }
 }
 
 

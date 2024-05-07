@@ -173,10 +173,10 @@ packages:
     dependency: transitive
     description:
       name: file_selector_macos
-      sha256: b15c3da8bd4908b9918111fa486903f5808e388b8d1c559949f584725a6594d6
+      sha256: f42eacb83b318e183b1ae24eead1373ab1334084404c8c16e0354f9a3e55d385
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.3+3"
+    version: "0.9.4"
   file_selector_platform_interface:
     dependency: transitive
     description:
