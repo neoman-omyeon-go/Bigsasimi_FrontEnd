@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,33 +19,85 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  UserInfo userInfo = UserInfo(
-    userName: 'User name',
-    sex: 'Male',
-    age: '25',
-    height: '180',
-    weight: '75',
-  ); // userInfo 변수 추가 및 초기화
 
+  // UserInfo userInfo = UserInfo(
+  //   userName: 'User nameQQ',
+  //   sex: 'Male',
+  //   age: '25',
+  //   height: '180',
+  //   weight: '75',
+  // ); // userInfo 변수 추가 및 초기화
 
-  UserProfile userProfile = UserProfile(
-      sex: 'sex',
-      age: '25',
-      height: '180',
-      weight: '75',
-      chronicIllnesses: [],
-      allergies: [],
-      calorieIntake: '0',
-      carbIntake: '0',
-      proteinIntake: '0',
-      fatIntake: '0',
-  );
+  final FlutterSecureStorage storage = FlutterSecureStorage();
+
+  late UserInfo userInfo;
+  late UserProfile userProfile;
+
+  @override
+  void initState(){
+    super.initState();
+    _loadUserInfo();
+  }
+
+  void _loadUserInfo() async {
+    String? userName = await storage.read(key: 'real_name');
+    String? sex = await storage.read(key: 'gender');
+    String? age = await storage.read(key: 'age');
+    String? height = await storage.read(key: 'height');
+    String? weight = await storage.read(key: 'weight');
+    String? avartar = await storage.read(key: 'avatar');
+    String? id = await storage.read(key: 'id');
+    String? disease = await storage.read(key: 'disease');
+    String? allergy = await storage.read(key: 'allergy');
+    String? goals_calories = await storage.read(key: 'goals_calories');
+    String? goals_carb = await storage.read(key: 'goals_carb');
+    String? goals_protein = await storage.read(key: 'goals_protein');
+    String? goals_fat = await storage.read(key: 'goals_fat');
+    String? goals_natrium = await storage.read(key: 'goals_natrium');
+    setState(() {
+      userInfo = UserInfo(
+        userName: userName ?? 'Default Name',
+        sex: sex ?? 'Unknown',
+        age: age ?? '0',
+        height: height ?? '0',
+        weight: weight ?? '0',
+      );
+      userProfile = UserProfile(
+        sex: sex ?? 'Unknown',
+        age: age ?? '25',
+        height: height ?? '175',
+        weight: weight ?? '75',
+        chronicIllnesses: [],
+        allergies: [],
+        calorieIntake: goals_calories??'0',
+        carbIntake: goals_carb??'0',
+        proteinIntake: goals_protein??'0',
+        fatIntake: goals_fat??'0',
+        natriumIntake: goals_natrium??'0',
+      );
+    });
+  }
+
+  // UserProfile userProfile = UserProfile(
+  //     sex: 'sex',
+  //     age: '25',
+  //     height: '180',
+  //     weight: '75',
+  //     chronicIllnesses: [],
+  //     allergies: [],
+  //     calorieIntake: '0',
+  //     carbIntake: '0',
+  //     proteinIntake: '0',
+  //     fatIntake: '0',
+  //     natriumIntake: '0',
+  // );
 
   File? _image;
   String calorieIntake = '0';
   String carbIntake = '0';
   String proteinIntake = '0';
   String fatIntake = '0';
+  String natriumIntake = '0';
   List<String> selectedChronicIllnesses = [];
   List<String> selectedAllergies = [];
 
@@ -78,7 +132,9 @@ class _ProfileState extends State<Profile> {
                   carbIntake,
                   proteinIntake,
                   fatIntake,
+                  natriumIntake,
                 );
+                  _loadUserInfo();
               },
             ),
           ),
@@ -162,6 +218,7 @@ class _ProfileState extends State<Profile> {
                     'Carbohydrates: $carbIntake g',
                     'Protein: $proteinIntake g',
                     'Fat: $fatIntake g',
+                    'natrium: $natriumIntake g',
                   ],
                 ),
               ],
@@ -358,6 +415,7 @@ class _ProfileState extends State<Profile> {
     TextEditingController carbController = TextEditingController(text: carbIntake);
     TextEditingController proteinController = TextEditingController(text: proteinIntake);
     TextEditingController fatController = TextEditingController(text: fatIntake);
+    TextEditingController natriumController = TextEditingController(text: natriumIntake);
 
     showDialog(
       context: context,
@@ -372,6 +430,7 @@ class _ProfileState extends State<Profile> {
                 _buildInputField('Carbohydrates', 'Carbs (g)', carbController),
                 _buildInputField('Protein', 'Protein (g)', proteinController),
                 _buildInputField('Fat', 'Fat (g)', fatController),
+                _buildInputField('Natrium', 'Natrium (g)', natriumController),
               ],
             ),
           ),
@@ -391,6 +450,7 @@ class _ProfileState extends State<Profile> {
                   carbController.text,
                   proteinController.text,
                   fatController.text,
+                  natriumController.text,
                 );
                 Navigator.of(context).pop();
               },
@@ -420,12 +480,13 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _saveDesiredDailyIntake(String calories, String carbs, String protein, String fat) {
+  void _saveDesiredDailyIntake(String calories, String carbs, String protein, String fat, String natrium) {
     setState(() {
       calorieIntake = calories;
       carbIntake = carbs;
       proteinIntake = protein;
       fatIntake = fat;
+      natriumIntake = natrium;
     });
   }
 }
@@ -507,6 +568,7 @@ class UserProfile {
   String carbIntake;
   String proteinIntake;
   String fatIntake;
+  String natriumIntake;
 
   UserProfile({
     required this.sex,
@@ -519,6 +581,7 @@ class UserProfile {
     required this.carbIntake,
     required this.proteinIntake,
     required this.fatIntake,
+    required this.natriumIntake,
   });
 
 

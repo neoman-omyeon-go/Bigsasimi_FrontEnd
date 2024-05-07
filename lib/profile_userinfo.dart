@@ -220,7 +220,6 @@ class _EditableUserNameState extends State<EditableUserName> {
                 userName = _controller.text;
                 //여기서 userName을 API로 쏘기
                 // 사용자 정보 업데이트
-                uploadUserName(userName);
                 UserInfo updatedUserInfo = UserInfo(
                   userName: userName,
                   sex: widget.userInfo.sex,
@@ -240,9 +239,6 @@ class _EditableUserNameState extends State<EditableUserName> {
     );
   }
 
-  Future<void> uploadUserName(String username)async {
-    print(username);
-  }
 }
 
 

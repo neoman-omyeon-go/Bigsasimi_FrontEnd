@@ -11,12 +11,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class allApi{
    final storage = FlutterSecureStorage();
-  // var accessToken;
-  // var refreshToken;
-  //Login API Request
+
   Future<bool> login(String username, String password) async {
-    // var url = 'http://127.0.0.1:8080/api/login/';
-    var url = 'http://223.130.154.147:8080/api/login/';
+    var url = 'http://127.0.0.1:8080/api/login/';
+    // var url = 'http://223.130.154.147:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -25,8 +23,6 @@ class allApi{
       'password': password,
     };
 
-    // var dio = Dio();
-    // Response response = await dio.post(url, data: data, options: Options(headers: {'Content-Type': 'application/json; charset=UTF-8',},),);
 
     try {
       var dio = Dio();
@@ -76,8 +72,8 @@ class allApi{
 
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
-    // var url = 'http://127.0.0.1:8000/api/signup/';
-    var url = 'http://223.130.154.147:8080/api/signup/';
+    var url = 'http://127.0.0.1:8000/api/signup/';
+    // var url = 'http://223.130.154.147:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -127,10 +123,10 @@ class allApi{
   }
 
   Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
-      List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake) async {
+      List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake, String natriumIntake) async {
     // allergies.join(",");
-    // var url = 'http://127.0.0.1:8000/api/profile/';
-      var url = 'http://223.130.154.147:8080/api/profile/';
+    var url = 'http://127.0.0.1:8000/api/profile/';
+    //   var url = 'http://223.130.154.147:8080/api/profile/';
     print(sex);
     print(age);
     print(height);
@@ -180,6 +176,7 @@ class allApi{
         'goals_carb': carbIntake,
         'goals_protein': proteinIntake,
         'goals_fat': fatIntake,
+        'goals_natrium': natriumIntake,
         // 'disease': checkIllnesses,
         // 'allergy': checkAllegies,
         // 'avatar': profileimg,
@@ -259,16 +256,6 @@ class allApi{
         ),
       );
 
-      // var response = await Dio().post(
-      //   url,
-      //   data: dddd,
-      //   options: Options(
-      //       headers:
-      //       {'Authorization': 'Bearer $useaccessToken', 'Content-Type': 'application/json; ''charset=UTF-8',
-      //        HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",
-      //       },
-      //   ),
-      // );
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("Upload name seccess!");
@@ -291,8 +278,6 @@ class allApi{
 
   Future<void> getUserState() async{
     var url = 'http://127.0.0.1:8000/test/authonly/';
-    bool isSuccessed = false;
-    String? userNamestr;
 
     Dio dio = Dio();
 
@@ -312,8 +297,7 @@ class allApi{
         // checkUploadToServerToast1();
         await storage.write(key: 'username', value:response.data['username']);
         print(response.data['username']);
-        userNamestr = response.data['username'];
-        isSuccessed = true;
+
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
 
       }
@@ -356,8 +340,26 @@ class allApi{
         // 성공적으로 요청이 완료된 경우
         print("get UserProfile seccess!");
         // checkUploadToServerToast1();
-        print(response.data["data"]);
-        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+        // print(response.data["data"]);
+
+        var profileData = response.data["data"];
+        print(profileData);
+
+        await storage.write(key: 'avatar', value: profileData["avatar"]);
+        await storage.write(key: 'real_name', value: profileData["real_name"]);
+        await storage.write(key: 'id', value: profileData["id"]);
+        await storage.write(key: 'gender', value: profileData["gender"]);
+        await storage.write(key: 'age', value: profileData["age"]);
+        await storage.write(key: 'height', value: profileData["height"]);
+        await storage.write(key: 'weight', value: profileData["weight"]);
+        await storage.write(key: 'disease', value: profileData["disease"]);
+        await storage.write(key: 'allergy', value: profileData["allergy"]);
+        await storage.write(key: 'goals_calories', value: profileData["goals_calories"]);
+        await storage.write(key: 'goals_carb', value: profileData["goals_carb"]);
+        await storage.write(key: 'goals_protein', value: profileData["goals_protein"]);
+        await storage.write(key: 'goals_fat', value: profileData["goals_fat"]);
+        await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"]);
+
       }
     } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
       if(e.response != null){
