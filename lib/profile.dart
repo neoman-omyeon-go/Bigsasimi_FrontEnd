@@ -54,13 +54,20 @@ class _ProfileState extends State<Profile> {
     String? goals_protein = await storage.read(key: 'goals_protein');
     String? goals_fat = await storage.read(key: 'goals_fat');
     String? goals_natrium = await storage.read(key: 'goals_natrium');
+
+    print(userName);
+    print(sex);
+    print(age);
+    print(height);
+    print(weight);
+
     setState(() {
       userInfo = UserInfo(
         userName: userName ?? 'Default Name',
         sex: sex ?? 'Unknown',
-        age: age ?? '0',
-        height: height ?? '0',
-        weight: weight ?? '0',
+        age: age ?? '25',
+        height: height ?? '175',
+        weight: weight ?? '75',
       );
       userProfile = UserProfile(
         sex: sex ?? 'Unknown',
