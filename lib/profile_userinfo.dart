@@ -6,11 +6,11 @@ import 'package:flutter/cupertino.dart';
 
 //가로로 배치되어있는 성별, 나이, 키, 몸무게 위젯 부분
 class UserInfo {
-  String userName;
-  String sex;
-  String age;
-  String height;
-  String weight;
+  late String userName;
+  late String sex;
+  late String age;
+  late String height;
+  late String weight;
 
   UserInfo({
     required this.userName,

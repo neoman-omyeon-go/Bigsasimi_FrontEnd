@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter/services.dart';
 import 'APIfile.dart';
+import 'providers/userprofile_providers.dart';
 
 
 class Profile extends StatefulWidget {
@@ -19,94 +20,131 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+late UserInfo userInfo;
+late UserProfile userProfile;
 
-  // UserInfo userInfo = UserInfo(
-  //   userName: 'User nameQQ',
-  //   sex: 'Male',
-  //   age: '25',
-  //   height: '180',
-  //   weight: '75',
-  // ); // userInfo 변수 추가 및 초기화
+File? _image;
+// String calorieIntake = '0';
+// String carbIntake = '0';
+// String proteinIntake = '0';
+// String fatIntake = '0';
+// String natriumIntake = '0';
+// List<String> selectedChronicIllnesses = [];
+// List<String> selectedAllergies = [];
 
-  final FlutterSecureStorage storage = FlutterSecureStorage();
+final FlutterSecureStorage storage = FlutterSecureStorage();
 
-  late UserInfo userInfo;
-  late UserProfile userProfile;
+Future<List<String?>> _loadUserInfo() async {
+
+  List<Future<String?>> futures = [
+    storage.read(key: 'real_name'),
+    storage.read(key: 'gender'),
+    storage.read(key: 'age'),
+    storage.read(key: 'height'),
+    storage.read(key: 'weight'),
+    storage.read(key: 'avatar'),
+    storage.read(key: 'id'),
+    storage.read(key: 'disease'),
+    storage.read(key: 'allergy'),
+    storage.read(key: 'goals_calories'),
+    storage.read(key: 'goals_carb'),
+    storage.read(key: 'goals_protein'),
+    storage.read(key: 'goals_fat'),
+    storage.read(key: 'goals_natrium'),
+  ];
+
+  List<String?> results = await Future.wait(futures);
+
+  print("result List: $results");
+
+  return results;
+}
+
+Future<void> inituserinfo() async {
+  List<String?> info = await _loadUserInfo();
+
+  String? userName = info[0]??'userName';
+  String? sex = info[1]??'Other';
+  String? age = info[2]??'25';
+  String? height = info[3]??'180';
+  String? weight = info[4]??'75';
+  String? avartar = info[5]??'avatarPath';
+  String? id = info[6]??'defaultID';
+  String? disease = info[7]??'';
+  String? allergy = info[8]??'';
+  String? goals_calories = info[9]??'0';
+  String? goals_carb = info[10]??'0';
+  String? goals_protein = info[11]??'0';
+  String? goals_fat = info[12]??'0';
+  String? goals_natrium = info[13]??'0';
+
+  print("info List: $info");
+  print(disease);
+  print(userName);
+  print(sex);
+  print(age);
+  print(height);
+  print(weight);
+
+  userInfo = UserInfo(
+    userName: userName,
+    sex: sex,
+    age: age,
+    height: height,
+    weight: weight,
+  );
+
+  userProfile = UserProfile(
+    // sex:sex,
+    // age:age,
+    // height:height,
+    // weight:weight,
+    chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
+    allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
+    calorieIntake: goals_calories,
+    carbIntake: goals_carb,
+    proteinIntake: goals_protein,
+    fatIntake: goals_fat,
+    natriumIntake:goals_natrium,
+  );
+
+  setState(() {
+    UserInfo(
+      userName: userName,
+      sex: sex,
+      age: age,
+      height: height,
+      weight: weight,
+    );
+
+    UserProfile(
+      // sex:sex,
+      // age:age,
+      // height:height,
+      // weight:weight,
+      chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
+      allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
+      calorieIntake: goals_calories,
+      carbIntake: goals_carb,
+      proteinIntake: goals_protein,
+      fatIntake: goals_fat,
+      natriumIntake:goals_natrium,
+    );
+  });
+}
+
+
 
   @override
   void initState(){
     super.initState();
-    _loadUserInfo();
-  }
-
-  void _loadUserInfo() async {
-    String? userName = await storage.read(key: 'real_name');
-    String? sex = await storage.read(key: 'gender');
-    String? age = await storage.read(key: 'age');
-    String? height = await storage.read(key: 'height');
-    String? weight = await storage.read(key: 'weight');
-    String? avartar = await storage.read(key: 'avatar');
-    String? id = await storage.read(key: 'id');
-    String? disease = await storage.read(key: 'disease');
-    String? allergy = await storage.read(key: 'allergy');
-    String? goals_calories = await storage.read(key: 'goals_calories');
-    String? goals_carb = await storage.read(key: 'goals_carb');
-    String? goals_protein = await storage.read(key: 'goals_protein');
-    String? goals_fat = await storage.read(key: 'goals_fat');
-    String? goals_natrium = await storage.read(key: 'goals_natrium');
-
-    print(userName);
-    print(sex);
-    print(age);
-    print(height);
-    print(weight);
-
+    inituserinfo().then((_) =>{
     setState(() {
-      userInfo = UserInfo(
-        userName: userName ?? 'Default Name',
-        sex: sex ?? 'Unknown',
-        age: age ?? '25',
-        height: height ?? '175',
-        weight: weight ?? '75',
-      );
-      userProfile = UserProfile(
-        sex: sex ?? 'Unknown',
-        age: age ?? '25',
-        height: height ?? '175',
-        weight: weight ?? '75',
-        chronicIllnesses: [],
-        allergies: [],
-        calorieIntake: goals_calories??'0',
-        carbIntake: goals_carb??'0',
-        proteinIntake: goals_protein??'0',
-        fatIntake: goals_fat??'0',
-        natriumIntake: goals_natrium??'0',
-      );
+
+    })
     });
-  }
+}
 
-  // UserProfile userProfile = UserProfile(
-  //     sex: 'sex',
-  //     age: '25',
-  //     height: '180',
-  //     weight: '75',
-  //     chronicIllnesses: [],
-  //     allergies: [],
-  //     calorieIntake: '0',
-  //     carbIntake: '0',
-  //     proteinIntake: '0',
-  //     fatIntake: '0',
-  //     natriumIntake: '0',
-  // );
-
-  File? _image;
-  String calorieIntake = '0';
-  String carbIntake = '0';
-  String proteinIntake = '0';
-  String fatIntake = '0';
-  String natriumIntake = '0';
-  List<String> selectedChronicIllnesses = [];
-  List<String> selectedAllergies = [];
 
   @override
   Widget build(BuildContext context) {
@@ -128,20 +166,22 @@ class _ProfileState extends State<Profile> {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
                 allApi().uploadToServer(
-                  _image,
+                  userProfile.image,
                   userInfo.sex,
                   userInfo.age,
                   userInfo.height,
                   userInfo.weight,
-                  selectedChronicIllnesses,
-                  selectedAllergies,
-                  calorieIntake,
-                  carbIntake,
-                  proteinIntake,
-                  fatIntake,
-                  natriumIntake,
+                  // selectedChronicIllnesses,
+                  // selectedAllergies,
+                  userProfile.chronicIllnesses,
+                  userProfile.allergies,
+                  userProfile.calorieIntake,
+                  userProfile.carbIntake,
+                  userProfile.proteinIntake,
+                  userProfile.fatIntake,
+                  userProfile.natriumIntake,
                 );
-                  _loadUserInfo();
+                  // _loadUserInfo();
               },
             ),
           ),
@@ -202,7 +242,8 @@ class _ProfileState extends State<Profile> {
                   onTap: () {
                     _showChronicIllnessesDialog();
                   },
-                  selectedItems: selectedChronicIllnesses,
+                  // selectedItems: selectedChronicIllnesses,
+                  selectedItems: userProfile.chronicIllnesses,
                 ),
                 SizedBox(height: 20),
                 ProfileSectionButton(
@@ -211,7 +252,8 @@ class _ProfileState extends State<Profile> {
                   onTap: () {
                     _showAllergiesDialog();
                   },
-                  selectedItems: selectedAllergies,
+                  // selectedItems: selectedAllergies,
+                  selectedItems: userProfile.allergies,
                 ),
                 SizedBox(height: 20),
                 ProfileSectionButton(
@@ -221,11 +263,11 @@ class _ProfileState extends State<Profile> {
                     _showDesiredDailyIntakeDialog();
                   },
                   selectedItems: [
-                    'Calories: $calorieIntake kcal',
-                    'Carbohydrates: $carbIntake g',
-                    'Protein: $proteinIntake g',
-                    'Fat: $fatIntake g',
-                    'natrium: $natriumIntake g',
+                    'Calories: ${userProfile.calorieIntake} kcal',
+                    'Carbohydrates: ${userProfile.carbIntake} g',
+                    'Protein: ${userProfile.proteinIntake} g',
+                    'Fat: ${userProfile.fatIntake} g',
+                    'natrium: ${userProfile.natriumIntake} g',
                   ],
                 ),
               ],
@@ -281,8 +323,7 @@ class _ProfileState extends State<Profile> {
 
   void _editProfilePicture() async {
     final ImagePicker _picker = ImagePicker();
-    final XFile? image =
-    await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       print("Selected image path: ${image.path}");
       setState(() {
@@ -294,10 +335,11 @@ class _ProfileState extends State<Profile> {
   }
 
   void _showChronicIllnessesDialog() {
+    List<String> tempSelectedChronicIllnesses = List.from(userProfile.chronicIllnesses);
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> tempSelectedChronicIllnesses = List.from(selectedChronicIllnesses);
+        // List<String> tempSelectedChronicIllnesses = List.from(selectedChronicIllnesses);
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -331,13 +373,13 @@ class _ProfileState extends State<Profile> {
                 TextButton(
                   child: Text('닫기'),
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(false);
                   },
                 ),
                 TextButton(
                   child: Text('완료'),
                   onPressed: () {
-                    Navigator.of(context).pop(tempSelectedChronicIllnesses);
+                    Navigator.of(context).pop(true);
                   },
                 ),
               ],
@@ -347,9 +389,12 @@ class _ProfileState extends State<Profile> {
       },
     ).then((result) {
       if (result != null) {
-        setState(() {
-          selectedChronicIllnesses = List<String>.from(result);
-        });
+        if(result){
+          setState(() {
+            // selectedChronicIllnesses = List<String>.from(result);
+            userProfile.chronicIllnesses = List<String>.from(tempSelectedChronicIllnesses);
+          });
+        }
       }
     });
   }
@@ -358,7 +403,8 @@ class _ProfileState extends State<Profile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        List<String> tempSelectedAllergies = List.from(selectedAllergies);
+        // List<String> tempSelectedAllergies = List.from(selectedAllergies);
+        List<String> tempSelectedAllergies = List.from(userProfile.allergies);
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -409,7 +455,8 @@ class _ProfileState extends State<Profile> {
     ).then((result) {
       if (result != null) {
         setState(() {
-          selectedAllergies = List<String>.from(result);
+          // selectedAllergies = List<String>.from(result);
+          userProfile.allergies = List<String>.from(result);
         });
       }
     });
@@ -418,11 +465,11 @@ class _ProfileState extends State<Profile> {
   // Desired daily intake 다이얼로그 표시 메서드
   void _showDesiredDailyIntakeDialog() {
     // 각 입력 필드에 대한 컨트롤러 생성
-    TextEditingController calorieController = TextEditingController(text: calorieIntake);
-    TextEditingController carbController = TextEditingController(text: carbIntake);
-    TextEditingController proteinController = TextEditingController(text: proteinIntake);
-    TextEditingController fatController = TextEditingController(text: fatIntake);
-    TextEditingController natriumController = TextEditingController(text: natriumIntake);
+    TextEditingController calorieController = TextEditingController(text: userProfile.calorieIntake);
+    TextEditingController carbController = TextEditingController(text: userProfile.carbIntake);
+    TextEditingController proteinController = TextEditingController(text: userProfile.proteinIntake);
+    TextEditingController fatController = TextEditingController(text: userProfile.fatIntake);
+    TextEditingController natriumController = TextEditingController(text: userProfile.natriumIntake);
 
     showDialog(
       context: context,
@@ -489,11 +536,11 @@ class _ProfileState extends State<Profile> {
 
   void _saveDesiredDailyIntake(String calories, String carbs, String protein, String fat, String natrium) {
     setState(() {
-      calorieIntake = calories;
-      carbIntake = carbs;
-      proteinIntake = protein;
-      fatIntake = fat;
-      natriumIntake = natrium;
+      userProfile.calorieIntake = calories;
+      userProfile.carbIntake = carbs;
+      userProfile.proteinIntake = protein;
+      userProfile.fatIntake = fat;
+      userProfile.natriumIntake = natrium;
     });
   }
 }
@@ -565,10 +612,10 @@ class ProfileSectionButton extends StatelessWidget {
 
 class UserProfile {
   File? image;
-  String sex;
-  String age;
-  String height;
-  String weight;
+  // String sex;
+  // String age;
+  // String height;
+  // String weight;
   List<String> chronicIllnesses;
   List<String> allergies;
   String calorieIntake;
@@ -578,10 +625,10 @@ class UserProfile {
   String natriumIntake;
 
   UserProfile({
-    required this.sex,
-    required this.age,
-    required this.height,
-    required this.weight,
+    // required this.sex,
+    // required this.age,
+    // required this.height,
+    // required this.weight,
     required this.chronicIllnesses,
     required this.allergies,
     required this.calorieIntake,

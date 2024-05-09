@@ -134,6 +134,7 @@ class allApi{
     print(allergies.join(","));
     print(chronicIllnesses.join(","));
     print(calorieIntake);
+    print(natriumIntake);
     print(carbIntake);
     print(profileimg);
 
@@ -343,23 +344,26 @@ class allApi{
         // print(response.data["data"]);
 
         var profileData = response.data["data"];
+
         print(profileData);
 
         await storage.write(key: 'avatar', value: profileData["avatar"]);
         await storage.write(key: 'real_name', value: profileData["real_name"]);
-        await storage.write(key: 'id', value: profileData["id"]);
         await storage.write(key: 'gender', value: profileData["gender"]);
-        await storage.write(key: 'age', value: profileData["age"]);
-        await storage.write(key: 'height', value: profileData["height"]);
-        await storage.write(key: 'weight', value: profileData["weight"]);
-        await storage.write(key: 'disease', value: profileData["disease"]);
-        await storage.write(key: 'allergy', value: profileData["allergy"]);
-        await storage.write(key: 'goals_calories', value: profileData["goals_calories"]);
-        await storage.write(key: 'goals_carb', value: profileData["goals_carb"]);
-        await storage.write(key: 'goals_protein', value: profileData["goals_protein"]);
-        await storage.write(key: 'goals_fat', value: profileData["goals_fat"]);
-        await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"]);
-
+        //String
+        //Int
+        await storage.write(key: 'id', value: profileData["id"].toString());
+        await storage.write(key: 'age', value: profileData["age"].toString());
+        await storage.write(key: 'height', value: profileData["height"].toString());
+        await storage.write(key: 'weight', value: profileData["weight"].toString());
+        await storage.write(key: 'goals_calories', value: profileData["goals_calories"].toString());
+        await storage.write(key: 'goals_carb', value: profileData["goals_carb"].toString());
+        await storage.write(key: 'goals_protein', value: profileData["goals_protein"].toString());
+        await storage.write(key: 'goals_fat', value: profileData["goals_fat"].toString());
+        await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"].toString());
+        //List<String>
+        await storage.write(key: 'disease', value: profileData["disease"].toString());
+        await storage.write(key: 'allergy', value: profileData["allergy"].toString());
       }
     } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
       if(e.response != null){
