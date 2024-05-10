@@ -17,6 +17,7 @@ class uploadScreen extends StatefulWidget {
 
 class _uploadScreenState extends State<uploadScreen> {
   int _selectedIndex = 2;  // Upload 페이지를 초기 선택된 탭으로 설정
+  bool _isLoading = false; // 로딩 상태 변수
 
   List<Widget> _pages = [];
 
@@ -34,17 +35,34 @@ class _uploadScreenState extends State<uploadScreen> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _isLoading = true; // 로딩 시작
+    });
+
+    // 2초간 로딩 인디케이터를 표시한 후 페이지 전환
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() {
+        _selectedIndex = index;
+        _isLoading = false; // 로딩 종료
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('Rendering Success');
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: Stack(
+        children: [
+          _pages[_selectedIndex],
+          if (_isLoading)
+            Container(
+              color: Colors.black45,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        // backgroundColor: Colors.blue,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

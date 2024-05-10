@@ -8,13 +8,19 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'profile_userprofile.dart';
+import 'profile_userinfoWidget.dart';
+import 'profile.dart';
+
+late UserInfo userInfo;
+late UserProfile userProfile;
 
 class allApi{
-   final storage = FlutterSecureStorage();
+   var storage = FlutterSecureStorage();
 
   Future<bool> login(String username, String password) async {
-    // var url = 'http://127.0.0.1:8080/api/login/';
-    var url = 'http://223.130.154.147:8080/api/login/';
+    var url = 'http://127.0.0.1:8080/api/login/';
+    // var url = 'http://223.130.154.147:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -72,8 +78,8 @@ class allApi{
 
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
-    // var url = 'http://127.0.0.1:8000/api/signup/';
-    var url = 'http://223.130.154.147:8080/api/signup/';
+    var url = 'http://127.0.0.1:8000/api/signup/';
+    // var url = 'http://223.130.154.147:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -125,8 +131,8 @@ class allApi{
   Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake, String natriumIntake) async {
     // allergies.join(",");
-    // var url = 'http://127.0.0.1:8000/api/profile/';
-      var url = 'http://223.130.154.147:8080/api/profile/';
+    var url = 'http://127.0.0.1:8000/api/profile/';
+      // var url = 'http://223.130.154.147:8080/api/profile/';
     print(sex);
     print(age);
     print(height);
@@ -146,16 +152,16 @@ class allApi{
     var isnullillnesses = false;
 
 
-    if(allergies.isEmpty){
-      print("allegies null");
+    if(allergies.length == 1){
+      print("allegies null actually one(,)");
       // checkAllegies = "\n";
       isnullallegies = true;
     }else{
       checkAllegies  = allergies.join(",");
     }
 
-    if(chronicIllnesses.isEmpty){
-      print("Illnesses null");
+    if(chronicIllnesses.length==1){
+      print("Illnesses null actually one(,)");
       // checkIllnesses = "\0";
       isnullillnesses = true;
     }else{
@@ -236,8 +242,8 @@ class allApi{
 
 
   Future<void> updateToserver2(String realnameController) async{
-    // var url = 'http://127.0.0.1:8000/api/profile/';
-    var url = 'http://223.130.154.147:8080/api/profile/';
+    var url = 'http://127.0.0.1:8000/api/profile/';
+    // var url = 'http://223.130.154.147:8080/api/profile/';
     print(realnameController);
     var dio = Dio();
 
@@ -262,6 +268,7 @@ class allApi{
         print("Upload name seccess!");
         // checkUploadToServerToast1();
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
+
       }
     } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
       if(e.response != null){
@@ -278,8 +285,8 @@ class allApi{
   }
 
   Future<void> getUserState() async{
-    // var url = 'http://127.0.0.1:8000/test/authonly/';
-    var url = 'http://223.130.154.147:8080/test/authonly/';
+    var url = 'http://127.0.0.1:8000/test/authonly/';
+    // var url = 'http://223.130.154.147:8080/test/authonly/';
 
     Dio dio = Dio();
 
@@ -324,8 +331,8 @@ class allApi{
     // await Future.delayed(Duration(seconds: 3));
 
     print("username: ${username}");
-    // var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
-    var url = 'http://223.130.154.147:8080/api/profile/?username=${username}';
+    var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
+    // var url = 'http://223.130.154.147:8080/api/profile/?username=${username}';
 
 
     Dio dio = Dio();
@@ -349,23 +356,72 @@ class allApi{
 
         print(profileData);
 
-        await storage.write(key: 'avatar', value: profileData["avatar"]);
-        await storage.write(key: 'real_name', value: profileData["real_name"]);
-        await storage.write(key: 'gender', value: profileData["gender"]);
-        //String
-        //Int
-        await storage.write(key: 'id', value: profileData["id"].toString());
-        await storage.write(key: 'age', value: profileData["age"].toString());
-        await storage.write(key: 'height', value: profileData["height"].toString());
-        await storage.write(key: 'weight', value: profileData["weight"].toString());
-        await storage.write(key: 'goals_calories', value: profileData["goals_calories"].toString());
-        await storage.write(key: 'goals_carb', value: profileData["goals_carb"].toString());
-        await storage.write(key: 'goals_protein', value: profileData["goals_protein"].toString());
-        await storage.write(key: 'goals_fat', value: profileData["goals_fat"].toString());
-        await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"].toString());
-        //List<String>
-        await storage.write(key: 'disease', value: profileData["disease"].toString());
-        await storage.write(key: 'allergy', value: profileData["allergy"].toString());
+        // await storage.write(key: 'avatar', value: profileData["avatar"]);
+        // await storage.write(key: 'real_name', value: profileData["real_name"]);
+        // await storage.write(key: 'gender', value: profileData["gender"]);
+        // //String
+        // //Int
+        // await storage.write(key: 'id', value: profileData["id"].toString());
+        // await storage.write(key: 'age', value: profileData["age"].toString());
+        // await storage.write(key: 'height', value: profileData["height"].toString());
+        // await storage.write(key: 'weight', value: profileData["weight"].toString());
+        // await storage.write(key: 'goals_calories', value: profileData["goals_calories"].toString());
+        // await storage.write(key: 'goals_carb', value: profileData["goals_carb"].toString());
+        // await storage.write(key: 'goals_protein', value: profileData["goals_protein"].toString());
+        // await storage.write(key: 'goals_fat', value: profileData["goals_fat"].toString());
+        // await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"].toString());
+        // //List<String>
+        // await storage.write(key: 'disease', value: profileData["disease"].toString());
+        // await storage.write(key: 'allergy', value: profileData["allergy"].toString());
+
+        String? id = profileData["id"].toString()??'';
+        String? avartar = profileData["avatar"]??'avatarPath';
+        String userName = profileData["real_name"]??'userName';
+        String sex = profileData["gender"]??'Other';
+        String? age = profileData["age"].toString()??'25';
+        String? height = profileData["height"].toString()??'175';
+        String? weight = profileData["weight"].toString()??'70';
+        String disease = profileData["disease"].toString()??'';
+        String allergy = profileData["allergy"].toString()??'';
+        String? goals_calories = profileData["goals_calories"].toString()??'0';
+        String? goals_carb = profileData["goals_carb"].toString()??'0';
+        String? goals_protein = profileData["goals_protein"].toString()??'0';
+        String? goals_fat = profileData["goals_fat"].toString()??'0';
+        String? goals_natrium = profileData["goals_natrium"].toString()??'0';
+
+        // disease = disease.substring(disease.length,disease.length).substring(0,0);
+        // allergy = allergy.substring(disease.length,disease.length).substring(0,0);
+        // disease = disease.substring(0,0);
+        // disease = disease.substring(2,disease.length-1);
+        // allergy = allergy.substring(2, allergy.length-1);
+        // disease.split(',');
+        // print("disease${disease}");
+
+
+        userInfo = UserInfo(
+          userName: userName,
+          sex: sex,
+          age: age,
+          height: height,
+          weight: weight,
+        );
+
+        userProfile = UserProfile(
+          // sex:sex,
+          // age:age,
+          // height:height,
+          // weight:weight,
+          chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
+          allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
+          calorieIntake: goals_calories,
+          carbIntake: goals_carb,
+          proteinIntake: goals_protein,
+          fatIntake: goals_fat,
+          natriumIntake:goals_natrium,
+        );
+
+        // giveUserinfo();
+        // giveUserprofile();
       }
     } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
       if(e.response != null){
@@ -383,6 +439,13 @@ class allApi{
   }
 
 
+  // UserProfile giveUserprofile(){
+  //   return userProfile1;
+  // }
+  //
+  // UserInfo giveUserinfo(){
+  //   return userInfo1;
+  // }
 
 }
 

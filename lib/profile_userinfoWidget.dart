@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'dart:io';
+import 'APIfile.dart';
+
 
 //가로로 배치되어있는 성별, 나이, 키, 몸무게 위젯 부분
 class UserInfo {
@@ -202,6 +204,7 @@ class _EditableUserNameState extends State<EditableUserName> {
   void initState() {
     super.initState();
     userName = widget.initialName;  // 초기 값 설정
+    // userName = userinfo2;  // 초기 값 설정
     _controller = TextEditingController(text: userName);
   }
 
@@ -212,26 +215,27 @@ class _EditableUserNameState extends State<EditableUserName> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(userName, style: TextStyle(fontSize: 24)),  // userName 사용
+          Text(_controller.text, style: TextStyle(fontSize: 24)),  // userName 사용
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () => showCustomDialog(context, "Username", _controller, () {
-              setState(() {
-                userName = _controller.text;
-                //여기서 userName을 API로 쏘기
-                // 사용자 정보 업데이트
-                UserInfo updatedUserInfo = UserInfo(
-                  userName: userName,
-                  sex: widget.userInfo.sex,
-                  age: widget.userInfo.age,
-                  height: widget.userInfo.height,
-                  weight: widget.userInfo.weight,
-                );
-                // 변경 사항을 상위 위젯에 알림
-                widget.onUpdateUserInfo(updatedUserInfo);
-                Navigator.of(context).pop();
+            onPressed: () {
+              _controller.text = userName;  // 현재 userName을 TextField에 설정
+              showCustomDialog(context, "Username", _controller, () {
+                setState(() {
+                  userName = _controller.text;  // TextField에서 변경된 userName을 상태에 반영
+                  // 사용자 정보 업데이트
+                  UserInfo updatedUserInfo = UserInfo(
+                    userName: userName,
+                    sex: widget.userInfo.sex,
+                    age: widget.userInfo.age,
+                    height: widget.userInfo.height,
+                    weight: widget.userInfo.weight,
+                  );
+                  // 변경 사항을 상위 위젯에 알림
+                  widget.onUpdateUserInfo(updatedUserInfo);
+                });
               });
-            }),
+            },
             tooltip: 'Edit Username',
           ),
         ],
@@ -294,16 +298,16 @@ void showCustomDialog(BuildContext context, String title, TextEditingController 
         ),
         TextButton(
           child: Text('Save'),
-          onPressed:() => {
-              print(controller.text),
-              allApi().updateToserver2(controller.text),
-              Navigator.of(context).pop(),
+          onPressed: () {
+            print(controller.text);
+            allApi().updateToserver2(controller.text);  // API로 데이터 전송
+            onSave();  // 콜백 함수 호출
+            Navigator.of(context).pop();
           },
         ),
       ],
     ),
   );
-
 }
 
 

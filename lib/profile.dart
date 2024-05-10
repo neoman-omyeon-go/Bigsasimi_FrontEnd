@@ -5,14 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'profile_userinfo.dart';
+import 'profile_userinfoWidget.dart';
 import 'profile_exeldata.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter/services.dart';
 import 'APIfile.dart';
-import 'providers/userprofile_providers.dart';
+import 'profile_userprofile.dart';
 
+// final FlutterSecureStorage storage = FlutterSecureStorage();
+// late UserInfo userInfo1;
+// late UserProfile userProfile1;
+//
+// void getUserInfo(UserInfo userinfo){
+//   userInfo1 = allApi().giveUserinfo();
+//   print(userInfo1);
+// }
+//
+// void getUserProfile(UserProfile userProfile){
+//   userProfile1 = allApi().giveUserprofile();
+//   print(userProfile1);
+// }
 
 class Profile extends StatefulWidget {
   @override
@@ -20,127 +32,55 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-late UserInfo userInfo;
-late UserProfile userProfile;
-
+bool _isLoading = false;
 File? _image;
-// String calorieIntake = '0';
-// String carbIntake = '0';
-// String proteinIntake = '0';
-// String fatIntake = '0';
-// String natriumIntake = '0';
-// List<String> selectedChronicIllnesses = [];
-// List<String> selectedAllergies = [];
 
-final FlutterSecureStorage storage = FlutterSecureStorage();
-
-Future<List<String?>> _loadUserInfo() async {
-
-  List<Future<String?>> futures = [
-    storage.read(key: 'real_name'),
-    storage.read(key: 'gender'),
-    storage.read(key: 'age'),
-    storage.read(key: 'height'),
-    storage.read(key: 'weight'),
-    storage.read(key: 'avatar'),
-    storage.read(key: 'id'),
-    storage.read(key: 'disease'),
-    storage.read(key: 'allergy'),
-    storage.read(key: 'goals_calories'),
-    storage.read(key: 'goals_carb'),
-    storage.read(key: 'goals_protein'),
-    storage.read(key: 'goals_fat'),
-    storage.read(key: 'goals_natrium'),
-  ];
-
-  List<String?> results = await Future.wait(futures);
-
-  print("result List: $results");
-
-  return results;
-}
-
-Future<void> inituserinfo() async {
-  List<String?> info = await _loadUserInfo();
-
-  String? userName = info[0]??'userName';
-  String? sex = info[1]??'Other';
-  String? age = info[2]??'25';
-  String? height = info[3]??'180';
-  String? weight = info[4]??'75';
-  String? avartar = info[5]??'avatarPath';
-  String? id = info[6]??'defaultID';
-  String? disease = info[7]??'';
-  String? allergy = info[8]??'';
-  String? goals_calories = info[9]??'0';
-  String? goals_carb = info[10]??'0';
-  String? goals_protein = info[11]??'0';
-  String? goals_fat = info[12]??'0';
-  String? goals_natrium = info[13]??'0';
-
-  print("info List: $info");
-  print(disease);
-  print(userName);
-  print(sex);
-  print(age);
-  print(height);
-  print(weight);
-
-  userInfo = UserInfo(
-    userName: userName,
-    sex: sex,
-    age: age,
-    height: height,
-    weight: weight,
-  );
-
-  userProfile = UserProfile(
-    // sex:sex,
-    // age:age,
-    // height:height,
-    // weight:weight,
-    chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
-    allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
-    calorieIntake: goals_calories,
-    carbIntake: goals_carb,
-    proteinIntake: goals_protein,
-    fatIntake: goals_fat,
-    natriumIntake:goals_natrium,
-  );
-
+void _saveProfile() async {
   setState(() {
-    UserInfo(
-      userName: userName,
-      sex: sex,
-      age: age,
-      height: height,
-      weight: weight,
+    _isLoading = true; // 로딩 시작
+  });
+
+  try {
+    await allApi().uploadToServer(
+      userProfile.image,
+      userInfo.sex,
+      userInfo.age,
+      userInfo.height,
+      userInfo.weight,
+      userProfile.chronicIllnesses,
+      userProfile.allergies,
+      userProfile.calorieIntake,
+      userProfile.carbIntake,
+      userProfile.proteinIntake,
+      userProfile.fatIntake,
+      userProfile.natriumIntake,
     );
 
-    UserProfile(
-      // sex:sex,
-      // age:age,
-      // height:height,
-      // weight:weight,
-      chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
-      allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
-      calorieIntake: goals_calories,
-      carbIntake: goals_carb,
-      proteinIntake: goals_protein,
-      fatIntake: goals_fat,
-      natriumIntake:goals_natrium,
+    // await inituserinfo();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Profile updated successfully!')));
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update profile: $e'))
     );
-  });
+  } finally {
+    Future.delayed(Duration(seconds: 2), (){
+      setState(() {
+        _isLoading = false; // 로딩 종료
+
+      });
+    });
+  }
 }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    inituserinfo().then((_) =>{
-    setState(() {
-
-    })
-    });
+    // inituserinfo().then((_) =>{
+    //   setState(() {
+    //
+    //   })
+    // });
 }
 
 
@@ -160,132 +100,113 @@ Future<void> inituserinfo() async {
                   Icon(Icons.save),
                 ],
               ),
-              onPressed: () async{
+              onPressed: () {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
-                try{
-                  await allApi().uploadToServer(
-                    userProfile.image,
-                    userInfo.sex,
-                    userInfo.age,
-                    userInfo.height,
-                    userInfo.weight,
-                    // selectedChronicIllnesses,
-                    // selectedAllergies,
-                    userProfile.chronicIllnesses,
-                    userProfile.allergies,
-                    userProfile.calorieIntake,
-                    userProfile.carbIntake,
-                    userProfile.proteinIntake,
-                    userProfile.fatIntake,
-                    userProfile.natriumIntake,
-                  );
-
-                  await inituserinfo().then((_) =>{
-                    setState(() {
-
-                    })
-                  });
-
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Profile updated successfully!')));
-                }catch(e){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Failed to update profile: $e'))
-                  );
-                }
-
+                _saveProfile();
                   // _loadUserInfo();
               },
             ),
           ),
         ],
       ),
-      body: ListView(
-        children: <Widget>[
-          SizedBox(height: 30),
-          GestureDetector(
-            onTap: _editProfilePicture,
-            child: CircleAvatar(
-              radius: 80,
-              backgroundColor: Colors.grey[600],
-              child: _image != null
-                  ? ClipOval(
-                child: Image.file(
-                  _image!,
-                  fit: BoxFit.cover,
-                  width: 160,
-                  height: 160,
+      body: Stack(
+        children: [
+          ListView(
+            children: <Widget>[
+              SizedBox(height: 30),
+              GestureDetector(
+                onTap: _editProfilePicture,
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundColor: Colors.grey[600],
+                  child: _image != null
+                      ? ClipOval(
+                    child: Image.file(
+                      _image!,
+                      fit: BoxFit.cover,
+                      width: 160,
+                      height: 160,
+                    ),
+                  )
+                      : Icon(
+                    Icons.person,
+                    size: 100,
+                    color: Colors.white,
+                  ),
                 ),
-              )
-                  : Icon(
-                Icons.person,
-                size: 100,
-                color: Colors.white,
               ),
-            ),
-          ),
-          SizedBox(height: 10),
-          EditableUserName(
-            userInfo: userInfo, // 이전에 정의된 userInfo 객체를 사용합니다
-            initialName: userInfo.userName, // userInfo 객체의 userName 속성을 사용합니다
-            onUpdateUserInfo: (UserInfo updatedUserInfo) {
-              setState(() {
-                userInfo = updatedUserInfo; // 상태 업데이트
-              });
-            },
-          ),
-          SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: <Widget>[
-                UserInfoSection(
-                  userInfo: userInfo,
-                  onUpdateUserInfo: (UserInfo updatedUserInfo) {
-                    setState(() {
-                      userInfo = updatedUserInfo;
-                    });
-                  },
-                ),
+              SizedBox(height: 10),
+              EditableUserName(
+                userInfo: userInfo, // 이전에 정의된 userInfo 객체를 사용합니다
+                initialName: userInfo.userName, // userInfo 객체의 userName 속성을 사용합니다
+                onUpdateUserInfo: (UserInfo updatedUserInfo) {
+                  setState(() {
+                    userInfo = updatedUserInfo; // 상태 업데이트
+                  });
+                },
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: <Widget>[
+                    UserInfoSection(
+                      userInfo: userInfo,
+                      onUpdateUserInfo: (UserInfo updatedUserInfo) {
+                        setState(() {
+                          userInfo = updatedUserInfo;
+                        });
+                      },
+                    ),
 
-                SizedBox(height: 20),
-                ProfileSectionButton(
-                  title: 'Chronic Illnesses',
-                  color: Colors.lightBlue.shade100,
-                  onTap: () {
-                    _showChronicIllnessesDialog();
-                  },
-                  // selectedItems: selectedChronicIllnesses,
-                  selectedItems: userProfile.chronicIllnesses,
-                ),
-                SizedBox(height: 20),
-                ProfileSectionButton(
-                  title: 'Allergies',
-                  color: Colors.pink.shade100,
-                  onTap: () {
-                    _showAllergiesDialog();
-                  },
-                  // selectedItems: selectedAllergies,
-                  selectedItems: userProfile.allergies,
-                ),
-                SizedBox(height: 20),
-                ProfileSectionButton(
-                  title: 'Desired daily intake',
-                  color: Colors.orange.shade100,
-                  onTap: () {
-                    _showDesiredDailyIntakeDialog();
-                  },
-                  selectedItems: [
-                    'Calories: ${userProfile.calorieIntake} kcal',
-                    'Carbohydrates: ${userProfile.carbIntake} g',
-                    'Protein: ${userProfile.proteinIntake} g',
-                    'Fat: ${userProfile.fatIntake} g',
-                    'natrium: ${userProfile.natriumIntake} g',
+                    SizedBox(height: 20),
+                    ProfileSectionButton(
+                      title: 'Chronic Illnesses',
+                      color: Colors.lightBlue.shade100,
+                      onTap: () {
+                        _showChronicIllnessesDialog();
+                      },
+                      // selectedItems: selectedChronicIllnesses,
+                      selectedItems: userProfile.chronicIllnesses,
+                    ),
+                    SizedBox(height: 20),
+                    ProfileSectionButton(
+                      title: 'Allergies',
+                      color: Colors.pink.shade100,
+                      onTap: () {
+                        _showAllergiesDialog();
+                      },
+                      // selectedItems: selectedAllergies,
+                      selectedItems: userProfile.allergies,
+                    ),
+                    SizedBox(height: 20),
+                    ProfileSectionButton(
+                      title: 'Desired daily intake',
+                      color: Colors.orange.shade100,
+                      onTap: () {
+                        _showDesiredDailyIntakeDialog();
+                      },
+                      selectedItems: [
+                        'Calories: ${userProfile.calorieIntake} kcal',
+                        'Carbohydrates: ${userProfile.carbIntake} g',
+                        'Protein: ${userProfile.proteinIntake} g',
+                        'Fat: ${userProfile.fatIntake} g',
+                        'natrium: ${userProfile.natriumIntake} g',
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+          if (_isLoading)
+            Container(
+              color: Colors.black45,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -623,36 +544,7 @@ class ProfileSectionButton extends StatelessWidget {
   }
 }
 
-class UserProfile {
-  File? image;
-  // String sex;
-  // String age;
-  // String height;
-  // String weight;
-  List<String> chronicIllnesses;
-  List<String> allergies;
-  String calorieIntake;
-  String carbIntake;
-  String proteinIntake;
-  String fatIntake;
-  String natriumIntake;
 
-  UserProfile({
-    // required this.sex,
-    // required this.age,
-    // required this.height,
-    // required this.weight,
-    required this.chronicIllnesses,
-    required this.allergies,
-    required this.calorieIntake,
-    required this.carbIntake,
-    required this.proteinIntake,
-    required this.fatIntake,
-    required this.natriumIntake,
-  });
-
-
-}
 
 
 
