@@ -13,8 +13,8 @@ class allApi{
    final storage = FlutterSecureStorage();
 
   Future<bool> login(String username, String password) async {
-    var url = 'http://127.0.0.1:8080/api/login/';
-    // var url = 'http://223.130.154.147:8080/api/login/';
+    // var url = 'http://127.0.0.1:8080/api/login/';
+    var url = 'http://223.130.154.147:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -72,8 +72,8 @@ class allApi{
 
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
-    var url = 'http://127.0.0.1:8000/api/signup/';
-    // var url = 'http://223.130.154.147:8080/api/signup/';
+    // var url = 'http://127.0.0.1:8000/api/signup/';
+    var url = 'http://223.130.154.147:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -125,8 +125,8 @@ class allApi{
   Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake, String natriumIntake) async {
     // allergies.join(",");
-    var url = 'http://127.0.0.1:8000/api/profile/';
-    //   var url = 'http://223.130.154.147:8080/api/profile/';
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+      var url = 'http://223.130.154.147:8080/api/profile/';
     print(sex);
     print(age);
     print(height);
@@ -236,8 +236,8 @@ class allApi{
 
 
   Future<void> updateToserver2(String realnameController) async{
-    var url = 'http://127.0.0.1:8000/api/profile/';
-    // var url = 'http://223.130.154.147:8080/api/profile/';
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+    var url = 'http://223.130.154.147:8080/api/profile/';
     print(realnameController);
     var dio = Dio();
 
@@ -278,7 +278,8 @@ class allApi{
   }
 
   Future<void> getUserState() async{
-    var url = 'http://127.0.0.1:8000/test/authonly/';
+    // var url = 'http://127.0.0.1:8000/test/authonly/';
+    var url = 'http://223.130.154.147:8080/test/authonly/';
 
     Dio dio = Dio();
 
@@ -323,7 +324,8 @@ class allApi{
     // await Future.delayed(Duration(seconds: 3));
 
     print("username: ${username}");
-    var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
+    // var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
+    var url = 'http://223.130.154.147:8080/api/profile/?username=${username}';
 
 
     Dio dio = Dio();

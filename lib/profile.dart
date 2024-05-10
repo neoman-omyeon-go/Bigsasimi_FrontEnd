@@ -133,8 +133,6 @@ Future<void> inituserinfo() async {
   });
 }
 
-
-
   @override
   void initState(){
     super.initState();
@@ -162,25 +160,40 @@ Future<void> inituserinfo() async {
                   Icon(Icons.save),
                 ],
               ),
-              onPressed: () {
+              onPressed: () async{
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
-                allApi().uploadToServer(
-                  userProfile.image,
-                  userInfo.sex,
-                  userInfo.age,
-                  userInfo.height,
-                  userInfo.weight,
-                  // selectedChronicIllnesses,
-                  // selectedAllergies,
-                  userProfile.chronicIllnesses,
-                  userProfile.allergies,
-                  userProfile.calorieIntake,
-                  userProfile.carbIntake,
-                  userProfile.proteinIntake,
-                  userProfile.fatIntake,
-                  userProfile.natriumIntake,
-                );
+                try{
+                  await allApi().uploadToServer(
+                    userProfile.image,
+                    userInfo.sex,
+                    userInfo.age,
+                    userInfo.height,
+                    userInfo.weight,
+                    // selectedChronicIllnesses,
+                    // selectedAllergies,
+                    userProfile.chronicIllnesses,
+                    userProfile.allergies,
+                    userProfile.calorieIntake,
+                    userProfile.carbIntake,
+                    userProfile.proteinIntake,
+                    userProfile.fatIntake,
+                    userProfile.natriumIntake,
+                  );
+
+                  await inituserinfo().then((_) =>{
+                    setState(() {
+
+                    })
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Profile updated successfully!')));
+                }catch(e){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update profile: $e'))
+                  );
+                }
+
                   // _loadUserInfo();
               },
             ),
