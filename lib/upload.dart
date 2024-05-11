@@ -39,7 +39,7 @@ class _uploadScreenState extends State<uploadScreen> {
     });
 
     // 2초간 로딩 인디케이터를 표시한 후 페이지 전환
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(Duration(milliseconds: 120), () {
       setState(() {
         _selectedIndex = index;
         _isLoading = false; // 로딩 종료
@@ -102,16 +102,23 @@ class UploadScreen extends StatefulWidget {
 
 class _UploadScreenState extends State<UploadScreen> {
   File? _image;
+  final ImagePicker _picker = ImagePicker();
 
-  //요기서 사진을 찍도록 카메라를 키게끔 변경해야 함.
-  Future<void> _getImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  // 카메라에서 사진을 찍는 함수
+  Future<void> _takePicture() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      // 사진 파일 사용
+      print("찍은 사진의 경로: ${image.path}");
+    }
+  }
 
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+  // 갤러리에서 사진을 선택하는 함수
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      // 사진 파일 사용
+      print("선택된 사진의 경로: ${image.path}");
     }
   }
 
@@ -145,7 +152,7 @@ class _UploadScreenState extends State<UploadScreen> {
             ),
           ),
           GestureDetector(
-            onTap: _getImage, // 점선 테두리 상자를 탭하면 _getImage 함수를 호출합니다.
+            onTap: _showChoiceDialog,
             child: DashedBorderBox(),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 150.0, vertical: 10.0),
@@ -173,7 +180,7 @@ class _UploadScreenState extends State<UploadScreen> {
                 SizedBox(width: 10), // 아이콘과 텍스트 사이에 간격 추가
                 Expanded( // 텍스트가 화면 너비를 벗어나지 않도록 Expanded 위젯을 사용합니다.
                   child: Text(
-                    'If you want to search for a specific food, please press the button below.',
+                    'If you would like to enter more accurate information manually, please click the button below.',
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.black),
                   ),
@@ -223,7 +230,44 @@ class _UploadScreenState extends State<UploadScreen> {
       ),
     );
   }
+
+  // 사용자가 탭했을 때 다이얼로그를 표시하는 함수
+  Future<void> _showChoiceDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("사진 촬영 OR 선택"),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  ListTile(
+                    leading: Icon(Icons.camera_alt),
+                    title: Text("사진 찍기"),
+                    onTap: () {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _takePicture(); // 사진 찍기 함수 호출
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.photo_library),
+                    title: Text("갤러리에서 사진 가져오기"),
+                    onTap: () {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      _pickImage(); // 갤러리에서 사진 선택 함수 호출
+                    },
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+    );
+  }
+
 }
+
+
 
 class DashedBorderBox extends StatelessWidget {
   @override
