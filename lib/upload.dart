@@ -28,7 +28,7 @@ class _uploadScreenState extends State<uploadScreen> {
       TodaysNews(),
       LocalMapRestaurant(),
       UploadScreen(), // UploadScreen의 메인 컨텐츠
-      IntakenGraph(),
+      HealthInfoGraph(),
       Profile(),
     ];
   }

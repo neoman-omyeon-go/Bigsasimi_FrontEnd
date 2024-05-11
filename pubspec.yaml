@@ -37,6 +37,7 @@ dependencies:
   dotted_border: ^2.0.0+1
   cached_network_image: ^3.0.0
   url_launcher: ^6.0.10
+  fl_chart: ^0.45.1
 
 
   # The following adds the Cupertino Icons font to your application.
