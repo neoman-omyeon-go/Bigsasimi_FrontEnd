@@ -449,6 +449,7 @@ class allApi{
 
   Future<bool> postNutritionInfoManually(String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
     var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
+    // var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
 
     bool _isSuccess = false;
 
