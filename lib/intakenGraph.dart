@@ -1,5 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+
+class Nutrition {
+  double calories;
+  double carbs;
+  double protein;
+  double fats;
+  double sodium;
+  double cholesterol;
+  double sugars;
+
+  static const Map<String, double> maxValues = {
+    'Calories': 2000,
+    'Carbs': 300,
+    'Protein': 150,
+    'Fats': 100,
+    'Sodium': 2400,
+    'Cholesterol': 300,
+    'Sugars': 100,
+  };
+
+  Map<String, dynamic> toMap() {
+    return {
+      'Calories': {'value': calories, 'span': 2},
+      'Carbs': {'value': carbs, 'span': 1},
+      'Protein': {'value': protein, 'span': 1},
+      'Fats': {'value': fats, 'span': 1},
+      'Sodium': {'value': sodium, 'span': 1},
+      'Cholesterol': {'value': cholesterol, 'span': 1},
+      'Sugars': {'value': sugars, 'span': 1},
+    };
+  }
+
+  Nutrition(this.calories, this.carbs, this.protein, this.fats, this.sodium, this.cholesterol, this.sugars);
+}
 
 class HealthInfoGraph extends StatefulWidget {
   @override
@@ -7,31 +40,15 @@ class HealthInfoGraph extends StatefulWidget {
 }
 
 class _HealthInfoGraphState extends State<HealthInfoGraph> {
-  bool _isBarChart = true;  // 현재 표시 방식을 저장하는 상태
-
-  // 예시 데이터
-  final List<BarChartGroupData> barGroups = [
-    BarChartGroupData(
-      x: 0,
-      barRods: [BarChartRodData(y: 70, colors: [Colors.lightBlue])],
-      showingTooltipIndicators: [0],
-    ),
-    BarChartGroupData(
-      x: 1,
-      barRods: [BarChartRodData(y: 85, colors: [Colors.orange])],
-      showingTooltipIndicators: [0],
-    ),
-    BarChartGroupData(
-      x: 2,
-      barRods: [BarChartRodData(y: 90, colors: [Colors.red])],
-      showingTooltipIndicators: [0],
-    ),
-    BarChartGroupData(
-      x: 3,
-      barRods: [BarChartRodData(y: 55, colors: [Colors.green])],
-      showingTooltipIndicators: [0],
-    ),
-  ];
+  bool _isBarChart = true;
+  Nutrition nutrition = Nutrition(
+      1800.0,
+      250.0,
+      120.0,
+      80.0,
+      1500.0,
+      200.0,
+      80.0);
 
   @override
   Widget build(BuildContext context) {
@@ -49,86 +66,195 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
           ),
         ],
       ),
-      body: _isBarChart ? _buildBarChart() : _buildList(),
-    );
-  }
-
-  Widget _buildBarChart() {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: BarChart(
-        BarChartData(
-          barGroups: barGroups,
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: SideTitles(
-              showTitles: true,
-              getTitles: (double value) {
-                switch (value.toInt()) {
-                  case 0:
-                    return '당뇨';
-                  case 1:
-                    return '비만';
-                  case 2:
-                    return '혈압';
-                  case 3:
-                    return '간';
-                  default:
-                    return '';
-                }
-              },
-            ),
-            leftTitles: SideTitles(
-              showTitles: true,
-              getTitles: (value) {
-                return value == 0 ? '0' : '${value.toInt()}';
-              },
-              interval: 500, // 각 라벨 사이의 간격을 500으로 설정
-              reservedSize: 40, // Y축 라벨을 위한 공간 예약
-            ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text("Today's Intake Nutrition", style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueAccent)),
           ),
-          gridData: FlGridData(
-            show: true,
-            drawHorizontalLine: true,
-            horizontalInterval: 500, // 수평 그리드 라인 간격을 500으로 설정
+          Expanded(
+            child: _isBarChart ? _buildBarChart() : buildNutritionDashboard(
+                nutrition),
           ),
-          borderData: FlBorderData(
-            show: false,
-          ),
-          barTouchData: BarTouchData(
-            touchTooltipData: BarTouchTooltipData(
-              tooltipBgColor: Colors.transparent,
-              tooltipPadding: const EdgeInsets.all(0),
-              tooltipMargin: 8,
-              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                return BarTooltipItem(
-                  rod.y.round().toString(),
-                  TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
+        ],
       ),
     );
   }
 
+  Widget _buildBarChart() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Container(
+            height: 500, // Fixed height to control the area of the bars
+            decoration: BoxDecoration(
+              // border: Border.all(color: Colors.blueAccent),
+              // borderRadius: BorderRadius.circular(12.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _createBars(nutrition),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16), // Spacing between the box and the text below it
+        Text("Detailed nutritional values displayed here",
+            style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+      ],
+    );
+  }
 
-  Widget _buildList() {
-    List<String> categories = ['당뇨수치', '비만 수치', '혈압 수치', '간 수치'];
-    List<int> values = [70, 85, 90, 55];
+  List<Widget> _createBars(Nutrition nutrition) {
+    Map<String, double> nutrientValues = {
+      'Calories': nutrition.calories,
+      'Carbs': nutrition.carbs,
+      'Protein': nutrition.protein,
+      'Fats': nutrition.fats,
+      'Sodium': nutrition.sodium,
+      'Cholesterol': nutrition.cholesterol,
+      'Sugars': nutrition.sugars,
+    };
 
-    return ListView.builder(
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(categories[index]),
-          trailing: Text(values[index].toString()),
-        );
-      },
+    List<Widget> bars = [];
+    nutrientValues.forEach((label, value) {
+      double max = Nutrition.maxValues[label]!;
+      double percentage = value / max * 100;
+      bars.add(Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: "$label ", // 레이블
+                      style: TextStyle(fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue),
+                    ),
+                    TextSpan(
+                      text: "$value", // 값
+                      style: TextStyle(fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                "${percentage.toStringAsFixed(1)}%", // 백분율
+                style: TextStyle(fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey),
+              ),
+            ],
+          ),
+          SizedBox(height: 4), // Space between label and bar
+          Stack(
+            children: [
+              Container(
+                height: 12,
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(
+                        10) // Rounded corners for the background
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: percentage / 100,
+                child: Container(
+                  height: 12,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [Colors.blue, Colors.green], // 시작색과 끝색 지정
+                    ),
+                    borderRadius: BorderRadius.circular(
+                        10), // Rounded corners for the filled part
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10), // Space between bars
+        ],
+      ));
+    });
+    return bars;
+  }
+
+  Widget buildNutritionDashboard(Nutrition nutrition) {
+    return Column(
+      children: [
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: nutritionCard('Carbs', nutrition.carbs, 'g'),
+              ),
+              Expanded(
+                child: nutritionCard('Protein', nutrition.protein, 'g'),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: nutritionCard('Fats', nutrition.fats, 'g'),
+              ),
+              Expanded(
+                child: nutritionCard('Sodium', nutrition.sodium, 'mg'),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(
+                child: nutritionCard('Cholesterol', nutrition.cholesterol, 'mg'),
+              ),
+              Expanded(
+                child: nutritionCard('Sugars', nutrition.sugars, 'g'),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: 100,
+          child: Center(
+            child: Text(
+              'Calories: ${nutrition.calories.toStringAsFixed(0)} kcal',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget nutritionCard(String nutrient, double value, String unit) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      color: Colors.lightGreen[100], // 카드의 배경색 지정
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(nutrient, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Text('$value $unit', style: TextStyle(fontSize: 14))
+        ],
+      ),
     );
   }
 }

@@ -68,43 +68,43 @@ class _upload2stfState extends State<upload2> {
               SizedBox(height: 20),
               TextFormField(
                 controller: _caloriesController,
-                decoration: InputDecoration(labelText: 'Calories'),
+                decoration: InputDecoration(labelText: 'Calories(Kcal)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _carbsController,
-                decoration: InputDecoration(labelText: 'Carbohydrates'),
+                decoration: InputDecoration(labelText: 'Carbohydrates(g)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _proteinsController,
-                decoration: InputDecoration(labelText: 'Proteins'),
+                decoration: InputDecoration(labelText: 'Proteins(g)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _fatsController,
-                decoration: InputDecoration(labelText: 'Fats'),
+                decoration: InputDecoration(labelText: 'Fats(g)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _sodiumController,
-                decoration: InputDecoration(labelText: 'Sodium'),
+                decoration: InputDecoration(labelText: 'Sodium(mg)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _cholesterolController,
-                decoration: InputDecoration(labelText: 'Cholesterol'),
+                decoration: InputDecoration(labelText: 'Cholesterol(mg)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 20), // 추가된 공간
               TextFormField(
                 controller: _sugarController,
-                decoration: InputDecoration(labelText: 'Sugars'),
+                decoration: InputDecoration(labelText: 'Sugars(g)'),
                 keyboardType: TextInputType.number,
               ),
               SizedBox(height: 40), // Submit 버튼 전에 추가된 공간
