@@ -464,7 +464,7 @@ class allApi{
       'fat': fat,
       'natrium': natrium,
       'cholesterol': cholesterol,
-      // 'sugar': sugar,
+      'saccharide': sugar,
       //sugar는 지호가 API 업데이트 해주면 주석 풀기만 하면 됨.
     };
 

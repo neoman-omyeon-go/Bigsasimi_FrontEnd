@@ -54,7 +54,6 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('사용자 건강 정보'),
         actions: [
           IconButton(
             icon: Icon(_isBarChart ? Icons.bar_chart : Icons.list),
@@ -69,12 +68,38 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text("Today's Intake Nutrition", style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueAccent)),
+            padding: EdgeInsets.only(top: 20, right: 240),
+            child: Text(
+              'Today''s Nutrition. ',
+              style: TextStyle(
+                fontSize: 30, // 텍스트의 크기를 더 크게 변경합니다.
+                fontWeight: FontWeight.bold, // 글씨체를 굵게 합니다.
+                color: Colors.black,
+              ),
+            ),
           ),
+          SizedBox(height: 10),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+              children: <Widget>[
+                Icon(
+                  Icons.report, // 느낌표 아이콘
+                  color: Color.fromRGBO(90,154,68,1.0),
+                ),
+                SizedBox(width: 10), // 아이콘과 텍스트 사이에 간격 추가
+                Expanded( // 텍스트가 화면 너비를 벗어나지 않도록 Expanded 위젯을 사용합니다.
+                  child: Text(
+                    'Please Upload your Nutrition',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           Expanded(
             child: _isBarChart ? _buildBarChart() : buildNutritionDashboard(
                 nutrition),
@@ -193,68 +218,69 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
   }
 
   Widget buildNutritionDashboard(Nutrition nutrition) {
-    return Column(
-      children: [
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: nutritionCard('Carbs', nutrition.carbs, 'g'),
-              ),
-              Expanded(
-                child: nutritionCard('Protein', nutrition.protein, 'g'),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: nutritionCard('Fats', nutrition.fats, 'g'),
-              ),
-              Expanded(
-                child: nutritionCard('Sodium', nutrition.sodium, 'mg'),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: nutritionCard('Cholesterol', nutrition.cholesterol, 'mg'),
-              ),
-              Expanded(
-                child: nutritionCard('Sugars', nutrition.sugars, 'g'),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 100,
-          child: Center(
-            child: Text(
-              'Calories: ${nutrition.calories.toStringAsFixed(0)} kcal',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget nutritionCard(String nutrient, double value, String unit) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      color: Colors.lightGreen[100], // 카드의 배경색 지정
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.0), // 좌우 여백 추가
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(nutrient, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          Text('$value $unit', style: TextStyle(fontSize: 14))
+          _buildNutritionRow(['Carbs', 'Protein'], [nutrition.carbs, nutrition.protein], [1, 1],
+              [Color.fromRGBO(252, 250, 231, 1.0), Color.fromRGBO(236, 249, 237, 1.0)], [Color.fromRGBO(219, 187, 104, 1.0), Color.fromRGBO(66, 201, 80, 1.0)]),
+          _buildNutritionRow(['Fats', 'Cholesterol'], [nutrition.fats, nutrition.cholesterol], [1, 1],
+              [Color.fromRGBO(250, 236, 240, 1.0), Color.fromRGBO(240, 236, 249, 1.0)], [Color.fromRGBO(210, 65, 110, 1.0), Color.fromRGBO(112, 66, 201, 1.0)]),
+          _buildNutritionRow(['Sodium', 'Sugars'], [nutrition.sodium, nutrition.sugars], [1, 1],
+              [Color.fromRGBO(230, 247, 246, 1.0), Color.fromRGBO(252, 243, 231, 1.0)], [Color.fromRGBO(13, 177, 173, 1.0), Color.fromRGBO(240, 146, 72, 1.0)]),
+          _buildNutritionRow(['Calories'], [nutrition.calories], [2],
+              [Color.fromRGBO(232, 241, 250, 1.0)], [Color.fromRGBO(25, 123, 210, 1.0)]), // span이 2일 경우
         ],
       ),
     );
   }
+
+  Widget _buildNutritionRow(List<String> titles, List<double> values, List<int> spans, List<Color> colors, List<Color> textColors) {
+    assert(titles.length == values.length && titles.length == spans.length && titles.length == colors.length);
+
+    return Row(
+      children: List.generate(titles.length, (index) {
+        return Expanded(
+          flex: spans[index],
+          child: _buildNutritionItem(titles[index], values[index], colors[index], textColors[index]),
+        );
+      }),
+    );
+  }
+
+  Widget _buildNutritionItem(String title, double value, Color color, Color textColor) {
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      color: color,
+      height: 150, // 세로 길이를 조정하여 높이를 높임
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: textColor),
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                value.toString(),
+                style: TextStyle(fontSize: 19.0),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 8.0,
+            right: 8.0,
+            child: Text(
+              '${value.toString()} / ${Nutrition.maxValues['${title}']}',
+              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
