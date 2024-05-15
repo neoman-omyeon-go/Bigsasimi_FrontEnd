@@ -633,6 +633,66 @@ class allApi{
     }
   }
 
+  Future<bool> postNutritionInfoFoodSearch(String foodName, String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
+    var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
+    // var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
+
+    bool _isSuccess = false;
+
+    Dio dio = Dio();
+
+    var data;
+
+    data = {
+      'name': foodName,
+      'calories': calories,
+      'carb': carb,
+      'protein': protein,
+      'fat': fat,
+      'natrium': natrium,
+      'cholesterol': cholesterol,
+      'saccharide': sugar,
+      //sugar는 지호가 API 업데이트 해주면 주석 풀기만 하면 됨.
+    };
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.post(url, data: data, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),
+      );
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("Post FoodSearch send is seccess!");
+        print(response.data);
+
+        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+        checkPostNutritionManuallyToServerToast();
+        _isSuccess = true;
+
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+        _isSuccess = false;
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+        _isSuccess = false;
+      }
+    }
+
+    return _isSuccess;
+  }
+
 
 }
 

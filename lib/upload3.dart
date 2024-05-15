@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'foodList.dart';  // 필요한 내용이 포함된 전제된 foodList.dart 파일
 import 'food.dart';
 import 'APIfile.dart';
+import 'intakenGraph.dart';
 
 
 class FoodSearch extends StatefulWidget {
@@ -139,21 +140,66 @@ class _FoodSearchState extends State<FoodSearch> {
                     ),
                   ],
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 80),
+                Text(
+                  "확인 버튼을 누르면, 영양정보가 업로드됩니다.",
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               ],
             ),
           ),
           actions: [
             TextButton(
               child: Text(
-                "OK",
+                "취소",
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Colors.red,
                   fontSize: 18,
                 ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                "확인",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 18,
+                ),
+              ),
+              onPressed: () async{
+                // 여기에 영양정보 업로드 로직을 추가할 수 있습니다.
+
+                print(food.calories);
+                bool isSuccessManuallyAPI = await allApi().postNutritionInfoFoodSearch(
+                    food.name,
+                    food.calories.toString(),
+                    food.carbs.toString(),
+                    food.protein.toString(),
+                    food.fats.toString(),
+                    food.sodium.toString(),
+                    food.cholesterol.toString(),
+                    food.sugars.toString(),
+                );
+
+                if(isSuccessManuallyAPI){
+                  nutrition = Nutrition(
+                    calories: nutrition.calories + food.calories,
+                    carbs: nutrition.carbs + food.carbs,
+                    protein: nutrition.protein + food.protein,
+                    fats: nutrition.fats + food.fats,
+                    sodium: nutrition.sodium + food.sodium,
+                    cholesterol: nutrition.cholesterol + food.cholesterol,
+                    sugars: nutrition.sugars + food.sugars,
+                  );
+                  if(context.mounted){
+                    //비동기 코드에서 BuildContext를 바로 쓰지 말라는 의미 같음. 그래서 mounted로 체크해주고 실행하려는거 같음.
+                    Navigator.pop(context);
+                  }
+                }
+                // Navigator.of(context).pop();
               },
             ),
           ],
