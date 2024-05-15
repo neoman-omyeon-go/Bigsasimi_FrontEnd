@@ -9,6 +9,7 @@ import 'profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'APIfile.dart';
+import 'upload3.dart';
 //처음 화면 초기화시에, 로그인 성공~ 하면서 뜨게 해줄거임
 //loginSuccessed();
 
@@ -258,6 +259,17 @@ class _UploadScreenState extends State<UploadScreen> {
                     onTap: () {
                       Navigator.of(context).pop(); // 다이얼로그 닫기
                       _pickImage(); // 갤러리에서 사진 선택 함수 호출
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.search),
+                    title: Text("음식 검색"),
+                    onTap: () {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => FoodSearch()),
+                      );
+
                     },
                   ),
                 ],

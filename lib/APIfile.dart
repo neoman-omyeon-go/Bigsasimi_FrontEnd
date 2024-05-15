@@ -12,7 +12,10 @@ import 'profile_userprofile.dart';
 import 'profile_userinfoWidget.dart';
 import 'profile.dart';
 import 'intakenGraph.dart';
+import 'upload3.dart';
+import 'food.dart';
 
+late Food food;
 late Nutrition nutrition;
 late UserInfo userInfo;
 late UserProfile userProfile;
@@ -558,7 +561,76 @@ class allApi{
         print(e.message);
       }
     }
+  }
 
+  Future<void> getFoodsNutrition(String foodName) async {
+    var url = 'http://127.0.0.1:8000/api/get_search_list/?item=${foodName}';
+
+    Dio dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.get(url, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),);
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("get UserNutrioton Success");
+        // checkUploadToServerToast1();
+        // print(response.data["data"]);
+
+        var FoodNutritionData = response.data["data"]["items"][0];
+        print("FoodNutritionData: $FoodNutritionData");
+
+        String foodName = FoodNutritionData["식품명"].toString();
+        String foodCalory = FoodNutritionData["에너지"].toString();
+        String foodProtein = FoodNutritionData["단백질"].toString();
+        String foodFat = FoodNutritionData["지방"].toString();
+        String foodCarb = FoodNutritionData["탄수화물"].toString();
+        String foodNatrium = FoodNutritionData["나트륨"].toString();
+        String foodCholesterol = FoodNutritionData["콜레스테롤"].toString();
+        // String foodSugars = FoodNutritionData["당류"].toString();
+        String foodSugars = '0';
+
+        print("foodName: ${foodName}");
+        print("foodCalory: ${foodCalory}");
+        print("foodProtein: ${foodProtein}");
+        print("foodFat: ${foodFat}");
+        print("foodCarb: ${foodCarb}");
+        print("foodNatrium: ${foodNatrium}");
+        print("foodCholesterol: ${foodCholesterol}");
+        print("foodSugars: ${foodSugars}");
+
+
+          food = Food(
+            name: foodName,
+            calories: double.parse(foodCalory),
+            carbs: double.parse(foodCarb),
+            protein: double.parse(foodProtein),
+            fats: double.parse(foodFat),
+            sodium: double.parse(foodNatrium),
+            cholesterol: double.parse(foodCholesterol),
+            // sugars: double.parse(foodSugars),
+            sugars: 0,
+          );
+
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
   }
 
 

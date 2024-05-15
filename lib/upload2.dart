@@ -132,6 +132,8 @@ class _upload2stfState extends State<upload2> {
                         cholesterol: nutrition.cholesterol + double.parse(cholesterols),
                         sugars: nutrition.sugars + double.parse(sugars),
                     );
+                    
+                    // allApi().getFoodsNutrition("햄김치찌개"); //test용 ㅇㅇ
 
                     if(isSuccessManuallyAPI){
                       if(context.mounted){
