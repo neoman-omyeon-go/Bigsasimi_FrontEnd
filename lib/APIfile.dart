@@ -11,7 +11,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'profile_userprofile.dart';
 import 'profile_userinfoWidget.dart';
 import 'profile.dart';
+import 'intakenGraph.dart';
 
+late Nutrition nutrition;
 late UserInfo userInfo;
 late UserProfile userProfile;
 
@@ -356,24 +358,7 @@ class allApi{
 
         print(profileData);
 
-        // await storage.write(key: 'avatar', value: profileData["avatar"]);
-        // await storage.write(key: 'real_name', value: profileData["real_name"]);
-        // await storage.write(key: 'gender', value: profileData["gender"]);
-        // //String
-        // //Int
-        // await storage.write(key: 'id', value: profileData["id"].toString());
-        // await storage.write(key: 'age', value: profileData["age"].toString());
-        // await storage.write(key: 'height', value: profileData["height"].toString());
-        // await storage.write(key: 'weight', value: profileData["weight"].toString());
-        // await storage.write(key: 'goals_calories', value: profileData["goals_calories"].toString());
-        // await storage.write(key: 'goals_carb', value: profileData["goals_carb"].toString());
-        // await storage.write(key: 'goals_protein', value: profileData["goals_protein"].toString());
-        // await storage.write(key: 'goals_fat', value: profileData["goals_fat"].toString());
-        // await storage.write(key: 'goals_natrium', value: profileData["goals_natrium"].toString());
-        // //List<String>
-        // await storage.write(key: 'disease', value: profileData["disease"].toString());
-        // await storage.write(key: 'allergy', value: profileData["allergy"].toString());
-
+        await storage.write(key: 'id', value: profileData["id"].toString());
         String? id = profileData["id"].toString()??'';
         String? avartar = profileData["avatar"]??'avatarPath';
         String userName = profileData["real_name"]??'userName';
@@ -516,6 +501,64 @@ class allApi{
         textColor: Colors.white,
         fontSize: 20.0
     );
+  }
+
+  Future<void> getUserNutrition() async {
+    var userId = await storage.read(key: 'id');
+    var url = 'http://127.0.0.1:8000/api/get_dailyinformation/?id=${userId}';
+
+    Dio dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.get(url, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),);
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("get UserNutrioton Success");
+        // checkUploadToServerToast1();
+        // print(response.data["data"]);
+
+        var NutritionData = response.data["data"];
+        print("nutrition Data: $NutritionData");
+
+        String? total_calories = NutritionData["total_calories"].toString()??'0';
+        String? total_carb = NutritionData["total_carb"].toString()??'0';
+        String? total_protein = NutritionData["total_protein"].toString()??'0';
+        String? total_fat = NutritionData["total_fat"].toString()??'0';
+        String? total_natrium = NutritionData["total_natrium"].toString()??'0';
+        String? total_cholesterol = NutritionData["total_cholesterol"].toString()??'0';
+        String? total_saccharide = NutritionData["total_saccharide"].toString()??'0';
+
+        nutrition = Nutrition(
+            calories: double.parse(total_calories),
+            carbs: double.parse(total_carb),
+            protein: double.parse(total_protein),
+            fats: double.parse(total_fat),
+            sodium: double.parse(total_natrium),
+            cholesterol: double.parse(total_cholesterol),
+            sugars: double.parse(total_saccharide),
+        );
+
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+
   }
 
 

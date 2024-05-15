@@ -1,22 +1,24 @@
+import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 
-class Nutrition {
-  double calories;
-  double carbs;
-  double protein;
-  double fats;
-  double sodium;
-  double cholesterol;
-  double sugars;
 
-  static const Map<String, double> maxValues = {
-    'Calories': 2000,
-    'Carbs': 300,
-    'Protein': 150,
-    'Fats': 100,
-    'Sodium': 2400,
-    'Cholesterol': 300,
-    'Sugars': 100,
+class Nutrition {
+  late double calories;
+  late double carbs;
+  late double protein;
+  late double fats;
+  late double sodium;
+  late double cholesterol;
+  late double sugars;
+
+  static Map<String, double?> maxValues = {
+    'Calories': double.parse(userProfile.calorieIntake),
+    'Carbs': double.parse(userProfile.carbIntake),
+    'Protein': double.parse(userProfile.proteinIntake),
+    'Fats': double.parse(userProfile.fatIntake),
+    'Sodium': double.parse(userProfile.natriumIntake),
+    'Cholesterol': 200, // 그냥 이거는 상수로 박아 넣기로 했음(일일 권장 섭취 콜레스테롤로) 200mg이 권장 섭취량
+    'Sugars': 30, // 이것도 상수로 박아 넣기로 했음(일일 권장 섭취 당류. 남, 여가 다르긴하나 평균으로 30g으로 설정.)
   };
 
   Map<String, dynamic> toMap() {
@@ -31,7 +33,16 @@ class Nutrition {
     };
   }
 
-  Nutrition(this.calories, this.carbs, this.protein, this.fats, this.sodium, this.cholesterol, this.sugars);
+  Nutrition({
+    required this.calories,
+    required this.carbs,
+    required this.protein,
+    required this.fats,
+    required this.sodium,
+    required this.cholesterol,
+    required this.sugars,
+  });
+
 }
 
 class HealthInfoGraph extends StatefulWidget {
@@ -41,30 +52,18 @@ class HealthInfoGraph extends StatefulWidget {
 
 class _HealthInfoGraphState extends State<HealthInfoGraph> {
   bool _isBarChart = true;
-  Nutrition nutrition = Nutrition(
-      1800.0,
-      250.0,
-      120.0,
-      80.0,
-      1500.0,
-      200.0,
-      80.0);
+  // Nutrition nutrition = Nutrition(
+  //     1800.0,
+  //     250.0,
+  //     120.0,
+  //     80.0,
+  //     1500.0,
+  //     200.0,
+  //     80.0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(_isBarChart ? Icons.bar_chart : Icons.list),
-            onPressed: () {
-              setState(() {
-                _isBarChart = !_isBarChart;
-              });
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(
@@ -95,6 +94,14 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
                     textAlign: TextAlign.left,
                     style: TextStyle(color: Colors.black),
                   ),
+                ),
+                IconButton(
+                  icon: Icon(_isBarChart ? Icons.bar_chart : Icons.list),
+                  onPressed: () {
+                    setState(() {
+                      _isBarChart = !_isBarChart;
+                    });
+                  },
                 ),
               ],
             ),
@@ -137,7 +144,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
   }
 
   List<Widget> _createBars(Nutrition nutrition) {
-    Map<String, double> nutrientValues = {
+    Map<String, double?> nutrientValues = {
       'Calories': nutrition.calories,
       'Carbs': nutrition.carbs,
       'Protein': nutrition.protein,
@@ -150,7 +157,14 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
     List<Widget> bars = [];
     nutrientValues.forEach((label, value) {
       double max = Nutrition.maxValues[label]!;
-      double percentage = value / max * 100;
+      double percentage;
+      if (max == 0) { // max가 0일 경우 처리
+        percentage = 0.0; // 0으로 설정하여 NaN 상황 방지
+      } else {
+        percentage = value! / max * 100; // 실제 백분율 계산
+      }
+      bool isExceeded = percentage > 100; // 백분율이 100%를 초과하는지 확인
+
       bars.add(Column(
         children: [
           Row(
@@ -166,56 +180,60 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
                           color: Colors.blue),
                     ),
                     TextSpan(
-                      text: "$value", // 값
+                      text: "${value!.toStringAsFixed(1)}", // 값
                       style: TextStyle(fontSize: 10,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Colors.black),
                     ),
                   ],
                 ),
               ),
               Text(
-                "${percentage.toStringAsFixed(1)}%", // 백분율
+                "${percentage.toStringAsFixed(1)}%", // 실제 계산된 백분율
                 style: TextStyle(fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey),
+                    color: isExceeded ? Colors.red : Colors.blueGrey), // 백분율이 100%를 초과하면 빨간색, 아니면 파란색
               ),
             ],
           ),
-          SizedBox(height: 4), // Space between label and bar
+          SizedBox(height: 4), // 레이블과 막대 사이 공간
           Stack(
             children: [
               Container(
                 height: 12,
                 decoration: BoxDecoration(
                     color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(
-                        10) // Rounded corners for the background
+                    borderRadius: BorderRadius.circular(10) // 배경의 둥근 모서리
                 ),
               ),
               FractionallySizedBox(
-                widthFactor: percentage / 100,
+                widthFactor: percentage.clamp(0, 100) / 100, // 막대의 최대 너비 100%로 제한
                 child: Container(
                   height: 12,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [Colors.blue, Colors.green], // 시작색과 끝색 지정
+                      colors: isExceeded ? [Colors.red, Colors.redAccent] : [Colors.blue, Colors.green], // 초과 시 빨간색 그라데이션, 아니면 파랑-녹색
                     ),
-                    borderRadius: BorderRadius.circular(
-                        10), // Rounded corners for the filled part
+                    borderRadius: BorderRadius.circular(10), // 채워진 부분의 둥근 모서리
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 10), // Space between bars
+          SizedBox(height: 10), // 막대 사이 공간
         ],
       ));
     });
     return bars;
   }
+
+
+
+
+
+
 
   Widget buildNutritionDashboard(Nutrition nutrition) {
     return Padding(
@@ -223,13 +241,13 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildNutritionRow(['Carbs', 'Protein'], [nutrition.carbs, nutrition.protein], [1, 1],
+          _buildNutritionRow(['Carbs', 'Protein'], [nutrition.carbs!, nutrition.protein!], [1, 1],
               [Color.fromRGBO(252, 250, 231, 1.0), Color.fromRGBO(236, 249, 237, 1.0)], [Color.fromRGBO(219, 187, 104, 1.0), Color.fromRGBO(66, 201, 80, 1.0)]),
-          _buildNutritionRow(['Fats', 'Cholesterol'], [nutrition.fats, nutrition.cholesterol], [1, 1],
+          _buildNutritionRow(['Fats', 'Cholesterol'], [nutrition.fats!, nutrition.cholesterol!], [1, 1],
               [Color.fromRGBO(250, 236, 240, 1.0), Color.fromRGBO(240, 236, 249, 1.0)], [Color.fromRGBO(210, 65, 110, 1.0), Color.fromRGBO(112, 66, 201, 1.0)]),
-          _buildNutritionRow(['Sodium', 'Sugars'], [nutrition.sodium, nutrition.sugars], [1, 1],
+          _buildNutritionRow(['Sodium', 'Sugars'], [nutrition.sodium!, nutrition.sugars!], [1, 1],
               [Color.fromRGBO(230, 247, 246, 1.0), Color.fromRGBO(252, 243, 231, 1.0)], [Color.fromRGBO(13, 177, 173, 1.0), Color.fromRGBO(240, 146, 72, 1.0)]),
-          _buildNutritionRow(['Calories'], [nutrition.calories], [2],
+          _buildNutritionRow(['Calories'], [nutrition.calories!], [2],
               [Color.fromRGBO(232, 241, 250, 1.0)], [Color.fromRGBO(25, 123, 210, 1.0)]), // span이 2일 경우
         ],
       ),

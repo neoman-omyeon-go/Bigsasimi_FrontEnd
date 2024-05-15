@@ -1,5 +1,6 @@
 import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
+import 'intakenGraph.dart';
 
 class upload2 extends StatefulWidget {
   const upload2({super.key});
@@ -121,6 +122,16 @@ class _upload2stfState extends State<upload2> {
                     String sugars = _sugarController.text;
 
                     bool isSuccessManuallyAPI = await allApi().postNutritionInfoManually(calories, carbs, proteins, fats, natriums, cholesterols, sugars);
+
+                    nutrition = Nutrition(
+                        calories: nutrition.calories + double.parse(calories),
+                        carbs: nutrition.carbs + double.parse(carbs),
+                        protein: nutrition.protein + double.parse(proteins),
+                        fats: nutrition.fats + double.parse(fats),
+                        sodium: nutrition.sodium + double.parse(natriums),
+                        cholesterol: nutrition.cholesterol + double.parse(cholesterols),
+                        sugars: nutrition.sugars + double.parse(sugars),
+                    );
 
                     if(isSuccessManuallyAPI){
                       if(context.mounted){

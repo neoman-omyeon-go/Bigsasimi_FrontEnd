@@ -8,8 +8,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'APIfile.dart';
 //처음 화면 초기화시에, 로그인 성공~ 하면서 뜨게 해줄거임
 //loginSuccessed();
+
 class uploadScreen extends StatefulWidget {
   @override
   _uploadScreenState createState() => _uploadScreenState();
@@ -23,6 +25,7 @@ class _uploadScreenState extends State<uploadScreen> {
 
   @override
   void initState() {
+    allApi().getUserNutrition();
     super.initState();
     _pages = [
       TodaysNews(),

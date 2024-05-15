@@ -7,24 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'profile_userinfoWidget.dart';
 import 'profile_exeldata.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'APIfile.dart';
 import 'profile_userprofile.dart';
-
-// final FlutterSecureStorage storage = FlutterSecureStorage();
-// late UserInfo userInfo1;
-// late UserProfile userProfile1;
-//
-// void getUserInfo(UserInfo userinfo){
-//   userInfo1 = allApi().giveUserinfo();
-//   print(userInfo1);
-// }
-//
-// void getUserProfile(UserProfile userProfile){
-//   userProfile1 = allApi().giveUserprofile();
-//   print(userProfile1);
-// }
+import 'intakenGraph.dart';
+late Nutrition nutrition;
 
 class Profile extends StatefulWidget {
   @override
@@ -55,6 +41,11 @@ void _saveProfile() async {
       userProfile.fatIntake,
       userProfile.natriumIntake,
     );
+    Nutrition.maxValues['Calories'] = double.parse(userProfile.calorieIntake);
+    Nutrition.maxValues['Carbs'] = double.parse(userProfile.carbIntake);
+    Nutrition.maxValues['Protein'] = double.parse(userProfile.proteinIntake);
+    Nutrition.maxValues['Fats'] = double.parse(userProfile.fatIntake);
+    Nutrition.maxValues['Sodium'] = double.parse(userProfile.natriumIntake);
 
     // await inituserinfo();
 
@@ -104,6 +95,7 @@ void _saveProfile() async {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
                 _saveProfile();
+
                   // _loadUserInfo();
               },
             ),
