@@ -289,6 +289,57 @@ class allApi{
     }
   }
 
+  Future<String> updateToServer3(dynamic imgfile) async{
+    // var url = 'http://127.0.0.1:8000/api/profile_avatar_uplaoad/'
+    var url = 'http://223.130.154.147:8080/api/profile_avatar_uplaoad/';
+    print(" recieve Parameter $imgfile");
+
+    var dio = Dio();
+    late String imgURI;
+
+    var formData = FormData.fromMap({'image': await MultipartFile.fromFile(imgfile),});
+    // Map<String, File?> data = {
+    //   'image': imgfile,
+    // };
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.post(url, data: formData, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken', 'Content-Type': 'multipart/form-data; ''charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+        ),
+      );
+
+      print("Try Try Try");
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+
+        print("Upload profileimg Success!: ${response.data['data']['avatar']}");
+        imgURI = response.data['data']['avatar'];
+
+        //메세지로 저장 잘 됐다. 라고 띄워줄거임
+
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+
+        imgURI = "Static IMG URI Has a Error Occured ${e.response?.statusCode}";
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+        imgURI = "Static IMG URI Has a Error Occured(No Request) ${e.message}";
+      }
+    }
+
+    return imgURI;
+  }
+
+
   Future<void> getUserState() async{
     // var url = 'http://127.0.0.1:8000/test/authonly/';
     var url = 'http://223.130.154.147:8080/test/authonly/';
@@ -386,6 +437,7 @@ class allApi{
         // disease.split(',');
         // print("disease${disease}");
 
+        print("avatar Json Parsing $avartar");
 
         userInfo = UserInfo(
           userName: userName,

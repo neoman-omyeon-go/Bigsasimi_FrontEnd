@@ -13,6 +13,7 @@ import 'intakenGraph.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 
 late Nutrition nutrition;
+String imgURI = userProfile.avatar;
 
 class Profile extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
 bool _isLoading = false;
 File? _image;
+dynamic imgpath;
 
 void _saveProfile() async {
   setState(() {
@@ -93,10 +95,17 @@ void _saveProfile() async {
                   Icon(Icons.save),
                 ],
               ),
-              onPressed: () {
+              onPressed: () async {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
                 _saveProfile();
+                print("imageimage:$imgpath");
+                imgURI = await allApi().updateToServer3(imgpath);
+                setState(() {
+                  imgURI;
+                  _image = null;
+                });
+                print("imgURI in profile.dart: ${imgURI}");
                   // _loadUserInfo();
               },
             ),
@@ -113,16 +122,17 @@ void _saveProfile() async {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey[600],
-                  child: _image != null ? ClipOval(
-                    child: Image.file(
+                  child: ClipOval(
+                    child: _image != null
+                        ? Image.file(
                       _image!,
                       fit: BoxFit.cover,
                       width: 160,
                       height: 160,
-                    ),
-                  ) : ClipOval(
-                    child: Image.network(
-                      '${userProfile.avatar}',
+                    )
+                        : Image.network(
+                      // 'http://223.130.154.147:8080/${userProfile.avatar}',
+                      'http://223.130.154.147:8080/${imgURI}',
                       fit: BoxFit.cover,
                       width: 160,
                       height: 160,
@@ -137,10 +147,10 @@ void _saveProfile() async {
                             ),
                           );
                         }
-                        },
+                      },
                       errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
                         return Center(child: Text('Failed to load image'));
-                        },
+                      },
                     ),
                   ),
                 ),
@@ -270,12 +280,15 @@ void _editProfilePicture() async {
   if (image != null) {
     print("Selected image path: ${image.path}");
     setState(() {
-      _image = File(image.path);
+      _image = File(image.path); // File 형태로 _image에 저장
+      imgpath = image.path; // imgpath 변수에 경로 저장
+      imgURI = imgpath; // imgURI 변수에 imgpath 할당
     });
   } else {
     print("No image selected");
   }
 }
+
 
   void _showChronicIllnessesDialog() {
     List<String> tempSelectedChronicIllnesses = List.from(userProfile.chronicIllnesses);
