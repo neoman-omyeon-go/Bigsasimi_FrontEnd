@@ -10,6 +10,8 @@ import 'profile_exeldata.dart';
 import 'APIfile.dart';
 import 'profile_userprofile.dart';
 import 'intakenGraph.dart';
+import 'package:uri_to_file/uri_to_file.dart';
+
 late Nutrition nutrition;
 
 class Profile extends StatefulWidget {
@@ -95,7 +97,6 @@ void _saveProfile() async {
                 // 저장 버튼을 눌렀을 때의 동작 구현
                 // 예: _saveProfile();
                 _saveProfile();
-
                   // _loadUserInfo();
               },
             ),
@@ -112,19 +113,35 @@ void _saveProfile() async {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey[600],
-                  child: _image != null
-                      ? ClipOval(
+                  child: _image != null ? ClipOval(
                     child: Image.file(
                       _image!,
                       fit: BoxFit.cover,
                       width: 160,
                       height: 160,
                     ),
-                  )
-                      : Icon(
-                    Icons.person,
-                    size: 100,
-                    color: Colors.white,
+                  ) : ClipOval(
+                    child: Image.network(
+                      '${userProfile.avatar}',
+                      fit: BoxFit.cover,
+                      width: 160,
+                      height: 160,
+                      loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
+                            ),
+                          );
+                        }
+                        },
+                      errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                        return Center(child: Text('Failed to load image'));
+                        },
+                    ),
                   ),
                 ),
               ),
@@ -247,18 +264,18 @@ void _saveProfile() async {
     });
   }
 
-  void _editProfilePicture() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      print("Selected image path: ${image.path}");
-      setState(() {
-        _image = File(image.path);
-      });
-    } else {
-      print("No image selected");
-    }
+void _editProfilePicture() async {
+  final ImagePicker _picker = ImagePicker();
+  final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+  if (image != null) {
+    print("Selected image path: ${image.path}");
+    setState(() {
+      _image = File(image.path);
+    });
+  } else {
+    print("No image selected");
   }
+}
 
   void _showChronicIllnessesDialog() {
     List<String> tempSelectedChronicIllnesses = List.from(userProfile.chronicIllnesses);

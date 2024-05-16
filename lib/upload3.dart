@@ -140,7 +140,7 @@ class _FoodSearchState extends State<FoodSearch> {
                     ),
                   ],
                 ),
-                SizedBox(height: 80),
+                SizedBox(height: 30),
                 Text(
                   "확인 버튼을 누르면, 영양정보가 업로드됩니다.",
                   style: TextStyle(fontSize: 16, color: Colors.grey),

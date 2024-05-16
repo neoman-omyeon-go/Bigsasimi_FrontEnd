@@ -2,6 +2,7 @@ import 'dart:io';
 
 class UserProfile {
   File? image;
+  String avatar;
   // String sex;
   // String age;
   // String height;
@@ -19,6 +20,7 @@ class UserProfile {
     // required this.age,
     // required this.height,
     // required this.weight,
+    required this.avatar,
     required this.chronicIllnesses,
     required this.allergies,
     required this.calorieIntake,
@@ -27,6 +29,4 @@ class UserProfile {
     required this.fatIntake,
     required this.natriumIntake,
   });
-
-
 }

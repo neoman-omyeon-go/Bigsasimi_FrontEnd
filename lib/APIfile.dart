@@ -24,8 +24,8 @@ class allApi{
    var storage = FlutterSecureStorage();
 
   Future<bool> login(String username, String password) async {
-    var url = 'http://127.0.0.1:8080/api/login/';
-    // var url = 'http://223.130.154.147:8080/api/login/';
+    // var url = 'http://127.0.0.1:8080/api/login/';
+    var url = 'http://223.130.154.147:8080/api/login/';
     var checkdata;
 
     // 요청할 데이터를 Map으로 구성합니다.
@@ -83,8 +83,8 @@ class allApi{
 
 //SignUp API Request
   Future<bool> signUp(String username, String password, String email) async {
-    var url = 'http://127.0.0.1:8000/api/signup/';
-    // var url = 'http://223.130.154.147:8080/api/signup/';
+    // var url = 'http://127.0.0.1:8000/api/signup/';
+    var url = 'http://223.130.154.147:8080/api/signup/';
     var registerCheckvalue;
     // 요청할 데이터를 Map으로 구성합니다.
     var data = {
@@ -136,8 +136,8 @@ class allApi{
   Future<void> uploadToServer(File? profileimg, String sex, String age, String height, String weight, List<String> chronicIllnesses,
       List<String> allergies, String calorieIntake, String carbIntake, String proteinIntake, String fatIntake, String natriumIntake) async {
     // allergies.join(",");
-    var url = 'http://127.0.0.1:8000/api/profile/';
-      // var url = 'http://223.130.154.147:8080/api/profile/';
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+      var url = 'http://223.130.154.147:8080/api/profile/';
     print(sex);
     print(age);
     print(height);
@@ -247,8 +247,8 @@ class allApi{
 
 
   Future<void> updateToserver2(String realnameController) async{
-    var url = 'http://127.0.0.1:8000/api/profile/';
-    // var url = 'http://223.130.154.147:8080/api/profile/';
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+    var url = 'http://223.130.154.147:8080/api/profile/';
     print(realnameController);
     var dio = Dio();
 
@@ -290,8 +290,8 @@ class allApi{
   }
 
   Future<void> getUserState() async{
-    var url = 'http://127.0.0.1:8000/test/authonly/';
-    // var url = 'http://223.130.154.147:8080/test/authonly/';
+    // var url = 'http://127.0.0.1:8000/test/authonly/';
+    var url = 'http://223.130.154.147:8080/test/authonly/';
 
     Dio dio = Dio();
 
@@ -336,8 +336,8 @@ class allApi{
     // await Future.delayed(Duration(seconds: 3));
 
     print("username: ${username}");
-    var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
-    // var url = 'http://223.130.154.147:8080/api/profile/?username=${username}';
+    // var url = 'http://127.0.0.1:8000/api/profile/?username=${username}';
+    var url = 'http://223.130.154.147:8080/api/profile/?username=${username}';
 
 
     Dio dio = Dio();
@@ -359,11 +359,12 @@ class allApi{
 
         var profileData = response.data["data"];
 
-        print(profileData);
+        print("ProfileData$profileData");
 
         await storage.write(key: 'id', value: profileData["id"].toString());
+        print("ProfileData ID: ${await storage.read(key: 'id')}");
         String? id = profileData["id"].toString()??'';
-        String? avartar = profileData["avatar"]??'avatarPath';
+        String avartar = profileData["avatar"]??'avatarPath';
         String userName = profileData["real_name"]??'userName';
         String sex = profileData["gender"]??'Other';
         String? age = profileData["age"].toString()??'25';
@@ -399,6 +400,7 @@ class allApi{
           // age:age,
           // height:height,
           // weight:weight,
+          avatar: avartar,
           chronicIllnesses: disease.replaceAll('[', '').replaceAll(']', '').split(','),
           allergies: allergy.replaceAll('[', '').replaceAll(']', '').split(','),
           calorieIntake: goals_calories,
@@ -436,8 +438,8 @@ class allApi{
   // }
 
   Future<bool> postNutritionInfoManually(String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
-    var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
-    // var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
+    // var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
+    var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
 
     bool _isSuccess = false;
 
@@ -508,7 +510,9 @@ class allApi{
 
   Future<void> getUserNutrition() async {
     var userId = await storage.read(key: 'id');
-    var url = 'http://127.0.0.1:8000/api/get_dailyinformation/?id=${userId}';
+    // var url = 'http://127.0.0.1:8000/api/get_dailyinformation/?id=${userId}';
+    var url = 'http://223.130.154.147:8080/api/get_dailyinformation/?id=${userId}';
+    print("userID: $userId");
 
     Dio dio = Dio();
 
@@ -530,13 +534,13 @@ class allApi{
         var NutritionData = response.data["data"];
         print("nutrition Data: $NutritionData");
 
-        String? total_calories = NutritionData["total_calories"].toString()??'0';
-        String? total_carb = NutritionData["total_carb"].toString()??'0';
-        String? total_protein = NutritionData["total_protein"].toString()??'0';
-        String? total_fat = NutritionData["total_fat"].toString()??'0';
-        String? total_natrium = NutritionData["total_natrium"].toString()??'0';
-        String? total_cholesterol = NutritionData["total_cholesterol"].toString()??'0';
-        String? total_saccharide = NutritionData["total_saccharide"].toString()??'0';
+        String total_calories = NutritionData["total_calories"].toString();
+        String total_carb = NutritionData["total_carb"].toString();
+        String total_protein = NutritionData["total_protein"].toString();
+        String total_fat = NutritionData["total_fat"].toString();
+        String total_natrium = NutritionData["total_natrium"].toString();
+        String total_cholesterol = NutritionData["total_cholesterol"].toString();
+        String total_saccharide = NutritionData["total_saccharide"].toString();
 
         nutrition = Nutrition(
             calories: double.parse(total_calories),
@@ -564,7 +568,9 @@ class allApi{
   }
 
   Future<void> getFoodsNutrition(String foodName) async {
-    var url = 'http://127.0.0.1:8000/api/get_search_list/?item=${foodName}';
+    // var url = 'http://127.0.0.1:8000/api/get_search_list/?item=${foodName}';
+    var url = 'http://223.130.154.147:8080/api/get_search_list/?item=${foodName}';
+
 
     Dio dio = Dio();
 
@@ -593,8 +599,8 @@ class allApi{
         String foodCarb = FoodNutritionData["탄수화물"].toString();
         String foodNatrium = FoodNutritionData["나트륨"].toString();
         String foodCholesterol = FoodNutritionData["콜레스테롤"].toString();
-        // String foodSugars = FoodNutritionData["당류"].toString();
-        String foodSugars = '0';
+        String foodSugars = FoodNutritionData["총당류"].toString();
+        // String foodSugars = '0';
 
         print("foodName: ${foodName}");
         print("foodCalory: ${foodCalory}");
@@ -605,7 +611,6 @@ class allApi{
         print("foodCholesterol: ${foodCholesterol}");
         print("foodSugars: ${foodSugars}");
 
-
           food = Food(
             name: foodName,
             calories: double.parse(foodCalory),
@@ -614,8 +619,8 @@ class allApi{
             fats: double.parse(foodFat),
             sodium: double.parse(foodNatrium),
             cholesterol: double.parse(foodCholesterol),
-            // sugars: double.parse(foodSugars),
-            sugars: 0,
+            sugars: double.parse(foodSugars),
+            // sugars: 0,
           );
 
       }
@@ -634,8 +639,8 @@ class allApi{
   }
 
   Future<bool> postNutritionInfoFoodSearch(String foodName, String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
-    var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
-    // var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
+    // var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
+    var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
 
     bool _isSuccess = false;
 
@@ -692,19 +697,4 @@ class allApi{
 
     return _isSuccess;
   }
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
