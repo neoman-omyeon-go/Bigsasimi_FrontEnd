@@ -12,6 +12,9 @@ import 'APIfile.dart';
 import 'upload3.dart';
 //처음 화면 초기화시에, 로그인 성공~ 하면서 뜨게 해줄거임
 //loginSuccessed();
+dynamic imgpath;
+XFile? image;
+bool loading = false;
 
 class uploadScreen extends StatefulWidget {
   @override
@@ -21,6 +24,7 @@ class uploadScreen extends StatefulWidget {
 class _uploadScreenState extends State<uploadScreen> {
   int _selectedIndex = 2;  // Upload 페이지를 초기 선택된 탭으로 설정
   bool _isLoading = false; // 로딩 상태 변수
+
 
   List<Widget> _pages = [];
 
@@ -105,24 +109,68 @@ class UploadScreen extends StatefulWidget {
 }
 
 class _UploadScreenState extends State<UploadScreen> {
-  File? _image;
+
   final ImagePicker _picker = ImagePicker();
 
   // 카메라에서 사진을 찍는 함수
   Future<void> _takePicture() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    image = await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       // 사진 파일 사용
-      print("찍은 사진의 경로: ${image.path}");
+      print("찍은 사진의 경로: ${image!.path}");
+      //api로 로드하기
+      setState(() {
+        imgpath = image!.path;
+        image;
+      });
     }
   }
 
   // 갤러리에서 사진을 선택하는 함수
   Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       // 사진 파일 사용
-      print("선택된 사진의 경로: ${image.path}");
+      print("선택된 사진의 경로: ${image!.path}");
+      //api로 로드하기
+      setState(() {
+        imgpath = image!.path;
+        image;
+      });
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    // 로딩 팝업 표시
+    showDialog(
+      context: context,
+      barrierDismissible: false, // 팝업 외부를 터치해도 팝업이 닫히지 않도록 설정
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("서버로 업로드 중..."),
+            ],
+          ),
+        );
+      },
+    );
+
+    // API 호출
+    bool success = await allApi().postTakeaPickture(imgpath);
+
+    // 팝업 닫기
+    Navigator.pop(context);
+
+    if (success) {
+      setState(() {
+        image = null;
+      });
+      Fluttertoast.showToast(msg: "업로드 성공!");
+    } else {
+      Fluttertoast.showToast(msg: "업로드 실패!");
     }
   }
 
@@ -135,7 +183,7 @@ class _UploadScreenState extends State<UploadScreen> {
           Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: EdgeInsets.only(top: 20, right: 240),
+              padding: EdgeInsets.only(top: 50, right: 210),
               child: Text(
                 'Record your diet.',
                 style: TextStyle(
@@ -160,16 +208,14 @@ class _UploadScreenState extends State<UploadScreen> {
             child: DashedBorderBox(),
           ),
           Padding(padding: EdgeInsets.symmetric(horizontal: 150.0, vertical: 10.0),
-          child: TextButton(
-            onPressed: () {
-              // 'Click!' 버튼을 눌렀을 때 실행될 액션을 여기에 추가합니다.
-            },
-            child: Text('Send to server'),
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.white, // 텍스트 색상을 지정합니다.
-              backgroundColor: Colors.black, // 배경 색상을 지정합니다.
+            child: TextButton(
+              onPressed: _uploadImage,
+              child: Text('Send to server'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white, // 텍스트 색상을 지정합니다.
+                backgroundColor: Colors.black, // 배경 색상을 지정합니다.
+              ),
             ),
-          ),
           ),
           SizedBox(height: 20),
           Padding(
@@ -269,7 +315,6 @@ class _UploadScreenState extends State<UploadScreen> {
                       Navigator.push(context,
                         MaterialPageRoute(builder: (context) => FoodSearch()),
                       );
-
                     },
                   ),
                 ],
@@ -279,10 +324,7 @@ class _UploadScreenState extends State<UploadScreen> {
         }
     );
   }
-
 }
-
-
 
 class DashedBorderBox extends StatelessWidget {
   @override
@@ -292,21 +334,25 @@ class DashedBorderBox extends StatelessWidget {
         borderType: BorderType.RRect,
         radius: Radius.circular(12),
         padding: EdgeInsets.all(6),
-        dashPattern: [8, 4], // 점선의 패턴을 정의합니다. [선 길이, 공백 길이]
-        strokeWidth: 2, // 선의 두께를 정의합니다.
+        dashPattern: [8, 4],
+        strokeWidth: 2,
         child: Container(
           color: Colors.white,
-          width: 350, // 컨테이너의 너비
-          height: 440, // 컨테이너의 높이
+          width: 330,
+          height: 400,
           alignment: Alignment.center,
-          child: Icon(
+          child: image == null
+              ? Icon(
             Icons.add,
             color: Colors.grey,
             size: 50,
+          )
+              : Image.file(
+            File(image!.path),
+            fit: BoxFit.cover,
           ),
         ),
       ),
     );
   }
 }
-

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'profile_userprofile.dart';
 import 'profile_userinfoWidget.dart';
 import 'profile.dart';
@@ -21,6 +22,7 @@ late Nutrition nutrition;
 late UserInfo userInfo;
 late UserProfile userProfile;
 late DailyNutrition dailyNutrition;
+late String staticID;
 
 class allApi{
    var storage = FlutterSecureStorage();
@@ -297,6 +299,7 @@ class allApi{
     print(" recieve Parameter $imgfile");
 
     var dio = Dio();
+
     late String imgURI;
 
     var formData = FormData.fromMap({'image': await MultipartFile.fromFile(imgfile),});
@@ -363,7 +366,12 @@ class allApi{
         print("get UserState seccess!");
         // checkUploadToServerToast1();
         await storage.write(key: 'username', value:response.data['username']);
+        await storage.write(key: 'id', value: response.data["id"].toString());
+        staticID = response.data["id"].toString();
+
         print(response.data['username']);
+        print("id value: ${await storage.read(key: 'id')}");
+        print("static Id value: $staticID");
 
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
 
@@ -564,9 +572,11 @@ class allApi{
 
   Future<void> getUserNutrition() async {
     var userId = await storage.read(key: 'id');
+    print("userID: $userId");
+
     // var url = 'http://127.0.0.1:8000/api/get_dailyinformation/?id=${userId}';
     var url = 'http://223.130.154.147:8080/api/get_dailyinformation/?id=${userId}';
-    print("userID: $userId");
+
 
     Dio dio = Dio();
 
@@ -753,7 +763,8 @@ class allApi{
   }
 
   Future<void> getDailyNutrition(DateTime Datedata) async {
-    var userId = await storage.read(key: 'id');
+    // var userId = await storage.read(key: 'id');
+    var userId = staticID;
     // var url = 'http://127.0.0.1:8080/api/get_dailyinformation/?id=3&date=2024-05-12';
     int month = Datedata.month;
     int day = Datedata.day;
@@ -828,6 +839,48 @@ class allApi{
         print(e.message);
       }
     }
+  }
+
+  Future<bool> postTakeaPickture(dynamic file) async{
+    // var url = 'http://127.0.0.1:8000/api/profile/';
+    bool isSuccess = false;
+    var url = 'http://175.45.204.16:8001/ai/test';
+
+    var formData = FormData.fromMap({'file': await MultipartFile.fromFile(file),});
+
+    var dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.post(url, data: formData, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken', 'Content-Type': 'multipart/form-data; ''charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),
+      );
+
+      print("Try the upload take a picture");
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("Upload take a picture is Success!: ${response.data}");
+        isSuccess = true;
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+
+        isSuccess = false;
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+        isSuccess = false;
+      }
+    }
+
+    return isSuccess;
   }
 
 }

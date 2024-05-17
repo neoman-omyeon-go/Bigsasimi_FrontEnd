@@ -54,14 +54,6 @@ class HealthInfoGraph extends StatefulWidget {
 
 class _HealthInfoGraphState extends State<HealthInfoGraph> {
   bool _isBarChart = true;
-  // Nutrition nutrition = Nutrition(
-  //     1800.0,
-  //     250.0,
-  //     120.0,
-  //     80.0,
-  //     1500.0,
-  //     200.0,
-  //     80.0);
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +61,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 20, right: 240),
+            padding: EdgeInsets.only(top: 50, right: 190),
             child: Text(
               'Today''s Nutrition. ',
               style: TextStyle(
@@ -79,9 +71,9 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 6),
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(14.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
               children: <Widget>[
@@ -121,15 +113,15 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Container(
-            height: 500, // Fixed height to control the area of the bars
+            height: 550, // Fixed height to control the area of the bars
             decoration: BoxDecoration(
               // border: Border.all(color: Colors.blueAccent),
               // borderRadius: BorderRadius.circular(12.0),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: _createBars(nutrition),
@@ -137,7 +129,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             ),
           ),
         ),
-        SizedBox(height: 16), // Spacing between the box and the text below it
+        SizedBox(height: 10), // Spacing between the box and the text below it
         Expanded(
           child: GestureDetector(
             onTap: () {
@@ -152,20 +144,43 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20), // 모서리를 둥글게 설정합니다.
                 child: Container(
-                  color: Colors.grey[200], // 구역의 배경색을 설정합니다.
+                  color: Colors.teal[100], // 구역의 배경색을 설정합니다.
                   padding: EdgeInsets.all(16), // 내부 패딩을 설정합니다.
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
                     crossAxisAlignment: CrossAxisAlignment.stretch, // 가로 방향으로 꽉 채우도록 설정합니다.
                     children: [
                       Text(
-                        '월 별 건강정보 기록지',
+                        '여러분이 섭취하신 영양 정보 기록들을 확인해보세요!',
                         style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black54,
                         ),
                         textAlign: TextAlign.center, // 텍스트를 중앙 정렬합니다.
+                      ),
+                      SizedBox(height: 8), // 텍스트 사이에 간격 추가
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start, // 아이콘과 텍스트를 시작 지점에 정렬합니다.
+                        children: [
+                          Icon(
+                            Icons.assignment, // 리포트 아이콘
+                            color: Colors.teal, // 아이콘 색상
+                            size: 24,
+                          ),
+                          SizedBox(width: 8), // 아이콘과 텍스트 사이의 간격
+                          Expanded(
+                            child: Text(
+                              '영양정보 리포트 캘린더',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.center, // 텍스트를 중앙 정렬합니다.
+                            ),
+                          ),
+                        ],
                       ),
                       // 추가 콘텐츠를 여기에 추가할 수 있습니다.
                     ],
@@ -214,13 +229,13 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
                   children: [
                     TextSpan(
                       text: "$label ", // 레이블
-                      style: TextStyle(fontSize: 10,
+                      style: TextStyle(fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue),
                     ),
                     TextSpan(
                       text: "${value!.toStringAsFixed(1)}", // 값
-                      style: TextStyle(fontSize: 10,
+                      style: TextStyle(fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
@@ -229,7 +244,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               ),
               Text(
                 "${percentage.toStringAsFixed(1)}%", // 실제 계산된 백분율
-                style: TextStyle(fontSize: 10,
+                style: TextStyle(fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: isExceeded ? Colors.red : Colors.blueGrey), // 백분율이 100%를 초과하면 빨간색, 아니면 파란색
               ),
@@ -275,32 +290,35 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildNutritionRow(['Carbs', 'Protein'], [nutrition.carbs!, nutrition.protein!], [1, 1],
-              [Color.fromRGBO(252, 250, 231, 1.0), Color.fromRGBO(236, 249, 237, 1.0)], [Color.fromRGBO(219, 187, 104, 1.0), Color.fromRGBO(66, 201, 80, 1.0)]),
+              [Color.fromRGBO(252, 250, 231, 1.0), Color.fromRGBO(236, 249, 237, 1.0)], [Color.fromRGBO(219, 187, 104, 1.0),
+                Color.fromRGBO(66, 201, 80, 1.0)], ['g','g']),
           _buildNutritionRow(['Fats', 'Cholesterol'], [nutrition.fats!, nutrition.cholesterol!], [1, 1],
-              [Color.fromRGBO(250, 236, 240, 1.0), Color.fromRGBO(240, 236, 249, 1.0)], [Color.fromRGBO(210, 65, 110, 1.0), Color.fromRGBO(112, 66, 201, 1.0)]),
+              [Color.fromRGBO(250, 236, 240, 1.0), Color.fromRGBO(240, 236, 249, 1.0)], [Color.fromRGBO(210, 65, 110, 1.0),
+                Color.fromRGBO(112, 66, 201, 1.0)], ['g','mg']),
           _buildNutritionRow(['Sodium', 'Sugars'], [nutrition.sodium!, nutrition.sugars!], [1, 1],
-              [Color.fromRGBO(230, 247, 246, 1.0), Color.fromRGBO(252, 243, 231, 1.0)], [Color.fromRGBO(13, 177, 173, 1.0), Color.fromRGBO(240, 146, 72, 1.0)]),
+              [Color.fromRGBO(230, 247, 246, 1.0), Color.fromRGBO(252, 243, 231, 1.0)],
+              [Color.fromRGBO(13, 177, 173, 1.0), Color.fromRGBO(240, 146, 72, 1.0)], ['mg','g']),
           _buildNutritionRow(['Calories'], [nutrition.calories!], [2],
-              [Color.fromRGBO(232, 241, 250, 1.0)], [Color.fromRGBO(25, 123, 210, 1.0)]), // span이 2일 경우
+              [Color.fromRGBO(232, 241, 250, 1.0)], [Color.fromRGBO(25, 123, 210, 1.0)], ['Kcal']), // span이 2일 경우
         ],
       ),
     );
   }
 
-  Widget _buildNutritionRow(List<String> titles, List<double> values, List<int> spans, List<Color> colors, List<Color> textColors) {
+  Widget _buildNutritionRow(List<String> titles, List<double> values, List<int> spans, List<Color> colors, List<Color> textColors, List<String> unit) {
     assert(titles.length == values.length && titles.length == spans.length && titles.length == colors.length);
 
     return Row(
       children: List.generate(titles.length, (index) {
         return Expanded(
           flex: spans[index],
-          child: _buildNutritionItem(titles[index], values[index], colors[index], textColors[index]),
+          child: _buildNutritionItem(titles[index], values[index], colors[index], textColors[index], unit[index]),
         );
       }),
     );
   }
 
-  Widget _buildNutritionItem(String title, double value, Color color, Color textColor) {
+  Widget _buildNutritionItem(String title, double value, Color color, Color textColor, String unit) {
     return Container(
       padding: EdgeInsets.all(8.0),
       color: color,
@@ -311,12 +329,12 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                '${title}',
                 style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: textColor),
               ),
               SizedBox(height: 8.0),
               Text(
-                value.toString(),
+                '${value.toString()} ${unit}',
                 style: TextStyle(fontSize: 19.0),
               ),
             ],
@@ -325,7 +343,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             bottom: 8.0,
             right: 8.0,
             child: Text(
-              '${value.toString()} / ${Nutrition.maxValues['${title}']}',
+              '${value.toStringAsFixed(1)} / ${Nutrition.maxValues['${title}']} ${unit}',
               style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
             ),
           ),

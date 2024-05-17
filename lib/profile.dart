@@ -211,7 +211,7 @@ void _saveProfile() async {
                         'Carbohydrates: ${userProfile.carbIntake} g',
                         'Protein: ${userProfile.proteinIntake} g',
                         'Fat: ${userProfile.fatIntake} g',
-                        'natrium: ${userProfile.natriumIntake} g',
+                        'natrium: ${userProfile.natriumIntake} mg',
                       ],
                     ),
                   ],

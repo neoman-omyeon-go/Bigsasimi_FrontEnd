@@ -16,8 +16,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final List<int> _months = List.generate(12, (index) => index + 1);
 
   final List<String> cardTitles = [
-    '운동도 함께 관리하세요',
     '식단',
+    '운동도 함께 관리하세요',
     '수면 관리',
     '마음 건강'
   ];
@@ -25,8 +25,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Future<Map<String, String>> fetchDataForDate(DateTime date) async {
     await Future.delayed(Duration(seconds: 2)); // API 호출 시뮬레이션을 위해 지연을 추가합니다.
     return {
-      '운동도 함께 관리하세요': '애플헬스 운동 데이터 불러오기',
-      '식단': '${dailyNutrition.calories} kcal\n탄 ${dailyNutrition.carbs}%  단 ${dailyNutrition.protein}%  지 ${dailyNutrition.fats}%',
+      '운동도 함께 관리하세요': '삼성헬스 운동 데이터 불러오기',
+      '식단': '${dailyNutrition.calories.toStringAsFixed(1)} kcal\n탄 ${dailyNutrition.carbs.toStringAsFixed(1)}g  단 ${dailyNutrition.protein.toStringAsFixed(1)}g  지 ${dailyNutrition.fats.toStringAsFixed(1)}g',
       '수면 관리': '수면 데이터 불러오기',
       '마음 건강': '마음 건강 데이터 불러오기',
     };
@@ -209,7 +209,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             break;
                           case '식단':
                             icon = Icons.restaurant;
-                            subtitle2 = '식단임 ㅇㅇ';
+                            subtitle2 = '여러분의 하루 식사는 어떠셨나요?';
                             extraWidget = _buildBarChart();
                             button = ElevatedButton(
                               onPressed: () {},
@@ -434,22 +434,4 @@ class BarChartPainter extends CustomPainter {
   }
 }
 
-class DailyNutrition {
-  double calories;
-  double carbs;
-  double protein;
-  double fats;
-  double sodium;
-  double cholesterol;
-  double sugars;
 
-  DailyNutrition({
-    required this.calories,
-    required this.carbs,
-    required this.protein,
-    required this.fats,
-    required this.sodium,
-    required this.cholesterol,
-    required this.sugars,
-  });
-}
