@@ -1,6 +1,8 @@
 import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 
+import 'Calander.dart';
+
 
 class Nutrition {
   late double calories;
@@ -106,7 +108,6 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               ],
             ),
           ),
-
           Expanded(
             child: _isBarChart ? _buildBarChart() : buildNutritionDashboard(
                 nutrition),
@@ -137,11 +138,49 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
           ),
         ),
         SizedBox(height: 16), // Spacing between the box and the text below it
-        Text("Detailed nutritional values displayed here",
-            style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              // 터치 시 다른 화면으로 이동
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CalendarScreen()), // YourNextScreen을 원하는 화면으로 변경하세요.
+              );
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0), // 좌우 여백을 설정합니다.
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20), // 모서리를 둥글게 설정합니다.
+                child: Container(
+                  color: Colors.grey[200], // 구역의 배경색을 설정합니다.
+                  padding: EdgeInsets.all(16), // 내부 패딩을 설정합니다.
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
+                    crossAxisAlignment: CrossAxisAlignment.stretch, // 가로 방향으로 꽉 채우도록 설정합니다.
+                    children: [
+                      Text(
+                        '월 별 건강정보 기록지',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center, // 텍스트를 중앙 정렬합니다.
+                      ),
+                      // 추가 콘텐츠를 여기에 추가할 수 있습니다.
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
+
+
+
 
   List<Widget> _createBars(Nutrition nutrition) {
     Map<String, double?> nutrientValues = {
