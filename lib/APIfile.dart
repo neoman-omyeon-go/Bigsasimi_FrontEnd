@@ -14,11 +14,13 @@ import 'profile.dart';
 import 'intakenGraph.dart';
 import 'upload3.dart';
 import 'food.dart';
+import 'dailyNutritionInfo.dart';
 
 late Food food;
 late Nutrition nutrition;
 late UserInfo userInfo;
 late UserProfile userProfile;
+late DailyNutrition dailyNutrition;
 
 class allApi{
    var storage = FlutterSecureStorage();
@@ -749,4 +751,83 @@ class allApi{
 
     return _isSuccess;
   }
+
+  Future<void> getDailyNutrition(DateTime Datedata) async {
+    var userId = await storage.read(key: 'id');
+    // var url = 'http://127.0.0.1:8080/api/get_dailyinformation/?id=3&date=2024-05-12';
+    int month = Datedata.month;
+    int day = Datedata.day;
+
+    String monthStr;
+    String dayStr;
+
+    if(month < 10){
+      monthStr = '0${month}';
+    }else{
+      monthStr = month.toString();
+    }
+
+    if(day < 10){
+      dayStr = '0${day}';
+    }else{
+      dayStr = day.toString();
+    }
+
+    var url = 'http://223.130.154.147:8080/api/get_dailyinformation/?id=${userId}&date=${Datedata.year}-${monthStr}-${dayStr}';
+
+    print(url);
+
+    Dio dio = Dio();
+
+    try{
+      var useaccessToken = await storage.read(key: 'accessToken');
+      Response response = await dio.get(url, options: Options(
+        headers: {'Authorization': 'Bearer $useaccessToken',
+          'Content-Type': 'application/json; '
+              'charset=UTF-8',
+          HttpHeaders.contentTypeHeader: "application/x-www-form-urlencoded",},
+      ),);
+
+      if (response.statusCode == 200) {
+        // 성공적으로 요청이 완료된 경우
+        print("get DailyNutrition Get is Success");
+        // checkUploadToServerToast1();
+        // print(response.data["data"]);
+
+        var DailyNutritionData = response.data["data"];
+        print("FoodNutritionData: $DailyNutritionData");
+
+        String total_calories = DailyNutritionData["total_calories"].toString();
+        String total_carb = DailyNutritionData["total_carb"].toString();
+        String total_protein = DailyNutritionData["total_protein"].toString();
+        String total_fat = DailyNutritionData["total_fat"].toString();
+        String total_natrium = DailyNutritionData["total_natrium"].toString();
+        String total_cholesterol = DailyNutritionData["total_cholesterol"].toString();
+        String total_saccharide = DailyNutritionData["total_saccharide"].toString();
+        // String foodSugars = '0';
+
+        dailyNutrition = DailyNutrition(
+          calories: double.parse(total_calories),
+          carbs: double.parse(total_carb),
+          protein: double.parse(total_protein),
+          fats: double.parse(total_fat),
+          sodium: double.parse(total_natrium),
+          cholesterol: double.parse(total_cholesterol),
+          sugars: double.parse(total_saccharide),
+        );
+      }
+    } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
+      if(e.response != null){
+        //서버에서 응답 받았지만, 오류 상태 코드를 받은 경우
+        print('Status code: ${e.response?.statusCode}');
+        print('Data: ${e.response?.data}');
+        print('Headers: ${e.response?.headers}');
+      }else{
+        //요청이 서버에 도달하지 못한 경우
+        print('Error sending request!');
+        print(e.message);
+      }
+    }
+  }
+
 }

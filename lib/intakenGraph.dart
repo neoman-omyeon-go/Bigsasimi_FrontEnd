@@ -268,12 +268,6 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
     return bars;
   }
 
-
-
-
-
-
-
   Widget buildNutritionDashboard(Nutrition nutrition) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20.0), // 좌우 여백 추가
