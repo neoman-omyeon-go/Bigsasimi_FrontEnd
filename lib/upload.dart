@@ -36,7 +36,7 @@ class _uploadScreenState extends State<uploadScreen> {
     super.initState();
     _pages = [
       TodaysNews(),
-      LocalMapRestaurant(),
+      map(),
       UploadScreen(), // UploadScreen의 메인 컨텐츠
       HealthInfoGraph(),
       Profile(),

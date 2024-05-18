@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:capstone/Register.dart';
 import 'package:capstone/profile_userinfoWidget.dart';
 import 'package:dio/dio.dart';
@@ -11,12 +13,22 @@ import 'APIfile.dart';
 import 'upload.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 
 void main() async{
+  await _initializeNaverMap();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.remove();
   runApp(MyLogin());
 }
+
+Future<void> _initializeNaverMap() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NaverMapSdk.instance.initialize(
+      clientId: 'klci72ut3v',
+      onAuthFailed: (e) => log("********* 네이버맵 인증오류 : $e *********"));
+}
+
 
 class MyLogin extends StatelessWidget {
   const MyLogin({super.key});
