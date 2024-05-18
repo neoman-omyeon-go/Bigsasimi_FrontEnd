@@ -1,6 +1,7 @@
 import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 import 'intakenGraph.dart';
+import 'profile.dart';
 
 class upload2 extends StatefulWidget {
   const upload2({super.key});

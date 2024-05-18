@@ -3,6 +3,7 @@ import 'foodList.dart';  // 필요한 내용이 포함된 전제된 foodList.dar
 import 'food.dart';
 import 'APIfile.dart';
 import 'intakenGraph.dart';
+import 'profile.dart';
 
 
 class FoodSearch extends StatefulWidget {

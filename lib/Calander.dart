@@ -2,6 +2,7 @@ import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dailyNutritionInfo.dart';
+import 'historyNutrition.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -212,7 +213,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             subtitle2 = '여러분의 하루 식사는 어떠셨나요?';
                             extraWidget = _buildBarChart();
                             button = ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => dailyMealHistory(selectDate: _selectedDate,),
+                                  ),
+                                );
+                              },
                               style: ElevatedButton.styleFrom(
                                 foregroundColor: Color(0xFF6F35A5), // 버튼 색상
                               ),

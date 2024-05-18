@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:capstone/models/news.dart';
 import 'package:http/http.dart' as http;
 
