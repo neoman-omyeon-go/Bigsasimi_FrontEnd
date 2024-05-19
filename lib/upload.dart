@@ -307,6 +307,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
                   if(check){
                     print("API Send Success");
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload Nutrition Info is seccess!')));
                     profile.nutrition = Nutrition(
                       calories: profile.nutrition.calories + double.parse(controlData['calories']!),
                       carbs: profile.nutrition.carbs + double.parse(controlData['carb']!),
@@ -330,7 +331,7 @@ class _UploadScreenState extends State<UploadScreen> {
         },
       );
 
-      Fluttertoast.showToast(msg: "업로드 성공!");
+      Fluttertoast.showToast(msg: "인식 성공!");
     } else {
       Fluttertoast.showToast(msg: "인식에 실패하였습니다. 영양성분 표를 찍어서 올려주세요.");
     }
@@ -345,7 +346,7 @@ class _UploadScreenState extends State<UploadScreen> {
           Align(
             alignment: Alignment.topRight,
             child: Padding(
-              padding: EdgeInsets.only(top: 50, right: 210),
+              padding: EdgeInsets.only(top: 50, right: 130),
               child: Text(
                 'Record your diet.',
                 style: TextStyle(
@@ -369,7 +370,7 @@ class _UploadScreenState extends State<UploadScreen> {
             onTap: _showChoiceDialog,
             child: DashedBorderBox(),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 150.0, vertical: 10.0),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 140.0, vertical: 10.0),
             child: TextButton(
               onPressed: _uploadImage,
               child: Text('Send to server'),
@@ -379,7 +380,7 @@ class _UploadScreenState extends State<UploadScreen> {
               ),
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Row(
@@ -500,8 +501,8 @@ class DashedBorderBox extends StatelessWidget {
         strokeWidth: 2,
         child: Container(
           color: Colors.white,
-          width: 330,
-          height: 400,
+          width: 310,
+          height: 380,
           alignment: Alignment.center,
           child: image == null
               ? Icon(

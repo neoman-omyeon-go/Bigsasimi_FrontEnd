@@ -61,7 +61,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 50, right: 190),
+            padding: EdgeInsets.only(top: 80, right: 110),
             child: Text(
               'Today''s Nutrition. ',
               style: TextStyle(
@@ -115,7 +115,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0),
           child: Container(
-            height: 550, // Fixed height to control the area of the bars
+            height: 450, // Fixed height to control the area of the bars
             decoration: BoxDecoration(
               // border: Border.all(color: Colors.blueAccent),
               // borderRadius: BorderRadius.circular(12.0),
@@ -144,14 +144,14 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20), // 모서리를 둥글게 설정합니다.
                 child: Container(
-                  color: Colors.teal[100], // 구역의 배경색을 설정합니다.
+                  color: Color.fromRGBO(238, 245, 235, 1.0), // 구역의 배경색을 설정합니다.
                   padding: EdgeInsets.all(16), // 내부 패딩을 설정합니다.
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center, // 중앙 정렬
                     crossAxisAlignment: CrossAxisAlignment.stretch, // 가로 방향으로 꽉 채우도록 설정합니다.
                     children: [
                       Text(
-                        '여러분이 섭취하신 영양 정보 기록들을 확인해보세요!',
+                        'Check your nutrition history!',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.normal,
@@ -165,13 +165,13 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
                         children: [
                           Icon(
                             Icons.assignment, // 리포트 아이콘
-                            color: Colors.teal, // 아이콘 색상
+                            color: Color(0xFF5A9A44), // 아이콘 색상
                             size: 24,
                           ),
                           SizedBox(width: 8), // 아이콘과 텍스트 사이의 간격
                           Expanded(
                             child: Text(
-                              '영양정보 리포트 캘린더',
+                              'Report Calendar',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -268,7 +268,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: isExceeded ? [Colors.red, Colors.redAccent] : [Colors.blue, Colors.green], // 초과 시 빨간색 그라데이션, 아니면 파랑-녹색
+                      colors: isExceeded ? [Color.fromRGBO(237, 118, 81, 1.0), Color.fromRGBO(237, 118, 81, 1.0)] : [Colors.blue, Colors.green], // 초과 시 빨간색 그라데이션, 아니면 파랑-녹색
                     ),
                     borderRadius: BorderRadius.circular(10), // 채워진 부분의 둥근 모서리
                   ),
@@ -322,7 +322,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
     return Container(
       padding: EdgeInsets.all(8.0),
       color: color,
-      height: 150, // 세로 길이를 조정하여 높이를 높임
+      height: 120, // 세로 길이를 조정하여 높이를 높임
       child: Stack(
         children: [
           Column(
@@ -343,7 +343,8 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             bottom: 8.0,
             right: 8.0,
             child: Text(
-              '${value.toStringAsFixed(1)} / ${Nutrition.maxValues['${title}']} ${unit}',
+              // '${value.toStringAsFixed(1)} / ${Nutrition.maxValues['${title}']} ${unit}',
+              ' / ${Nutrition.maxValues['${title}']} ${unit}',
               style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
             ),
           ),

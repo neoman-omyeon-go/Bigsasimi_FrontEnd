@@ -53,7 +53,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
 
     return Container(
       padding: EdgeInsets.all(16),
-      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         children: [
           Row(
@@ -68,6 +68,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                   ],
                 ),
               ),
+              SizedBox(width: 10,),
               GestureDetector(
                 onTap: () => _showPicker('age'),
                 child: Column(
@@ -77,6 +78,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                   ],
                 ),
               ),
+              SizedBox(width: 10,),
               GestureDetector(
                 onTap: () => _showPicker('height'),
                 child: Column(
@@ -86,6 +88,7 @@ class _UserInfoSectionState extends State<UserInfoSection> {
                   ],
                 ),
               ),
+              SizedBox(width: 10,),
               GestureDetector(
                 onTap: () => _showPicker('weight'),
                 child: Column(

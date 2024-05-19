@@ -186,6 +186,8 @@ class _FoodSearchState extends State<FoodSearch> {
                 );
 
                 if(isSuccessManuallyAPI){
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload Nutrition Info is seccess!')));
+
                   nutrition = Nutrition(
                     calories: nutrition.calories + food.calories,
                     carbs: nutrition.carbs + food.carbs,

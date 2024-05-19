@@ -116,7 +116,12 @@ class LoginPage extends StatefulWidget {
                       String password = _passwordController.text;
 
                       Future<bool> checklogin = allApi().login(username, password);
-                      checkIDandPasswordToast();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Checking your ID And Password.....'),
+                            duration: const Duration(milliseconds: 700),
+                          )
+                      );
                       bool realdata = await checklogin;
                       //아래에 await delayed를 안주면, 로그인 정보를 불러오기까지 걸리는
                       //시간을 안줘버리게 되는거다.
@@ -128,14 +133,24 @@ class LoginPage extends StatefulWidget {
                       // allApi().getUserProfile();
                       if (!mounted) return;  // 여기서 위젯이 아직 존재하는지 확인
                       if(realdata){
-                        loginSuccessed();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Login Successed~!'),
+                              duration: const Duration(milliseconds: 900),
+                            )
+                        );
                         Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(builder: (context) => uploadScreen()),
                               (Route<dynamic> route) => false,
                         );
                       }else{
                         //비밀번호가 틀렸을 때
-                        requireLoginToast();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Check your ID or Password And try Again'),
+                              duration: const Duration(milliseconds: 900),
+                            )
+                        );
                       }
 
                       // 로그인 버튼 눌렀을 때 실행될 동작
@@ -176,41 +191,6 @@ class LoginPage extends StatefulWidget {
 
   }
 
-void checkIDandPasswordToast(){
-  Fluttertoast.showToast(
-      msg: "Checking your ID And Password.....",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP_LEFT,
-      timeInSecForIosWeb: 2,
-      backgroundColor: Colors.redAccent,
-      textColor: Colors.white,
-      fontSize: 20.0
-  );
-}
-
-  void requireLoginToast(){
-    Fluttertoast.showToast(
-        msg: "Check your ID or Password And try Again",
-        toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black45,
-      textColor: Colors.white,
-      fontSize: 20.0
-    );
-  }
-
-void loginSuccessed(){
-  Fluttertoast.showToast(
-      msg: "Login Successed~!",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.CENTER,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.blueGrey,
-      textColor: Colors.black,
-      fontSize: 20.0
-  );
-}
 
 
 

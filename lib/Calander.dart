@@ -67,7 +67,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color.fromRGBO(238, 245, 235, 1.0),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(238, 245, 235, 1.0), // 상단 배경색을 설정합니다.
         elevation: 0,
@@ -98,7 +98,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             value: year,
                             child: Text(
                               '$year년',
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), // 텍스트 스타일 수정
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // 텍스트 스타일 수정
                             ),
                           );
                         }).toList(),
@@ -116,7 +116,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             value: month,
                             child: Text(
                               '$month월',
-                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold), // 텍스트 스타일 수정
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // 텍스트 스타일 수정
                             ),
                           );
                         }).toList(),
@@ -142,12 +142,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               _onDateSelected(day);
                             },
                             child: Container(
-                              width: 60, // 날짜의 크기를 크게 설정합니다.
-                              height: 60, // 날짜의 크기를 크게 설정합니다.
-                              margin: EdgeInsets.symmetric(horizontal: 5),
+                              width: 50, // 날짜의 크기를 크게 설정합니다.
+                              height: 50, // 날짜의 크기를 크게 설정합니다.
+                              margin: EdgeInsets.symmetric(horizontal: 3),
                               decoration: BoxDecoration(
                                 color: _selectedDate.day == day
-                                    ? Colors.black
+                                    ? Colors.grey[300]
                                     : Colors.transparent,
                                 shape: BoxShape.circle,
                               ),
@@ -156,9 +156,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 '$day',
                                 style: TextStyle(
                                   color: _selectedDate.day == day
-                                      ? Color(0xFF6F35A5)
+                                      ? Color.fromRGBO(237, 118, 81, 1.0)
                                       : Colors.black,
-                                  fontSize: 24, // 날짜 텍스트 크기를 크게 설정합니다.
+                                  fontSize: 18, // 날짜 텍스트 크기를 크게 설정합니다.
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -200,8 +200,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             button = ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Color(0xFF6F35A5), // 버튼 색상
-                              ),
+                                // foregroundColor: Color.fromRGBO(237, 118, 81, 1.0), // 버튼 색상
+                                backgroundColor: Color.fromRGBO(237, 118, 81, 1.0),
+                              ),// 버튼 색상
                               child: Text(
                                 '운동 버튼',
                                 style: TextStyle(color: Colors.white),
@@ -222,7 +223,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 );
                               },
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Color(0xFF6F35A5), // 버튼 색상
+                                // foregroundColor: Color.fromRGBO(237, 118, 81, 1.0),
+                                backgroundColor: Color.fromRGBO(237, 118, 81, 1.0),
                               ),
                               child: Text(
                                 '식단 버튼',
@@ -236,7 +238,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             button = ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Color(0xFF6F35A5), // 버튼 색상
+                                // foregroundColor: Color.fromRGBO(237, 118, 81, 1.0), // 버튼 색상
+                                backgroundColor: Color.fromRGBO(237, 118, 81, 1.0),
                               ),
                               child: Text(
                                 '수면 버튼',
@@ -250,7 +253,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             button = ElevatedButton(
                               onPressed: () {},
                               style: ElevatedButton.styleFrom(
-                                foregroundColor: Color(0xFF6F35A5), // 버튼 색상
+                                // foregroundColor: Color.fromRGBO(237, 118, 81, 1.0), // 버튼 색상
+                                backgroundColor: Color.fromRGBO(237, 118, 81, 1.0),
                               ),
                               child: Text(
                                 '마음 건강 버튼',
@@ -325,7 +329,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             SizedBox(height: 10),
             Row(
               children: [
-                Icon(icon, color: Color(0xFF6F35A5), size: 40),
+                Icon(icon, color: Color.fromRGBO(237, 118, 81, 1.0), size: 40),
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -383,7 +387,7 @@ class BarChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final barWidth = size.width / 14;
     final barPaint = Paint()
-      ..color = Colors.lightBlueAccent
+      ..color = Color.fromRGBO(152, 204, 107, 1.0)
       ..style = PaintingStyle.fill;
 
     final data = [
@@ -408,6 +412,7 @@ class BarChartPainter extends CustomPainter {
     final textStyle = TextStyle(
       color: Colors.black,
       fontSize: 10,
+      fontWeight: FontWeight.bold,
     );
 
     final textPainter = TextPainter(

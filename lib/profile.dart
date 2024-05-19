@@ -59,7 +59,7 @@ void _saveProfile() async {
         SnackBar(content: Text('Failed to update profile: $e'))
     );
   } finally {
-    Future.delayed(Duration(seconds: 2), (){
+    Future.delayed(Duration(seconds: 1), (){
       setState(() {
         _isLoading = false; // 로딩 종료
 
@@ -82,7 +82,9 @@ void _saveProfile() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(239, 245, 236, 1.0),
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(239, 245, 236, 1.0),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -116,7 +118,7 @@ void _saveProfile() async {
         children: [
           ListView(
             children: <Widget>[
-              SizedBox(height: 30),
+              SizedBox(height: 5),
               GestureDetector(
                 onTap: _editProfilePicture,
                 child: CircleAvatar(
@@ -155,7 +157,7 @@ void _saveProfile() async {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 5),
               EditableUserName(
                 userInfo: userInfo, // 이전에 정의된 userInfo 객체를 사용합니다
                 initialName: userInfo.userName, // userInfo 객체의 userName 속성을 사용합니다
@@ -165,7 +167,7 @@ void _saveProfile() async {
                   });
                 },
               ),
-              SizedBox(height: 20),
+              // SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
@@ -177,6 +179,21 @@ void _saveProfile() async {
                           userInfo = updatedUserInfo;
                         });
                       },
+                    ),
+                    // SizedBox(height: 5),
+                    ProfileSectionButton(
+                      title: 'Desired daily intake',
+                      color: Colors.orange.shade100,
+                      onTap: () {
+                        _showDesiredDailyIntakeDialog();
+                      },
+                      selectedItems: [
+                        '    Calories: ${userProfile.calorieIntake} kcal',
+                        '    Carbohydrates: ${userProfile.carbIntake} g',
+                        '    Protein: ${userProfile.proteinIntake} g',
+                        '    Fat: ${userProfile.fatIntake} g',
+                        '    natrium: ${userProfile.natriumIntake} mg',
+                      ],
                     ),
 
                     SizedBox(height: 20),
@@ -198,21 +215,6 @@ void _saveProfile() async {
                       },
                       // selectedItems: selectedAllergies,
                       selectedItems: userProfile.allergies,
-                    ),
-                    SizedBox(height: 20),
-                    ProfileSectionButton(
-                      title: 'Desired daily intake',
-                      color: Colors.orange.shade100,
-                      onTap: () {
-                        _showDesiredDailyIntakeDialog();
-                      },
-                      selectedItems: [
-                        'Calories: ${userProfile.calorieIntake} kcal',
-                        'Carbohydrates: ${userProfile.carbIntake} g',
-                        'Protein: ${userProfile.proteinIntake} g',
-                        'Fat: ${userProfile.fatIntake} g',
-                        'natrium: ${userProfile.natriumIntake} mg',
-                      ],
                     ),
                   ],
                 ),

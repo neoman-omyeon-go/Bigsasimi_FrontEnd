@@ -37,7 +37,7 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
         backgroundColor: Color.fromRGBO(238, 245, 235, 1.0),
         title: Text(
           'Today\'s Healthy News :)',
-          style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800, fontSize: 20),
+          style: TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w800, fontSize: 21),
         ),
         centerTitle: true,
       ),

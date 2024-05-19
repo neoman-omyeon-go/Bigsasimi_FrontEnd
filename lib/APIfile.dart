@@ -217,7 +217,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("Upload userdata(no name) seccess!");
-        checkUploadToServerToast1();
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
       }
     } on DioError catch (e){//이게 catch 대신에 사용하는 DIo의 조금 더 구체적인 트러블 슈팅인듯
@@ -237,17 +236,6 @@ class allApi{
     // 예를 들어, HTTP 요청을 사용하여 서버로 정보를 전송할 수 있습니다.
     // 이 메서드는 비동기로 작성되어야 합니다.
     // 이미지 파일의 경우 파일 경로를 서버에 업로드하거나 이미지 데이터를 바이트로 변환하여 전송할 수 있습니다.
-  }
-  void checkUploadToServerToast1(){
-    Fluttertoast.showToast(
-        msg: "Upload userdata seccess!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP_LEFT,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.transparent,
-        textColor: Colors.white,
-        fontSize: 20.0
-    );
   }
 
 
@@ -276,7 +264,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("Upload name seccess!");
-        // checkUploadToServerToast1();
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
 
       }
@@ -341,7 +328,6 @@ class allApi{
         imgURI = "Static IMG URI Has a Error Occured(No Request) ${e.message}";
       }
     }
-
     return imgURI;
   }
 
@@ -365,7 +351,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("get UserState seccess!");
-        // checkUploadToServerToast1();
         await storage.write(key: 'username', value:response.data['username']);
         await storage.write(key: 'id', value: response.data["id"].toString());
         staticID = response.data["id"].toString();
@@ -416,7 +401,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("get UserProfile seccess!");
-        // checkUploadToServerToast1();
         // print(response.data["data"]);
 
         var profileData = response.data["data"];
@@ -537,7 +521,6 @@ class allApi{
         print(response.data);
 
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
-        checkPostNutritionManuallyToServerToast();
         _isSuccess = true;
 
       }
@@ -559,17 +542,6 @@ class allApi{
     return _isSuccess;
   }
 
-  void checkPostNutritionManuallyToServerToast(){
-    Fluttertoast.showToast(
-        msg: "Upload Nutrition Info is seccess!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.TOP_LEFT,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.transparent,
-        textColor: Colors.white,
-        fontSize: 20.0
-    );
-  }
 
   Future<void> getUserNutrition() async {
     var userId = await storage.read(key: 'id');
@@ -593,7 +565,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("get UserNutrioton Success");
-        // checkUploadToServerToast1();
         // print(response.data["data"]);
 
         var NutritionData = response.data["data"];
@@ -651,7 +622,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("get UserNutrioton Success");
-        // checkUploadToServerToast1();
         // print(response.data["data"]);
 
         var FoodNutritionData = response.data["data"]["items"][0];
@@ -741,7 +711,6 @@ class allApi{
         print(response.data);
 
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
-        checkPostNutritionManuallyToServerToast();
         _isSuccess = true;
 
       }
@@ -803,7 +772,6 @@ class allApi{
       if (response.statusCode == 200) {
         // 성공적으로 요청이 완료된 경우
         print("get DailyNutrition Get is Success");
-        // checkUploadToServerToast1();
         // print(response.data["data"]);
 
         var DailyNutritionData = response.data["data"];
@@ -979,7 +947,6 @@ class allApi{
         print(response.data);
 
         //메세지로 저장 잘 됐다. 라고 띄워줄거임
-        checkPostNutritionManuallyToServerToast();
         _isSuccess = true;
 
       }
