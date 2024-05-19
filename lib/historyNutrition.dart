@@ -66,7 +66,7 @@ class _dailyMealHistoryState extends State<dailyMealHistory> {
                   Text('Natrium: ${item['natrium']}mg'),
                   Text('Saccharide: ${item['saccharide']}g'),
                   Text('Cholesterol: ${item['cholesterol']}mg'),
-                  Text('Create Time: ${item['create_time']}'),
+                  Text('Create Time: ${item['create_time'].substring(0,19)}'),
                 ],
               ),
             ),

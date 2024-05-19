@@ -912,13 +912,14 @@ class allApi{
     return dailyhistory;
   }
 
-  Future<bool> postNutritionInfoWithAI(dynamic nutritionTable, String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
+  Future<bool> postNutritionInfoWithAI(dynamic nutritionTable, String name ,String calories, String carb, String protein, String fat, String natrium, String cholesterol, String sugar) async{
     // var url = 'http://127.0.0.1:8000/api/get_ingestioninformation/';
     var url = 'http://223.130.154.147:8080/api/get_ingestioninformation/';
 
     print("try 66666");
     var formData = FormData.fromMap({
       'image': await MultipartFile.fromFile(nutritionTable),
+      'name': name,
       'calories': calories,
       'carb': carb,
       'protein': protein,

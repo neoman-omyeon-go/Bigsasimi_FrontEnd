@@ -63,7 +63,7 @@ class LoginPage extends StatefulWidget {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/Login_origin.png"), // 배경 이미지 경로 설정
+              image: AssetImage("assets/LoginPage_originXX.png"), // 배경 이미지 경로 설정
               fit: BoxFit.cover,
             ),
           ),

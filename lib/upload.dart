@@ -186,6 +186,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
     if (success) {
       // responseData를 controlData로 매핑
+      controlData['name'] = "제품이름";
       controlData['calories'] = responseData!['kcal'];
       controlData['carb'] = responseData!['탄수화물'];
       controlData['protein'] = responseData!['단백질'];
@@ -210,7 +211,17 @@ class _UploadScreenState extends State<UploadScreen> {
                     'http://175.45.204.16:8001${controlData['imgpath']}',
                     width: 300,
                     height: 200,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.contain,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical:4.0),
+                    child: TextFormField(
+                      initialValue: controlData['name'].toString(),
+                      decoration: InputDecoration(labelText: 'name'),
+                      onChanged: (value) {
+                        controlData['name'] = value;
+                      },
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -305,6 +316,7 @@ class _UploadScreenState extends State<UploadScreen> {
                   print("carb: ${controlData['carb']}");
                   check = await allApi().postNutritionInfoWithAI(
                       image!.path,
+                      controlData['name']!,
                       controlData['calories']!,
                       controlData['carb']!,
                       controlData['protein']!,
