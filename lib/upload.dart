@@ -72,35 +72,44 @@ class _uploadScreenState extends State<uploadScreen> {
             ),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.newspaper),
-            label: 'News',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.upload),
-            label: 'Upload',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Graph',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          // topLeft: Radius.circular(20.0),
+          // topRight: Radius.circular(20.0),
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper),
+              label: 'News',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.map),
+              label: 'Map',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.upload),
+              label: 'Upload',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart),
+              label: 'Graph',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Color.fromRGBO(57, 133, 23, 0.7411764705882353),
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+          backgroundColor: Color.fromRGBO(238, 245, 235, 1.0), // 원래의 배경색 유지
+          elevation: 0, // 그림자 제거
+        ),
       ),
+
     );
   }
 }
@@ -199,12 +208,12 @@ class _UploadScreenState extends State<UploadScreen> {
                 children: [
                   Image.network(
                     'http://175.45.204.16:8001${controlData['imgpath']}',
-                    width: 260,
-                    height: 150,
+                    width: 300,
+                    height: 200,
                     fit: BoxFit.cover,
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
                     child: TextFormField(
                       initialValue: controlData['calories'].toString(),
                       decoration: InputDecoration(labelText: 'calories'),

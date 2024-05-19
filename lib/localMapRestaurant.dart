@@ -54,10 +54,6 @@ class _MapPageState extends State<map> {
     print("physicalSize: $physicalSize");
     return Scaffold(
       backgroundColor: Color.fromRGBO(238, 245, 235, 1.0),
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(237, 118, 81, 1.0),
-        title: Text('Map Page'),
-      ),
       body: Stack(
         children: [
           Center(
@@ -70,13 +66,13 @@ class _MapPageState extends State<map> {
             left: 10,
             right: 10,
             child: Container(
-              height: 40,
+              height: 50,
               child: TextField(
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
                   prefixIcon: Icon(Icons.search, color: Colors.black),
-                  hintText: "Search",
+                  hintText: "Search Your location, restaurant...",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
                     borderSide: BorderSide.none,
@@ -102,18 +98,6 @@ class _MapPageState extends State<map> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  SizedBox(height: 1),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      _buildMenuItem(Icons.favorite, "찜해둔 식당", () {
-                        print("찜해둔 식당 버튼 클릭됨");
-                      }),
-                      _buildMenuItem(Icons.star, "관심있는 식당", () {
-                        print("관심있는 식당 버튼 클릭됨");
-                      }),
-                    ],
-                  ),
                   const SizedBox(height: 1),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -163,14 +147,15 @@ class _MapPageState extends State<map> {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          icon: Icon(icon, size: 30, color: Color.fromRGBO(237, 118, 81, 1.0)),
+          icon: Icon(icon, size: 30, color: Color.fromRGBO(90,154,68,1.0)),
           onPressed: onPressed,
         ),
         const SizedBox(height: 3),
         Text(
           label,
-          style: const TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold),
         ),
+        SizedBox(height: 13,),
       ],
     );
   }

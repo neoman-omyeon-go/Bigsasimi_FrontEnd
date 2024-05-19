@@ -190,6 +190,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             ),
           ),
         ),
+        SizedBox(height: 20,),
       ],
     );
   }

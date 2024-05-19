@@ -387,7 +387,7 @@ class BarChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final barWidth = size.width / 14;
     final barPaint = Paint()
-      ..color = Color.fromRGBO(152, 204, 107, 1.0)
+      ..color = Color.fromRGBO(90,154,68,1.0)
       ..style = PaintingStyle.fill;
 
     final data = [
