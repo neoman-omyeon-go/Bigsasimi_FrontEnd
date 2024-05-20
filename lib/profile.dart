@@ -192,7 +192,7 @@ void _saveProfile() async {
                         '    Carbohydrates: ${userProfile.carbIntake} g',
                         '    Protein: ${userProfile.proteinIntake} g',
                         '    Fat: ${userProfile.fatIntake} g',
-                        '    natrium: ${userProfile.natriumIntake} mg',
+                        '    Natrium: ${userProfile.natriumIntake} mg',
                       ],
                     ),
 
@@ -442,7 +442,7 @@ void _editProfilePicture() async {
                 _buildInputField('Carbohydrates', 'Carbs (g)', carbController),
                 _buildInputField('Protein', 'Protein (g)', proteinController),
                 _buildInputField('Fat', 'Fat (g)', fatController),
-                _buildInputField('Natrium', 'Natrium (g)', natriumController),
+                _buildInputField('Natrium', 'Natrium (mg)', natriumController),
               ],
             ),
           ),

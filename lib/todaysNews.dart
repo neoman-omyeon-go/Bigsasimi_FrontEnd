@@ -50,7 +50,7 @@ class _TodaysNewsScreenState extends State<TodaysNews> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildRegularArticle(news[index+1]),
+                  (context, index) => _buildRegularArticle(news[index+2]),
               childCount: news.length -1,
               //0번째 인덱스를 썼으니까(메인 기사로), 그 인덱스를 제외한 전체 길이여야 함.
             ),

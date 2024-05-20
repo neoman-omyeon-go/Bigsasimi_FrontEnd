@@ -125,6 +125,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   // 카메라에서 사진을 찍는 함수
   Future<void> _takePicture() async {
+    image = null;
     image = await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       // 사진 파일 사용
@@ -139,7 +140,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
   // 갤러리에서 사진을 선택하는 함수
   Future<void> _pickImage() async {
-
+    image = null;
     image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       // 사진 파일 사용
@@ -174,10 +175,10 @@ class _UploadScreenState extends State<UploadScreen> {
     responseData = await allApi().postTakeaPickture(imgpath);
     bool success;
     if(responseData == null){
-      print("responseData: ${responseData}");
+      print("No Success. responseData: ${responseData}");
       success = false;
     }else{
-      print("responseData: ${responseData}");
+      print("Is was Success!! responseData: ${responseData}");
       success = true;
     }
 
@@ -315,7 +316,8 @@ class _UploadScreenState extends State<UploadScreen> {
 
                   print("carb: ${controlData['carb']}");
                   check = await allApi().postNutritionInfoWithAI(
-                      image!.path,
+                      // image!.path,
+                      imgpath!,
                       controlData['name']!,
                       controlData['calories']!,
                       controlData['carb']!,
@@ -325,6 +327,9 @@ class _UploadScreenState extends State<UploadScreen> {
                       controlData['cholesterol']!,
                       controlData['sugar']!,
                   );
+                  setState(() {
+                    image = null;
+                  });
 
                   if(check){
                     print("API Send Success");
@@ -341,9 +346,9 @@ class _UploadScreenState extends State<UploadScreen> {
                   }else{
                     print("API Send NO No No Success");
                   }
-
                   setState(() {
                     image = null;
+                    imgpath = null;
                   });
                 },
               ),
@@ -355,6 +360,10 @@ class _UploadScreenState extends State<UploadScreen> {
       Fluttertoast.showToast(msg: "인식 성공!");
     } else {
       Fluttertoast.showToast(msg: "인식에 실패하였습니다. 영양성분 표를 찍어서 올려주세요.");
+      setState(() {
+        image = null;
+        imgpath = null;
+      });
     }
   }
 

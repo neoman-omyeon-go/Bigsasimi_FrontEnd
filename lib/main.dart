@@ -59,17 +59,22 @@ class LoginPage extends StatefulWidget {
     @override
     Widget build(BuildContext context){
       return Scaffold(
-        // appBar: AppBar(title: Text('Login Page'),),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0.0,
+        ),
+        extendBodyBehindAppBar: true,
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/LoginPage_originXX.png"), // 배경 이미지 경로 설정
+              image: AssetImage("assets/LoginFinall.png"), // 배경 이미지 경로 설정
               fit: BoxFit.cover,
             ),
           ),
+          padding: EdgeInsets.all(15.0),
           child: Center(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

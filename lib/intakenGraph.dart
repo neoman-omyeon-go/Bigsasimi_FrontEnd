@@ -335,7 +335,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
               ),
               SizedBox(height: 8.0),
               Text(
-                '${value.toString()} ${unit}',
+                '${value.toStringAsFixed(1)} ${unit}',
                 style: TextStyle(fontSize: 19.0),
               ),
             ],
@@ -345,7 +345,7 @@ class _HealthInfoGraphState extends State<HealthInfoGraph> {
             right: 8.0,
             child: Text(
               // '${value.toStringAsFixed(1)} / ${Nutrition.maxValues['${title}']} ${unit}',
-              ' / ${Nutrition.maxValues['${title}']} ${unit}',
+              ' / ${Nutrition.maxValues['${title}']!.toStringAsFixed(1)} ${unit}',
               style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold),
             ),
           ),

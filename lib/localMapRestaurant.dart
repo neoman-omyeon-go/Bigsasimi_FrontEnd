@@ -111,7 +111,7 @@ class _MapPageState extends State<map> {
                       _buildMenuItem(Icons.eco, "GreenFood", () {
                         print("GreenFood 버튼 클릭됨");
                       }),
-                      _buildMenuItem(Icons.sentiment_satisfied, "People's Pick", () {
+                      _buildMenuItem(Icons.emoji_emotions, "People's Pick", () {
                         print("People's Pick 버튼 클릭됨");
                       }),
                     ],
