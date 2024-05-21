@@ -66,6 +66,7 @@ flutter_native_splash:
   image: assets/realsplash.jpeg # 플래시 스크린에 표시할 이미지 경로
   android: true
   ios: true
+  fill: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
