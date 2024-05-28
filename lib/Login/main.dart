@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:capstone/Register.dart';
+import 'package:capstone/Register/Register.dart';
 import 'package:capstone/profile_userinfoWidget.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,8 +9,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'APIfile.dart';
-import 'upload.dart';
+import '../APIfile.dart';
+import '../Upload/upload.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';

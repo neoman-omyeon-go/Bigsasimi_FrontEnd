@@ -31,7 +31,7 @@ class _MapPageState extends State<map> {
         return Future.error('permissions are denied');
       }
     }
-
+    
     setState(() {
       latitude;
       longitude;

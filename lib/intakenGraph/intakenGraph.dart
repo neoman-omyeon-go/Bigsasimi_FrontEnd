@@ -1,7 +1,7 @@
 import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
-import 'profile.dart';
-import 'Calander.dart';
+import '../profile/profile.dart';
+import '../Nutrition Calendar/Calander.dart';
 
 
 class Nutrition {

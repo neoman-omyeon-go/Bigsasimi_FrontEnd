@@ -1,7 +1,7 @@
 import 'package:capstone/APIfile.dart';
 import 'package:flutter/material.dart';
 import 'Calander.dart';
-import 'models/historydata.dart';
+import '../models/historydata.dart';
 
 class dailyMealHistory extends StatefulWidget {
   final DateTime selectDate;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'APIfile.dart';
+import '../APIfile.dart';
 
 class MySignUp extends StatelessWidget {
   const MySignUp({super.key});

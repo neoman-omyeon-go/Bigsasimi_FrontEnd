@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'models/news.dart';
-import 'providers/news_providers.dart';
+import '../models/news.dart';
+import '../providers/news_providers.dart';
 
 class TodaysNews extends StatefulWidget {
   const TodaysNews({Key? key}) : super(key: key);

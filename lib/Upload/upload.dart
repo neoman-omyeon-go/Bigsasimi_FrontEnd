@@ -1,16 +1,16 @@
-import 'package:capstone/intakenGraph.dart';
-import 'package:capstone/localMapRestaurant.dart';
-import 'package:capstone/todaysNews.dart';
-import 'package:capstone/upload2.dart';
+import 'package:capstone/intakenGraph/intakenGraph.dart';
+import 'package:capstone/Map/localMapRestaurant.dart';
+import 'package:capstone/News/todaysNews.dart';
+import 'package:capstone/Upload/upload2.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'profile.dart';
+import '../profile/profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'APIfile.dart';
+import '../APIfile.dart';
 import 'upload3.dart';
-import 'profile.dart' as profile;
+import '../profile/profile.dart' as profile;
 
 //처음 화면 초기화시에, 로그인 성공~ 하면서 뜨게 해줄거임
 //loginSuccessed();

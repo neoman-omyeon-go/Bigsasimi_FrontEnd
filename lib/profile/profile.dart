@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'profile_userinfoWidget.dart';
-import 'profile_exeldata.dart';
-import 'APIfile.dart';
+import '../profile_userinfoWidget.dart';
+import '../profile_exeldata.dart';
+import '../APIfile.dart';
 import 'profile_userprofile.dart';
-import 'intakenGraph.dart';
+import '../intakenGraph/intakenGraph.dart';
 import 'package:uri_to_file/uri_to_file.dart';
 
 late Nutrition nutrition;

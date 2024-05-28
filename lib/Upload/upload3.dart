@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'foodList.dart';  // 필요한 내용이 포함된 전제된 foodList.dart 파일
 import 'food.dart';
-import 'APIfile.dart';
-import 'intakenGraph.dart';
-import 'profile.dart';
+import '../APIfile.dart';
+import '../intakenGraph/intakenGraph.dart';
+import '../profile/profile.dart';
 
 
 class FoodSearch extends StatefulWidget {
