@@ -17,7 +17,7 @@ try 에서 성공되지 못한 결과에 예외처리를 두어서 사용자에�
 페이지별로 분리하여 Model 을 만들어 관리하였다. 200 이 아닌 다른 상태코드가 반환되었을 경우 
 예외처리를 두었고, 대부분 사용자에게 피드백이 가도록 구현하였다.
 
-<img src="https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2b387740-c48e-4d70-bdbd-b3ad09d15323" width = "30%" height = "300">
+<img src="https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2b387740-c48e-4d70-bdbd-b3ad09d15323" width = "70%" height = "400">
 
 # 로그인 & 회원가입 
 로그인의 경우 비동기 처리를 사용하여 사용자의 아이디와 비밀번호를 입력하고, 이를 Map 으로 
@@ -95,7 +95,7 @@ Provider 패키지를 사용했다. news.dart 페이지는 model 로써 역할�
 파일이다. 이후, Viewmodel 인 todaysNews.dart 와 news_detail_screen.dart 파일로 provider 가 
 제공하는 정보를 news라는 모델로 받고 보여지게 된다.
 
-![image](https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2f1a3c01-7c84-4f01-9a05-8f5a5e4e6ef6)
+<img src="https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2f1a3c01-7c84-4f01-9a05-8f5a5e4e6ef6" width = "70%" height = "400">
 
 # 주변 식당 
 ‘주변 식당’ 페이지는 UI 는 작성하였으나, 기능이 아직 구현되지 않았다. 프런트에서 구현한 기능에 
