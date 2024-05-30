@@ -17,7 +17,7 @@ try 에서 성공되지 못한 결과에 예외처리를 두어서 사용자에�
 페이지별로 분리하여 Model 을 만들어 관리하였다. 200 이 아닌 다른 상태코드가 반환되었을 경우 
 예외처리를 두었고, 대부분 사용자에게 피드백이 가도록 구현하였다.
 
-![image](https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2b387740-c48e-4d70-bdbd-b3ad09d15323)
+<img src="https://github.com/neoman-omyeon-go/Flutter_main/assets/90908005/2b387740-c48e-4d70-bdbd-b3ad09d15323" width = "30%" height = "300">
 
 # 로그인 & 회원가입 
 로그인의 경우 비동기 처리를 사용하여 사용자의 아이디와 비밀번호를 입력하고, 이를 Map 으로 
